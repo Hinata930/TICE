@@ -1,6 +1,6 @@
 import { UserButton } from "@clerk/nextjs";
 
-export default function Home() {
+export default async function Page() {
   return (
     <main>
       
