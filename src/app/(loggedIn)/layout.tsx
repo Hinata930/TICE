@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import "@/app/globals.css";
 import Header from "@/components/header";
 import Sidebar from "@/components/sidebar";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,8 +33,8 @@ export default async function RootLayout({
               {children}
             </div>
           </div>
-
           <Analytics />
+          <SpeedInsights />
         </body>
       </html>
     </ClerkProvider>
