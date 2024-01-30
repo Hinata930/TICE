@@ -1,7 +1,7 @@
 import type { WebhookEvent } from "@clerk/clerk-sdk-node"
 import { sql } from "@vercel/postgres"; 
 
-const handler = req => {
+const handler = (req: { body: { evt: WebhookEvent; }; }) => {
   const evt = req.body.evt as WebhookEvent;
   switch (evt.type) {
     case 'user.updated':
