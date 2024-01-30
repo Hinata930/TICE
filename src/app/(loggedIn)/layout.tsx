@@ -2,7 +2,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import "@/app/globals.css";
 import Header from "@/components/header";
 import Sidebar from "@/components/sidebar";
 
@@ -23,7 +23,7 @@ export default async function RootLayout({
       <html lang="ja">
         <body className={inter.className}>
           <Header />
-          {/* flexでサイドバーとchildrenを横並びにする。top-16はヘッダーがあるから */}
+          {/* flexでサイドバーとchildrenを横並びにする。top-16はヘッダー分 */}
           <div className="flex relative top-16 w-screen">
             <Sidebar />
             {/* 下のdivでSidebarの横幅だけ指定した(Sidebarの中にchildrenが来ないようにするため) */}

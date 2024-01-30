@@ -3,9 +3,9 @@ import Link from "next/link";
 
 export default function Header() {
   return(
-    <div className="fixed w-screen bg-white z-50">
-      <nav className="flex h-16 border-solid border-gray-200 border-b-[1px]">
-        <Link href="/" className="flex items-center ml-8 h-full text-3xl text-neutral-600">
+    <div className="fixed w-screen z-50">
+      <nav className="flex h-16 border-solid border-[var(--color-light-gray)] border-b">
+        <Link href="/home" className="flex items-center ml-8 h-full text-3xl text-neutral-600">
           TICE
         </Link>
         <div className="flex-grow">

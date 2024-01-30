@@ -1,0 +1,36 @@
+CREATE TABLE users(
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT clock_timestamp(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT clock_timestamp(),
+  user_id VARCHAR(32) UNIQUE NOT NULL,
+  username VARCHAR(64) UNIQUE NOT NULL,
+  first_name VARCHAR(256),
+  last_name VARCHAR(256),
+  email_address TEXT NOT NULL,
+  image_url TEXT NOT NULL
+);
+
+CREATE TABLE teams(
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT clock_timestamp(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT clock_timestamp(),
+  team_name VARCHAR(32) NOT NULL
+);
+
+CREATE TABLE user_team (
+  created_at TIMESTAMPTZ NOT NULL DEFAULT clock_timestamp(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT clock_timestamp(),
+  user_id UUID REFERENCES users(id),
+  team_id UUID REFERENCES teams(id)
+);
+
+CREATE TABLE tasks(
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT clock_timestamp(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT clock_timestamp(),
+  task_creator UUID REFERENCES users(id),
+  team_id UUID REFERENCES teams(id),
+  due_date DATE,
+  task_title VARCHAR(256) NOT NULL,
+  task_description TEXT
+);

@@ -5,9 +5,9 @@ import { usePathname } from "next/navigation"
 import { clsx } from "clsx";
 import { HomeIcon, CalendarIcon, UsersIcon } from "./icons";
 
-// 同じ処理だからsidebarにつかうデータをここに
+// sidebarにつかうデータ
 const links = [
-  { name: 'ホーム', href: '/', icon: HomeIcon },
+  { name: 'ホーム', href: '/home', icon: HomeIcon },
   { name: 'カレンダー', href: '/calendar', icon: CalendarIcon },
   { name: 'チーム', href: '/team', icon: UsersIcon },
 ];
@@ -22,10 +22,10 @@ export default function NavLinks() {
           <Link
             key={link.name}
             href={link.href}
-            className={clsx(
-              'flex h-[48px] items-center gap-2 rounded-lg p-3 text-sm font-medium text-neutral-950 hover:bg-gray-100 hover:text-blue-600 md:flex-none md:p-2 md:px-3',
+            className={clsx('flex h-[48px] items-center rounded-lg gap-2 p-3 text-sm font-medium md:flex-none md:p-2 md:px-3',
               {
-                'bg-gray-100 text-blue-600': pathname === link.href,
+                'text-[var(--color-black)] hover:text-[var(--color-seccondary)]': pathname !== link.href,
+                'text-[var(--color-primary)]': pathname === link.href,
               },
             )}
           >
