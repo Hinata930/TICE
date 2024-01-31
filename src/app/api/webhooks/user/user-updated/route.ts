@@ -67,8 +67,8 @@ export async function POST(req: Request) {
         await sql`
           UPDATE users SET 
             username = ${username},
-            firstName = ${firstName},
-            lastName = ${lastName},
+            first_name = ${firstName},
+            last_name = ${lastName},
             email_address = ${email_address},
             image_url = ${image_url}
 
