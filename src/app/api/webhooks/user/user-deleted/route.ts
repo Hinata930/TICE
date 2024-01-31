@@ -1,11 +1,12 @@
 import { sql } from "@vercel/postgres";
 import { WebhookEvent } from "@clerk/clerk-sdk-node";
 import crypto from 'crypto';
+import { NextApiRequest, NextApiResponse } from "next";
 
 // Webhook署名シークレット
 const webhookSecret = process.env.WEBHOOK_SECRET_USER_DELETED as string;
 
-const handler = async (req: { body: { evt: WebhookEvent; }; headers: { [key: string]: string } }) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const evt = req.body.evt as WebhookEvent;
   const receivedSignature = req.headers['x-clerk-webhook-signature'];
 
@@ -38,9 +39,11 @@ const handler = async (req: { body: { evt: WebhookEvent; }; headers: { [key: str
       default:
         console.log('Unsupported event type:', evt.type);
     }
-
+    
+    res.status(200).end('OK');
   } else {
     console.warn('Webhook signature is not valid. Rejecting request.');
+    res.status(401).end('Unauthorized');
   }
 };
 
