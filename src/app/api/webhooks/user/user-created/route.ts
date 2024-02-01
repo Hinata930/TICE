@@ -1,8 +1,10 @@
 import { Webhook } from 'svix';
 import { headers } from 'next/headers';
 import { WebhookEvent } from '@clerk/nextjs/server';
-import { sql } from '@vercel/postgres';
- 
+import { PrismaClient } from '@prisma/client'; 
+
+const prisma = new PrismaClient();
+
 export async function POST(req: Request) {
  
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
@@ -53,7 +55,7 @@ export async function POST(req: Request) {
       // UserJSON.user_id is a string
       const user_id = evt.data.id;
       // UserJSON.username is a string
-      const username = evt.data.username;
+      const username = evt.data.username as string;
       // UserJSON.firstName is a string
       const firstName = evt.data.first_name;
       // UserJSON.lastName is a string
@@ -64,17 +66,17 @@ export async function POST(req: Request) {
       const image_url = evt.data.image_url;
 
       try {
-        await sql`
-          INSERT INTO users (user_id, username, first_name, last_name, email_address, image_url)
-          VALUES (
-            ${user_id},
-            ${username}, 
-            ${firstName}, 
-            ${lastName}, 
-            ${email_address}, 
-            ${image_url}
-          );
-        `;
+        await prisma.users.create({
+          data: {
+            user_id: user_id,
+            username: username,
+            first_name: firstName,
+            last_name: lastName,
+            email_address: email_address,
+            image_url: image_url,
+          },
+        });
+        
         console.log('User inserted successfully.');
         return new Response('OK',{status: 200,});
       } catch (error) {
@@ -86,4 +88,3 @@ export async function POST(req: Request) {
       console.log('Unsupported event type:', evt.type);
   }
 }
- 
