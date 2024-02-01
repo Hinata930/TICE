@@ -55,7 +55,7 @@ export async function POST(req: Request) {
       // UserJSON.user_id is a string
       const user_id = evt.data.id;
       // UserJSON.username is a string
-      const username = evt.data.username;
+      const username = evt.data.username as string;
       // UserJSON.firstName is a string
       const firstName = evt.data.first_name;
       // UserJSON.lastName is a string
