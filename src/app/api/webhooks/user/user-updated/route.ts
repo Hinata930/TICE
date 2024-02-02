@@ -1,8 +1,10 @@
 import { Webhook } from 'svix';
 import { headers } from 'next/headers';
 import { WebhookEvent } from '@clerk/nextjs/server';
-import { sql } from '@vercel/postgres';
+import { PrismaClient } from '@prisma/client'; 
  
+const prisma = new PrismaClient();
+
 export async function POST(req: Request) {
  
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
@@ -55,25 +57,28 @@ export async function POST(req: Request) {
       // UserJSON.username is a string
       const username = evt.data.username;
       // UserJSON.first_name is a string
-      const firstName = evt.data.first_name;
+      const first_name = evt.data.first_name;
       // UserJSON.last_name is a string
-      const lastName = evt.data.last_name;
+      const last_name = evt.data.last_name;
       // UserJSON.email_addresses[0].email_address is a string
       const email_address = evt.data.email_addresses[0].email_address;
       // UserJSON.image_url is a string
       const image_url = evt.data.image_url;
 
       try {
-        await sql`
-          UPDATE users SET 
-            username = ${username},
-            first_name = ${firstName},
-            last_name = ${lastName},
-            email_address = ${email_address},
-            image_url = ${image_url}
+        await prisma.users.update({
+          where: {
+            user_id
+          },
+          data: {
+            username,
+            first_name,
+            last_name,
+            email_address,
+            image_url,
+          },
+        });
 
-          WHERE user_id = ${user_id}
-        `;
         console.log('User updating successfully.');
         return new Response('OK', {status: 200});
       } catch (error) {

@@ -73,8 +73,8 @@ export async function POST(req: Request) {
             first_name,
             last_name,
             email_address,
-            image_url
-          }
+            image_url,
+          },
         });
 
         console.log('User inserted successfully.');

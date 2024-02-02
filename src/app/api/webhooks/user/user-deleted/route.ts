@@ -1,8 +1,10 @@
 import { Webhook } from 'svix';
 import { headers } from 'next/headers';
 import { WebhookEvent } from '@clerk/nextjs/server';
-import { sql } from '@vercel/postgres';
+import { PrismaClient } from '@prisma/client'; 
  
+const prisma = new PrismaClient();
+
 export async function POST(req: Request) {
  
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
@@ -55,9 +57,12 @@ export async function POST(req: Request) {
       const user_id = evt.data.id;
 
       try {
-        await sql`
-          DELETE FROM users WHERE user_id = ${user_id}
-        `;
+        await prisma.users.delete({
+          where: {
+            user_id,
+          },
+        });
+
         console.log('User deleting successfully.');
         return new Response('OK', {status: 200});
       } catch (error) {
