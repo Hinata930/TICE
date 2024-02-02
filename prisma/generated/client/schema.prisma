@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model roles {
+  id               String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at       DateTime    @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
+  updated_at       DateTime    @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
+  team_id          String?     @db.Uuid
+  role_name        String      @db.VarChar(32)
+  role_description String?     @db.VarChar(256)
+  teams            teams?      @relation(fields: [team_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user_role        user_role[]
+
+  @@unique([team_id, role_name], map: "unique_team_role")
+}
+
+model tasks {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at       DateTime  @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
+  updated_at       DateTime  @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
+  task_creator     String?   @db.Uuid
+  team_id          String?   @db.Uuid
+  due_date         DateTime? @db.Date
+  task_title       String    @db.VarChar(256)
+  task_description String?
+  teams            teams?    @relation(fields: [team_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_task_team")
+  users            users?    @relation(fields: [task_creator], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model teams {
+  id         String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at DateTime    @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
+  updated_at DateTime    @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
+  team_name  String      @db.VarChar(32)
+  roles      roles[]
+  tasks      tasks[]
+  user_role  user_role[]
+  user_team  user_team[]
+}
+
+model user_team {
+  created_at DateTime @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
+  updated_at DateTime @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
+  user_id    String?  @db.Uuid
+  team_id    String?  @db.Uuid
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  teams      teams?   @relation(fields: [team_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user_team_team_id")
+  users      users?   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user_team_user_id")
+}
+
+model users {
+  id            String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at    DateTime    @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
+  updated_at    DateTime    @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
+  user_id       String      @unique @db.VarChar(32)
+  username      String?     @unique @db.VarChar(64)
+  first_name    String?     @db.VarChar(256)
+  last_name     String?     @db.VarChar(256)
+  email_address String
+  image_url     String
+  tasks         tasks[]
+  user_role     user_role[]
+  user_team     user_team[]
+}
+
+model user_role {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at DateTime @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
+  updated_at DateTime @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
+  user_id    String?  @db.Uuid
+  team_id    String?  @db.Uuid
+  role_id    String?  @db.Uuid
+  roles      roles?   @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  teams      teams?   @relation(fields: [team_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users      users?   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([team_id, user_id])
+}

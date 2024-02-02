@@ -1,8 +1,10 @@
 import { Webhook } from 'svix';
 import { headers } from 'next/headers';
 import { WebhookEvent } from '@clerk/nextjs/server';
-import { sql } from '@vercel/postgres';
- 
+import { PrismaClient } from '../../../../../../prisma/generated/client';
+
+const prisma = new PrismaClient()
+
 export async function POST(req: Request) {
  
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
@@ -54,27 +56,27 @@ export async function POST(req: Request) {
       const user_id = evt.data.id;
       // UserJSON.username is a string
       const username = evt.data.username;
-      // UserJSON.firstName is a string
-      const firstName = evt.data.first_name;
-      // UserJSON.lastName is a string
-      const lastName = evt.data.last_name;
+      // UserJSON.first_name is a string
+      const first_name = evt.data.first_name;
+      // UserJSON.last_name is a string
+      const last_name = evt.data.last_name;
       // UserJSON.email_address is a string
       const email_address = evt.data.email_addresses[0].email_address;
       // UserJSON.image_url is a string
       const image_url = evt.data.image_url;
 
       try {
-        await sql`
-          INSERT INTO users (user_id, username, first_name, last_name, email_address, image_url)
-          VALUES (
-            ${user_id},
-            ${username}, 
-            ${firstName}, 
-            ${lastName}, 
-            ${email_address}, 
-            ${image_url}
-          );
-        `;
+        await prisma.users.create({
+          data: {
+            user_id,
+            username,
+            first_name,
+            last_name,
+            email_address,
+            image_url
+          }
+        });
+
         console.log('User inserted successfully.');
         return new Response('OK',{status: 200,});
       } catch (error) {

@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "./generated/client"
 }
 
 datasource db {
@@ -59,7 +60,7 @@ model users {
   created_at    DateTime    @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
   updated_at    DateTime    @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
   user_id       String      @unique @db.VarChar(32)
-  username      String      @unique @db.VarChar(64)
+  username      String?     @unique @db.VarChar(64)
   first_name    String?     @db.VarChar(256)
   last_name     String?     @db.VarChar(256)
   email_address String
