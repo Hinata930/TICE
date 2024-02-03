@@ -1,11 +1,26 @@
 'use server';
 
-import { z } from "zod";
-import { sql } from "@vercel/postgres";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient()
 
 // team作成、creatorはuser_teamに追加
-export async function create_team() {
-  
+export async function create_team(FormData: {
+  team_name: string,
+  creator: string,
+}) {
+  const newTeam = await prisma.teams.create({
+    data: {
+      team_name: FormData.team_name,
+    },
+  });
+
+  await prisma.user_team.create({
+    data: {
+      user_id: FormData.creator,
+      team_id: newTeam.id,
+    }
+  });
 }
 
 // team削除、user_teamも削除

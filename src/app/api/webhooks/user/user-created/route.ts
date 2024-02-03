@@ -52,17 +52,11 @@ export async function POST(req: Request) {
 
   switch (evt.type) {
     case 'user.created':
-      // UserJSON.user_id is a string
       const user_id = evt.data.id;
-      // UserJSON.username is a string
       const username = evt.data.username;
-      // UserJSON.first_name is a string
       const first_name = evt.data.first_name;
-      // UserJSON.last_name is a string
       const last_name = evt.data.last_name;
-      // UserJSON.email_address is a string
       const email_address = evt.data.email_addresses[0].email_address;
-      // UserJSON.image_url is a string
       const image_url = evt.data.image_url;
 
       try {

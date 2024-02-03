@@ -53,7 +53,6 @@ export async function POST(req: Request) {
   switch (evt.type) {
     
     case 'user.deleted':
-      // UserJSON.user_id is a string
       const user_id = evt.data.id;
 
       try {
