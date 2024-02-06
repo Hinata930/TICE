@@ -56,7 +56,7 @@ export async function POST(req: Request) {
       const user_id = evt.data.id;
 
       try {
-        await prisma.users.delete({
+        await prisma.user.delete({
           where: {
             user_id,
           },

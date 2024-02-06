@@ -60,7 +60,7 @@ export async function POST(req: Request) {
       const image_url = evt.data.image_url;
 
       try {
-        await prisma.users.create({
+        await prisma.user.create({
           data: {
             user_id,
             username,

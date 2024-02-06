@@ -60,7 +60,7 @@ export async function POST(req: Request) {
       const image_url = evt.data.image_url;
 
       try {
-        await prisma.users.update({
+        await prisma.user.update({
           where: {
             user_id
           },
