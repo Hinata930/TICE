@@ -1,9 +1,48 @@
+"use client";
+
+import { useFormState, useFormStatus } from "react-dom";
+import { CreateTeam } from "@/lib/actions/team-actions"; 
+import { fetchCurrentUser } from "@/lib/data";
 
 
-export default function CreateForm() {
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
   return (
-    <>
+    <button type="submit" aria-disabled={pending}>
+      Add
+    </button>
+  );
+}
 
-    </>
+export async function AddForm() {
+  // currentUser as string | null
+  const currentUser = await fetchCurrentUser();
+  if (!currentUser) {
+    throw new Error('Current user not found.');
+  }
+  const initialState = { message: '', errors: {} };
+  const [state, formAction] = useFormState(
+    (prevstate: any, formData: FormData) => CreateTeam(currentUser.id, prevstate, formData),
+    initialState
+  );
+
+  return (
+    <form action={formAction}>
+      <label htmlFor="team_name">チーム名</label>
+      <input 
+        type="text" 
+        id="team_name" 
+        name="team_name" 
+        minLength={4} 
+        maxLength={32} 
+        required 
+      />
+      <SubmitButton />
+      <p aria-live="polite" className="sr-only" role="status">
+        {state?.message}
+      </p>
+    </form>
   );
 }

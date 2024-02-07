@@ -42,8 +42,8 @@ export const RoleSchema = z.object({
   created_at: z.coerce.date(),
   updated_at: z.coerce.date(),
   team_id: z.string().nullable(),
-  role_name: z.string(),
-  role_description: z.string().nullable(),
+  role_name: z.string().min(1, { message: "please use at least 1 character." }).max(32, { message: "please keep it under 32 characters." }),
+  role_description: z.string().min(1, { message: "please use at least 1 character." }).max(256, { message: "please keep it under 256 characters." }).nullable(),
 })
 
 export type Role = z.infer<typeof RoleSchema>
@@ -59,8 +59,8 @@ export const TaskSchema = z.object({
   task_creator: z.string().nullable(),
   team_id: z.string().nullable(),
   due_date: z.coerce.date().nullable(),
-  task_title: z.string(),
-  task_description: z.string().nullable(),
+  task_title: z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),
+  task_description: z.string().max(2048, { message: "please keep it  under 2048 characters." }).nullable(),
 })
 
 export type Task = z.infer<typeof TaskSchema>
@@ -73,7 +73,7 @@ export const TeamSchema = z.object({
   id: z.string(),
   created_at: z.coerce.date(),
   updated_at: z.coerce.date(),
-  team_name: z.string(),
+  team_name: z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),
   creator: z.string().nullable(),
 })
 
@@ -376,8 +376,8 @@ export const RoleWhereUniqueInputSchema: z.ZodType<Prisma.RoleWhereUniqueInput> 
   created_at: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updated_at: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   team_id: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
-  role_name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  role_description: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  role_name: z.union([ z.lazy(() => StringFilterSchema),z.string().min(1, { message: "please use at least 1 character." }).max(32, { message: "please keep it under 32 characters." }) ]).optional(),
+  role_description: z.union([ z.lazy(() => StringNullableFilterSchema),z.string().min(1, { message: "please use at least 1 character." }).max(256, { message: "please keep it under 256 characters." }) ]).optional().nullable(),
   teams: z.union([ z.lazy(() => TeamNullableRelationFilterSchema),z.lazy(() => TeamWhereInputSchema) ]).optional().nullable(),
   user_role: z.lazy(() => UserRoleListRelationFilterSchema).optional()
 }).strict());
@@ -448,8 +448,8 @@ export const TaskWhereUniqueInputSchema: z.ZodType<Prisma.TaskWhereUniqueInput> 
   task_creator: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
   team_id: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
   due_date: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
-  task_title: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  task_description: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  task_title: z.union([ z.lazy(() => StringFilterSchema),z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }) ]).optional(),
+  task_description: z.union([ z.lazy(() => StringNullableFilterSchema),z.string().max(2048, { message: "please keep it  under 2048 characters." }) ]).optional().nullable(),
   teams: z.union([ z.lazy(() => TeamNullableRelationFilterSchema),z.lazy(() => TeamWhereInputSchema) ]).optional().nullable(),
   users: z.union([ z.lazy(() => UserNullableRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
 }).strict());
@@ -521,7 +521,7 @@ export const TeamWhereUniqueInputSchema: z.ZodType<Prisma.TeamWhereUniqueInput> 
   NOT: z.union([ z.lazy(() => TeamWhereInputSchema),z.lazy(() => TeamWhereInputSchema).array() ]).optional(),
   created_at: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updated_at: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  team_name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  team_name: z.union([ z.lazy(() => StringFilterSchema),z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }) ]).optional(),
   creator: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
   users: z.union([ z.lazy(() => UserNullableRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
   roles: z.lazy(() => RoleListRelationFilterSchema).optional(),
@@ -808,8 +808,8 @@ export const RoleCreateInputSchema: z.ZodType<Prisma.RoleCreateInput> = z.object
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
-  role_name: z.string(),
-  role_description: z.string().optional().nullable(),
+  role_name: z.string().min(1, { message: "please use at least 1 character." }).max(32, { message: "please keep it under 32 characters." }),
+  role_description: z.string().min(1, { message: "please use at least 1 character." }).max(256, { message: "please keep it under 256 characters." }).optional().nullable(),
   teams: z.lazy(() => TeamCreateNestedOneWithoutRolesInputSchema).optional(),
   user_role: z.lazy(() => UserRoleCreateNestedManyWithoutRolesInputSchema).optional()
 }).strict();
@@ -819,8 +819,8 @@ export const RoleUncheckedCreateInputSchema: z.ZodType<Prisma.RoleUncheckedCreat
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
   team_id: z.string().optional().nullable(),
-  role_name: z.string(),
-  role_description: z.string().optional().nullable(),
+  role_name: z.string().min(1, { message: "please use at least 1 character." }).max(32, { message: "please keep it under 32 characters." }),
+  role_description: z.string().min(1, { message: "please use at least 1 character." }).max(256, { message: "please keep it under 256 characters." }).optional().nullable(),
   user_role: z.lazy(() => UserRoleUncheckedCreateNestedManyWithoutRolesInputSchema).optional()
 }).strict();
 
@@ -828,8 +828,8 @@ export const RoleUpdateInputSchema: z.ZodType<Prisma.RoleUpdateInput> = z.object
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  role_name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  role_description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role_name: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  role_description: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(256, { message: "please keep it under 256 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   teams: z.lazy(() => TeamUpdateOneWithoutRolesNestedInputSchema).optional(),
   user_role: z.lazy(() => UserRoleUpdateManyWithoutRolesNestedInputSchema).optional()
 }).strict();
@@ -839,8 +839,8 @@ export const RoleUncheckedUpdateInputSchema: z.ZodType<Prisma.RoleUncheckedUpdat
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  role_name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  role_description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role_name: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  role_description: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(256, { message: "please keep it under 256 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   user_role: z.lazy(() => UserRoleUncheckedUpdateManyWithoutRolesNestedInputSchema).optional()
 }).strict();
 
@@ -849,16 +849,16 @@ export const RoleCreateManyInputSchema: z.ZodType<Prisma.RoleCreateManyInput> = 
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
   team_id: z.string().optional().nullable(),
-  role_name: z.string(),
-  role_description: z.string().optional().nullable()
+  role_name: z.string().min(1, { message: "please use at least 1 character." }).max(32, { message: "please keep it under 32 characters." }),
+  role_description: z.string().min(1, { message: "please use at least 1 character." }).max(256, { message: "please keep it under 256 characters." }).optional().nullable()
 }).strict();
 
 export const RoleUpdateManyMutationInputSchema: z.ZodType<Prisma.RoleUpdateManyMutationInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  role_name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  role_description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role_name: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  role_description: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(256, { message: "please keep it under 256 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const RoleUncheckedUpdateManyInputSchema: z.ZodType<Prisma.RoleUncheckedUpdateManyInput> = z.object({
@@ -866,8 +866,8 @@ export const RoleUncheckedUpdateManyInputSchema: z.ZodType<Prisma.RoleUncheckedU
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  role_name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  role_description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role_name: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  role_description: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(256, { message: "please keep it under 256 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const TaskCreateInputSchema: z.ZodType<Prisma.TaskCreateInput> = z.object({
@@ -875,8 +875,8 @@ export const TaskCreateInputSchema: z.ZodType<Prisma.TaskCreateInput> = z.object
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
   due_date: z.coerce.date().optional().nullable(),
-  task_title: z.string(),
-  task_description: z.string().optional().nullable(),
+  task_title: z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),
+  task_description: z.string().max(2048, { message: "please keep it  under 2048 characters." }).optional().nullable(),
   teams: z.lazy(() => TeamCreateNestedOneWithoutTasksInputSchema).optional(),
   users: z.lazy(() => UserCreateNestedOneWithoutTasksInputSchema).optional()
 }).strict();
@@ -888,8 +888,8 @@ export const TaskUncheckedCreateInputSchema: z.ZodType<Prisma.TaskUncheckedCreat
   task_creator: z.string().optional().nullable(),
   team_id: z.string().optional().nullable(),
   due_date: z.coerce.date().optional().nullable(),
-  task_title: z.string(),
-  task_description: z.string().optional().nullable()
+  task_title: z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),
+  task_description: z.string().max(2048, { message: "please keep it  under 2048 characters." }).optional().nullable()
 }).strict();
 
 export const TaskUpdateInputSchema: z.ZodType<Prisma.TaskUpdateInput> = z.object({
@@ -897,8 +897,8 @@ export const TaskUpdateInputSchema: z.ZodType<Prisma.TaskUpdateInput> = z.object
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   due_date: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  task_title: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  task_description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  task_title: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  task_description: z.union([ z.string().max(2048, { message: "please keep it  under 2048 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   teams: z.lazy(() => TeamUpdateOneWithoutTasksNestedInputSchema).optional(),
   users: z.lazy(() => UserUpdateOneWithoutTasksNestedInputSchema).optional()
 }).strict();
@@ -910,8 +910,8 @@ export const TaskUncheckedUpdateInputSchema: z.ZodType<Prisma.TaskUncheckedUpdat
   task_creator: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   due_date: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  task_title: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  task_description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  task_title: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  task_description: z.union([ z.string().max(2048, { message: "please keep it  under 2048 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const TaskCreateManyInputSchema: z.ZodType<Prisma.TaskCreateManyInput> = z.object({
@@ -921,8 +921,8 @@ export const TaskCreateManyInputSchema: z.ZodType<Prisma.TaskCreateManyInput> = 
   task_creator: z.string().optional().nullable(),
   team_id: z.string().optional().nullable(),
   due_date: z.coerce.date().optional().nullable(),
-  task_title: z.string(),
-  task_description: z.string().optional().nullable()
+  task_title: z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),
+  task_description: z.string().max(2048, { message: "please keep it  under 2048 characters." }).optional().nullable()
 }).strict();
 
 export const TaskUpdateManyMutationInputSchema: z.ZodType<Prisma.TaskUpdateManyMutationInput> = z.object({
@@ -930,8 +930,8 @@ export const TaskUpdateManyMutationInputSchema: z.ZodType<Prisma.TaskUpdateManyM
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   due_date: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  task_title: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  task_description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  task_title: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  task_description: z.union([ z.string().max(2048, { message: "please keep it  under 2048 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const TaskUncheckedUpdateManyInputSchema: z.ZodType<Prisma.TaskUncheckedUpdateManyInput> = z.object({
@@ -941,15 +941,15 @@ export const TaskUncheckedUpdateManyInputSchema: z.ZodType<Prisma.TaskUncheckedU
   task_creator: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   due_date: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  task_title: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  task_description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  task_title: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  task_description: z.union([ z.string().max(2048, { message: "please keep it  under 2048 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const TeamCreateInputSchema: z.ZodType<Prisma.TeamCreateInput> = z.object({
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
-  team_name: z.string(),
+  team_name: z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),
   users: z.lazy(() => UserCreateNestedOneWithoutTeamsInputSchema).optional(),
   roles: z.lazy(() => RoleCreateNestedManyWithoutTeamsInputSchema).optional(),
   tasks: z.lazy(() => TaskCreateNestedManyWithoutTeamsInputSchema).optional(),
@@ -961,7 +961,7 @@ export const TeamUncheckedCreateInputSchema: z.ZodType<Prisma.TeamUncheckedCreat
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
-  team_name: z.string(),
+  team_name: z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),
   creator: z.string().optional().nullable(),
   roles: z.lazy(() => RoleUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
   tasks: z.lazy(() => TaskUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
@@ -973,7 +973,7 @@ export const TeamUpdateInputSchema: z.ZodType<Prisma.TeamUpdateInput> = z.object
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  team_name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  team_name: z.union([ z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   users: z.lazy(() => UserUpdateOneWithoutTeamsNestedInputSchema).optional(),
   roles: z.lazy(() => RoleUpdateManyWithoutTeamsNestedInputSchema).optional(),
   tasks: z.lazy(() => TaskUpdateManyWithoutTeamsNestedInputSchema).optional(),
@@ -985,7 +985,7 @@ export const TeamUncheckedUpdateInputSchema: z.ZodType<Prisma.TeamUncheckedUpdat
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  team_name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  team_name: z.union([ z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   creator: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   roles: z.lazy(() => RoleUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
   tasks: z.lazy(() => TaskUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
@@ -997,7 +997,7 @@ export const TeamCreateManyInputSchema: z.ZodType<Prisma.TeamCreateManyInput> = 
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
-  team_name: z.string(),
+  team_name: z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),
   creator: z.string().optional().nullable()
 }).strict();
 
@@ -1005,14 +1005,14 @@ export const TeamUpdateManyMutationInputSchema: z.ZodType<Prisma.TeamUpdateManyM
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  team_name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  team_name: z.union([ z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const TeamUncheckedUpdateManyInputSchema: z.ZodType<Prisma.TeamUncheckedUpdateManyInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  team_name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  team_name: z.union([ z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   creator: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
@@ -2377,7 +2377,7 @@ export const TeamCreateWithoutRolesInputSchema: z.ZodType<Prisma.TeamCreateWitho
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
-  team_name: z.string(),
+  team_name: z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),
   users: z.lazy(() => UserCreateNestedOneWithoutTeamsInputSchema).optional(),
   tasks: z.lazy(() => TaskCreateNestedManyWithoutTeamsInputSchema).optional(),
   user_role: z.lazy(() => UserRoleCreateNestedManyWithoutTeamsInputSchema).optional(),
@@ -2388,7 +2388,7 @@ export const TeamUncheckedCreateWithoutRolesInputSchema: z.ZodType<Prisma.TeamUn
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
-  team_name: z.string(),
+  team_name: z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),
   creator: z.string().optional().nullable(),
   tasks: z.lazy(() => TaskUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
   user_role: z.lazy(() => UserRoleUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
@@ -2441,7 +2441,7 @@ export const TeamUpdateWithoutRolesInputSchema: z.ZodType<Prisma.TeamUpdateWitho
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  team_name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  team_name: z.union([ z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   users: z.lazy(() => UserUpdateOneWithoutTeamsNestedInputSchema).optional(),
   tasks: z.lazy(() => TaskUpdateManyWithoutTeamsNestedInputSchema).optional(),
   user_role: z.lazy(() => UserRoleUpdateManyWithoutTeamsNestedInputSchema).optional(),
@@ -2452,7 +2452,7 @@ export const TeamUncheckedUpdateWithoutRolesInputSchema: z.ZodType<Prisma.TeamUn
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  team_name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  team_name: z.union([ z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   creator: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   tasks: z.lazy(() => TaskUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
   user_role: z.lazy(() => UserRoleUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
@@ -2491,7 +2491,7 @@ export const TeamCreateWithoutTasksInputSchema: z.ZodType<Prisma.TeamCreateWitho
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
-  team_name: z.string(),
+  team_name: z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),
   users: z.lazy(() => UserCreateNestedOneWithoutTeamsInputSchema).optional(),
   roles: z.lazy(() => RoleCreateNestedManyWithoutTeamsInputSchema).optional(),
   user_role: z.lazy(() => UserRoleCreateNestedManyWithoutTeamsInputSchema).optional(),
@@ -2502,7 +2502,7 @@ export const TeamUncheckedCreateWithoutTasksInputSchema: z.ZodType<Prisma.TeamUn
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
-  team_name: z.string(),
+  team_name: z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),
   creator: z.string().optional().nullable(),
   roles: z.lazy(() => RoleUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
   user_role: z.lazy(() => UserRoleUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
@@ -2564,7 +2564,7 @@ export const TeamUpdateWithoutTasksInputSchema: z.ZodType<Prisma.TeamUpdateWitho
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  team_name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  team_name: z.union([ z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   users: z.lazy(() => UserUpdateOneWithoutTeamsNestedInputSchema).optional(),
   roles: z.lazy(() => RoleUpdateManyWithoutTeamsNestedInputSchema).optional(),
   user_role: z.lazy(() => UserRoleUpdateManyWithoutTeamsNestedInputSchema).optional(),
@@ -2575,7 +2575,7 @@ export const TeamUncheckedUpdateWithoutTasksInputSchema: z.ZodType<Prisma.TeamUn
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  team_name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  team_name: z.union([ z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   creator: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   roles: z.lazy(() => RoleUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
   user_role: z.lazy(() => UserRoleUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
@@ -2662,8 +2662,8 @@ export const RoleCreateWithoutTeamsInputSchema: z.ZodType<Prisma.RoleCreateWitho
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
-  role_name: z.string(),
-  role_description: z.string().optional().nullable(),
+  role_name: z.string().min(1, { message: "please use at least 1 character." }).max(32, { message: "please keep it under 32 characters." }),
+  role_description: z.string().min(1, { message: "please use at least 1 character." }).max(256, { message: "please keep it under 256 characters." }).optional().nullable(),
   user_role: z.lazy(() => UserRoleCreateNestedManyWithoutRolesInputSchema).optional()
 }).strict();
 
@@ -2671,8 +2671,8 @@ export const RoleUncheckedCreateWithoutTeamsInputSchema: z.ZodType<Prisma.RoleUn
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
-  role_name: z.string(),
-  role_description: z.string().optional().nullable(),
+  role_name: z.string().min(1, { message: "please use at least 1 character." }).max(32, { message: "please keep it under 32 characters." }),
+  role_description: z.string().min(1, { message: "please use at least 1 character." }).max(256, { message: "please keep it under 256 characters." }).optional().nullable(),
   user_role: z.lazy(() => UserRoleUncheckedCreateNestedManyWithoutRolesInputSchema).optional()
 }).strict();
 
@@ -2691,8 +2691,8 @@ export const TaskCreateWithoutTeamsInputSchema: z.ZodType<Prisma.TaskCreateWitho
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
   due_date: z.coerce.date().optional().nullable(),
-  task_title: z.string(),
-  task_description: z.string().optional().nullable(),
+  task_title: z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),
+  task_description: z.string().max(2048, { message: "please keep it  under 2048 characters." }).optional().nullable(),
   users: z.lazy(() => UserCreateNestedOneWithoutTasksInputSchema).optional()
 }).strict();
 
@@ -2702,8 +2702,8 @@ export const TaskUncheckedCreateWithoutTeamsInputSchema: z.ZodType<Prisma.TaskUn
   updated_at: z.coerce.date().optional(),
   task_creator: z.string().optional().nullable(),
   due_date: z.coerce.date().optional().nullable(),
-  task_title: z.string(),
-  task_description: z.string().optional().nullable()
+  task_title: z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),
+  task_description: z.string().max(2048, { message: "please keep it  under 2048 characters." }).optional().nullable()
 }).strict();
 
 export const TaskCreateOrConnectWithoutTeamsInputSchema: z.ZodType<Prisma.TaskCreateOrConnectWithoutTeamsInput> = z.object({
@@ -2912,7 +2912,7 @@ export const TeamCreateWithoutUser_teamInputSchema: z.ZodType<Prisma.TeamCreateW
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
-  team_name: z.string(),
+  team_name: z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),
   users: z.lazy(() => UserCreateNestedOneWithoutTeamsInputSchema).optional(),
   roles: z.lazy(() => RoleCreateNestedManyWithoutTeamsInputSchema).optional(),
   tasks: z.lazy(() => TaskCreateNestedManyWithoutTeamsInputSchema).optional(),
@@ -2923,7 +2923,7 @@ export const TeamUncheckedCreateWithoutUser_teamInputSchema: z.ZodType<Prisma.Te
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
-  team_name: z.string(),
+  team_name: z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),
   creator: z.string().optional().nullable(),
   roles: z.lazy(() => RoleUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
   tasks: z.lazy(() => TaskUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
@@ -2985,7 +2985,7 @@ export const TeamUpdateWithoutUser_teamInputSchema: z.ZodType<Prisma.TeamUpdateW
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  team_name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  team_name: z.union([ z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   users: z.lazy(() => UserUpdateOneWithoutTeamsNestedInputSchema).optional(),
   roles: z.lazy(() => RoleUpdateManyWithoutTeamsNestedInputSchema).optional(),
   tasks: z.lazy(() => TaskUpdateManyWithoutTeamsNestedInputSchema).optional(),
@@ -2996,7 +2996,7 @@ export const TeamUncheckedUpdateWithoutUser_teamInputSchema: z.ZodType<Prisma.Te
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  team_name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  team_name: z.union([ z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   creator: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   roles: z.lazy(() => RoleUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
   tasks: z.lazy(() => TaskUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
@@ -3049,8 +3049,8 @@ export const TaskCreateWithoutUsersInputSchema: z.ZodType<Prisma.TaskCreateWitho
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
   due_date: z.coerce.date().optional().nullable(),
-  task_title: z.string(),
-  task_description: z.string().optional().nullable(),
+  task_title: z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),
+  task_description: z.string().max(2048, { message: "please keep it  under 2048 characters." }).optional().nullable(),
   teams: z.lazy(() => TeamCreateNestedOneWithoutTasksInputSchema).optional()
 }).strict();
 
@@ -3060,8 +3060,8 @@ export const TaskUncheckedCreateWithoutUsersInputSchema: z.ZodType<Prisma.TaskUn
   updated_at: z.coerce.date().optional(),
   team_id: z.string().optional().nullable(),
   due_date: z.coerce.date().optional().nullable(),
-  task_title: z.string(),
-  task_description: z.string().optional().nullable()
+  task_title: z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),
+  task_description: z.string().max(2048, { message: "please keep it  under 2048 characters." }).optional().nullable()
 }).strict();
 
 export const TaskCreateOrConnectWithoutUsersInputSchema: z.ZodType<Prisma.TaskCreateOrConnectWithoutUsersInput> = z.object({
@@ -3128,7 +3128,7 @@ export const TeamCreateWithoutUsersInputSchema: z.ZodType<Prisma.TeamCreateWitho
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
-  team_name: z.string(),
+  team_name: z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),
   roles: z.lazy(() => RoleCreateNestedManyWithoutTeamsInputSchema).optional(),
   tasks: z.lazy(() => TaskCreateNestedManyWithoutTeamsInputSchema).optional(),
   user_role: z.lazy(() => UserRoleCreateNestedManyWithoutTeamsInputSchema).optional(),
@@ -3139,7 +3139,7 @@ export const TeamUncheckedCreateWithoutUsersInputSchema: z.ZodType<Prisma.TeamUn
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
-  team_name: z.string(),
+  team_name: z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),
   roles: z.lazy(() => RoleUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
   tasks: z.lazy(() => TaskUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
   user_role: z.lazy(() => UserRoleUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
@@ -3235,8 +3235,8 @@ export const RoleCreateWithoutUser_roleInputSchema: z.ZodType<Prisma.RoleCreateW
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
-  role_name: z.string(),
-  role_description: z.string().optional().nullable(),
+  role_name: z.string().min(1, { message: "please use at least 1 character." }).max(32, { message: "please keep it under 32 characters." }),
+  role_description: z.string().min(1, { message: "please use at least 1 character." }).max(256, { message: "please keep it under 256 characters." }).optional().nullable(),
   teams: z.lazy(() => TeamCreateNestedOneWithoutRolesInputSchema).optional()
 }).strict();
 
@@ -3245,8 +3245,8 @@ export const RoleUncheckedCreateWithoutUser_roleInputSchema: z.ZodType<Prisma.Ro
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
   team_id: z.string().optional().nullable(),
-  role_name: z.string(),
-  role_description: z.string().optional().nullable()
+  role_name: z.string().min(1, { message: "please use at least 1 character." }).max(32, { message: "please keep it under 32 characters." }),
+  role_description: z.string().min(1, { message: "please use at least 1 character." }).max(256, { message: "please keep it under 256 characters." }).optional().nullable()
 }).strict();
 
 export const RoleCreateOrConnectWithoutUser_roleInputSchema: z.ZodType<Prisma.RoleCreateOrConnectWithoutUser_roleInput> = z.object({
@@ -3258,7 +3258,7 @@ export const TeamCreateWithoutUser_roleInputSchema: z.ZodType<Prisma.TeamCreateW
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
-  team_name: z.string(),
+  team_name: z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),
   users: z.lazy(() => UserCreateNestedOneWithoutTeamsInputSchema).optional(),
   roles: z.lazy(() => RoleCreateNestedManyWithoutTeamsInputSchema).optional(),
   tasks: z.lazy(() => TaskCreateNestedManyWithoutTeamsInputSchema).optional(),
@@ -3269,7 +3269,7 @@ export const TeamUncheckedCreateWithoutUser_roleInputSchema: z.ZodType<Prisma.Te
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
-  team_name: z.string(),
+  team_name: z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),
   creator: z.string().optional().nullable(),
   roles: z.lazy(() => RoleUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
   tasks: z.lazy(() => TaskUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
@@ -3331,8 +3331,8 @@ export const RoleUpdateWithoutUser_roleInputSchema: z.ZodType<Prisma.RoleUpdateW
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  role_name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  role_description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role_name: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  role_description: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(256, { message: "please keep it under 256 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   teams: z.lazy(() => TeamUpdateOneWithoutRolesNestedInputSchema).optional()
 }).strict();
 
@@ -3341,8 +3341,8 @@ export const RoleUncheckedUpdateWithoutUser_roleInputSchema: z.ZodType<Prisma.Ro
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  role_name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  role_description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role_name: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  role_description: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(256, { message: "please keep it under 256 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const TeamUpsertWithoutUser_roleInputSchema: z.ZodType<Prisma.TeamUpsertWithoutUser_roleInput> = z.object({
@@ -3360,7 +3360,7 @@ export const TeamUpdateWithoutUser_roleInputSchema: z.ZodType<Prisma.TeamUpdateW
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  team_name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  team_name: z.union([ z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   users: z.lazy(() => UserUpdateOneWithoutTeamsNestedInputSchema).optional(),
   roles: z.lazy(() => RoleUpdateManyWithoutTeamsNestedInputSchema).optional(),
   tasks: z.lazy(() => TaskUpdateManyWithoutTeamsNestedInputSchema).optional(),
@@ -3371,7 +3371,7 @@ export const TeamUncheckedUpdateWithoutUser_roleInputSchema: z.ZodType<Prisma.Te
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  team_name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  team_name: z.union([ z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   creator: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   roles: z.lazy(() => RoleUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
   tasks: z.lazy(() => TaskUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
@@ -3455,8 +3455,8 @@ export const RoleCreateManyTeamsInputSchema: z.ZodType<Prisma.RoleCreateManyTeam
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
-  role_name: z.string(),
-  role_description: z.string().optional().nullable()
+  role_name: z.string().min(1, { message: "please use at least 1 character." }).max(32, { message: "please keep it under 32 characters." }),
+  role_description: z.string().min(1, { message: "please use at least 1 character." }).max(256, { message: "please keep it under 256 characters." }).optional().nullable()
 }).strict();
 
 export const TaskCreateManyTeamsInputSchema: z.ZodType<Prisma.TaskCreateManyTeamsInput> = z.object({
@@ -3465,8 +3465,8 @@ export const TaskCreateManyTeamsInputSchema: z.ZodType<Prisma.TaskCreateManyTeam
   updated_at: z.coerce.date().optional(),
   task_creator: z.string().optional().nullable(),
   due_date: z.coerce.date().optional().nullable(),
-  task_title: z.string(),
-  task_description: z.string().optional().nullable()
+  task_title: z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),
+  task_description: z.string().max(2048, { message: "please keep it  under 2048 characters." }).optional().nullable()
 }).strict();
 
 export const UserRoleCreateManyTeamsInputSchema: z.ZodType<Prisma.UserRoleCreateManyTeamsInput> = z.object({
@@ -3488,8 +3488,8 @@ export const RoleUpdateWithoutTeamsInputSchema: z.ZodType<Prisma.RoleUpdateWitho
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  role_name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  role_description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role_name: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  role_description: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(256, { message: "please keep it under 256 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   user_role: z.lazy(() => UserRoleUpdateManyWithoutRolesNestedInputSchema).optional()
 }).strict();
 
@@ -3497,8 +3497,8 @@ export const RoleUncheckedUpdateWithoutTeamsInputSchema: z.ZodType<Prisma.RoleUn
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  role_name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  role_description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role_name: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  role_description: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(256, { message: "please keep it under 256 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   user_role: z.lazy(() => UserRoleUncheckedUpdateManyWithoutRolesNestedInputSchema).optional()
 }).strict();
 
@@ -3506,8 +3506,8 @@ export const RoleUncheckedUpdateManyWithoutTeamsInputSchema: z.ZodType<Prisma.Ro
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  role_name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  role_description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role_name: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  role_description: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(256, { message: "please keep it under 256 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const TaskUpdateWithoutTeamsInputSchema: z.ZodType<Prisma.TaskUpdateWithoutTeamsInput> = z.object({
@@ -3515,8 +3515,8 @@ export const TaskUpdateWithoutTeamsInputSchema: z.ZodType<Prisma.TaskUpdateWitho
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   due_date: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  task_title: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  task_description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  task_title: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  task_description: z.union([ z.string().max(2048, { message: "please keep it  under 2048 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   users: z.lazy(() => UserUpdateOneWithoutTasksNestedInputSchema).optional()
 }).strict();
 
@@ -3526,8 +3526,8 @@ export const TaskUncheckedUpdateWithoutTeamsInputSchema: z.ZodType<Prisma.TaskUn
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   task_creator: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   due_date: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  task_title: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  task_description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  task_title: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  task_description: z.union([ z.string().max(2048, { message: "please keep it  under 2048 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const TaskUncheckedUpdateManyWithoutTeamsInputSchema: z.ZodType<Prisma.TaskUncheckedUpdateManyWithoutTeamsInput> = z.object({
@@ -3536,8 +3536,8 @@ export const TaskUncheckedUpdateManyWithoutTeamsInputSchema: z.ZodType<Prisma.Ta
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   task_creator: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   due_date: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  task_title: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  task_description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  task_title: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  task_description: z.union([ z.string().max(2048, { message: "please keep it  under 2048 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const UserRoleUpdateWithoutTeamsInputSchema: z.ZodType<Prisma.UserRoleUpdateWithoutTeamsInput> = z.object({
@@ -3591,8 +3591,8 @@ export const TaskCreateManyUsersInputSchema: z.ZodType<Prisma.TaskCreateManyUser
   updated_at: z.coerce.date().optional(),
   team_id: z.string().optional().nullable(),
   due_date: z.coerce.date().optional().nullable(),
-  task_title: z.string(),
-  task_description: z.string().optional().nullable()
+  task_title: z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),
+  task_description: z.string().max(2048, { message: "please keep it  under 2048 characters." }).optional().nullable()
 }).strict();
 
 export const UserRoleCreateManyUsersInputSchema: z.ZodType<Prisma.UserRoleCreateManyUsersInput> = z.object({
@@ -3614,7 +3614,7 @@ export const TeamCreateManyUsersInputSchema: z.ZodType<Prisma.TeamCreateManyUser
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
-  team_name: z.string()
+  team_name: z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." })
 }).strict();
 
 export const TaskUpdateWithoutUsersInputSchema: z.ZodType<Prisma.TaskUpdateWithoutUsersInput> = z.object({
@@ -3622,8 +3622,8 @@ export const TaskUpdateWithoutUsersInputSchema: z.ZodType<Prisma.TaskUpdateWitho
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   due_date: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  task_title: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  task_description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  task_title: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  task_description: z.union([ z.string().max(2048, { message: "please keep it  under 2048 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   teams: z.lazy(() => TeamUpdateOneWithoutTasksNestedInputSchema).optional()
 }).strict();
 
@@ -3633,8 +3633,8 @@ export const TaskUncheckedUpdateWithoutUsersInputSchema: z.ZodType<Prisma.TaskUn
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   due_date: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  task_title: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  task_description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  task_title: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  task_description: z.union([ z.string().max(2048, { message: "please keep it  under 2048 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const TaskUncheckedUpdateManyWithoutUsersInputSchema: z.ZodType<Prisma.TaskUncheckedUpdateManyWithoutUsersInput> = z.object({
@@ -3643,8 +3643,8 @@ export const TaskUncheckedUpdateManyWithoutUsersInputSchema: z.ZodType<Prisma.Ta
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   due_date: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  task_title: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  task_description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  task_title: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  task_description: z.union([ z.string().max(2048, { message: "please keep it  under 2048 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const UserRoleUpdateWithoutUsersInputSchema: z.ZodType<Prisma.UserRoleUpdateWithoutUsersInput> = z.object({
@@ -3696,7 +3696,7 @@ export const TeamUpdateWithoutUsersInputSchema: z.ZodType<Prisma.TeamUpdateWitho
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  team_name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  team_name: z.union([ z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   roles: z.lazy(() => RoleUpdateManyWithoutTeamsNestedInputSchema).optional(),
   tasks: z.lazy(() => TaskUpdateManyWithoutTeamsNestedInputSchema).optional(),
   user_role: z.lazy(() => UserRoleUpdateManyWithoutTeamsNestedInputSchema).optional(),
@@ -3707,7 +3707,7 @@ export const TeamUncheckedUpdateWithoutUsersInputSchema: z.ZodType<Prisma.TeamUn
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  team_name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  team_name: z.union([ z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   roles: z.lazy(() => RoleUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
   tasks: z.lazy(() => TaskUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
   user_role: z.lazy(() => UserRoleUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
@@ -3718,7 +3718,7 @@ export const TeamUncheckedUpdateManyWithoutUsersInputSchema: z.ZodType<Prisma.Te
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  team_name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  team_name: z.union([ z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 /////////////////////////////////////////

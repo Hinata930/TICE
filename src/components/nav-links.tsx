@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { clsx } from "clsx";
-import { HomeIcon, CalendarIcon, UsersIcon } from "./icons";
+import { HomeIcon, CalendarIcon, UsersIcon } from "@heroicons/react/24/outline"; 
 
 // sidebarにつかうデータ
 const links = [
