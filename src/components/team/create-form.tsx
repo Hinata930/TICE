@@ -11,12 +11,13 @@ function SubmitButton() {
 
   return (
     <button type="submit" aria-disabled={pending}>
-      Add
+      作成
     </button>
   );
 }
 
-export async function AddForm() {
+
+export async function CreateForm() {
   // currentUser as string | null
   const currentUser = await fetchCurrentUser();
   if (!currentUser) {
