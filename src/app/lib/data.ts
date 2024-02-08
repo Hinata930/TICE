@@ -1,13 +1,11 @@
 'use server';
 
 import { PrismaClient } from "@prisma/client";
-import { unstable_noStore as noStore } from "next/cache";
 import { currentUser } from "@clerk/nextjs"; 
 
 const prisma = new PrismaClient();
 
 export async function fetchCurrentUser() {
-  noStore();
   try {
     const user = await currentUser();
     if (user) {
@@ -26,7 +24,6 @@ export async function fetchCurrentUser() {
 }
 
 export async function fetchTeam(team_id: string) {
-  noStore();
   try {
     return await prisma.team.findUnique({
       where: {

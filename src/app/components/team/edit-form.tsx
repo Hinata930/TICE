@@ -1,5 +1,3 @@
-"use client"; 
-
 import { useFormState, useFormStatus } from "react-dom"; 
 import { UpdateTeamName } from "@/app/lib/actions/team-actions"; 
 import { fetchTeam } from "@/app/lib/data"; 
