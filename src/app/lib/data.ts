@@ -1,10 +1,10 @@
-'use server';
-
 import { PrismaClient } from "@prisma/client";
+import { unstable_noStore as noStore } from "next/cache"; 
 
 const prisma = new PrismaClient();
 
 export async function fetchCurrentUser(id: string) {
+  noStore();
   try {
     return await prisma.user.findUnique({ 
       where: {
@@ -12,12 +12,13 @@ export async function fetchCurrentUser(id: string) {
       }
     });
   } catch(error) {
-    console.error('Database Error:', error);
+    console.log('Database Error:', error);
     throw new Error('Failed to fetch current user.');
   }
 }
 
 export async function fetchTeam(team_id: string) {
+  noStore();
   try {
     return await prisma.team.findUnique({
       where: {

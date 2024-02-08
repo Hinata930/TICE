@@ -15,11 +15,9 @@ export default async function Page() {
     throw new Error('Failed to fetch current user.');
   }
 
-  const userId = thisUser.id;
-
   return (
     <main>
-      <CreateForm currentUserId={userId} />
+      <CreateForm currentUserId={thisUser.id} />
     </main>
   );
 }
