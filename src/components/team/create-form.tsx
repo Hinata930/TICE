@@ -3,8 +3,6 @@
 import { useFormState, useFormStatus } from "react-dom";
 import { CreateTeam } from "@/lib/actions/team-actions"; 
 import { fetchCurrentUser } from "@/lib/data";
-import { useRouter } from "next/router";
-
 
 
 function SubmitButton() {
@@ -19,10 +17,6 @@ function SubmitButton() {
 
 
 export async function CreateForm() {
-  // useRouter().query.prevUrl as string | string[] | undefined
-  const router = useRouter(); 
-  const previousUrl = Array.isArray(router.query.prevUrl) ? router.query.prevUrl[0] : router.query.prevUrl || '/'; 
-  
   // currentUser as string | null
   const currentUser = await fetchCurrentUser();
   if (!currentUser) {
@@ -31,7 +25,7 @@ export async function CreateForm() {
   
   const initialState = { message: '', errors: {} };
   const [state, formAction] = useFormState(
-    (prevstate: any, formData: FormData) => CreateTeam( previousUrl, currentUser.id, prevstate, formData),
+    (prevstate: any, formData: FormData) => CreateTeam( currentUser.id, prevstate, formData),
     initialState
   );
 

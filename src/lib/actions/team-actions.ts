@@ -21,7 +21,6 @@ export type State = {
 
 // team作成、creatorはuser_teamに追加
 export async function CreateTeam(
-  prevUrl: string,
   creator: string,
   prevstate: State,
   formData: FormData,
@@ -55,21 +54,22 @@ export async function CreateTeam(
         team_id: newTeam.id,
       }
     });
+
+    const teamId = newTeam.id;
+    revalidatePath(`/team/${teamId}`);
+    redirect(`/team/${teamId}`);
+    
   } catch(error) {
     return {
       message: 'Database Error: Failed to inserting team.',
     }
   }
-  
-  revalidatePath(prevUrl);
-  redirect(prevUrl);
 }
 
 
 // teamの名前変更
 export async function UpdateTeamName(
-  prevUrl: string,
-  id: string,
+  team_id: string,
   prevstate: State,
   formData: FormData,
 ) {
@@ -88,7 +88,7 @@ export async function UpdateTeamName(
 
   try {
     await prisma.team.update({
-      where: { id },
+      where: { id: team_id },
       data: { team_name },
     });
   } catch(error) {
@@ -97,8 +97,8 @@ export async function UpdateTeamName(
     }
   }
 
-  revalidatePath(prevUrl);
-  redirect(prevUrl);
+  revalidatePath(`/team/${team_id}`);
+  redirect(`/team/${team_id}`);
 }
 
 

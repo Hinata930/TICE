@@ -1,20 +1,17 @@
 'use server';
 
 import { PrismaClient } from "@prisma/client"; 
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 const prisma = new PrismaClient();
 
 
+// roleを付与する方法によるから一旦redirectは無し
 // userにroleを付与
 export async function AddUserRole(
-  prevUrl: string,
   user_id: string,
   team_id: string,
   role_id: string,
 ) {
-
   try {
     await prisma.userRole.create({
       data: {
@@ -28,15 +25,11 @@ export async function AddUserRole(
       message: 'Database Error: Failed to add role to user.',
     }
   }
-
-  revalidatePath(prevUrl);
-  redirect(prevUrl);
 }
 
 
 // userのroleを更新
 export async function ChangeUserRole(
-  prevUrl: string,
   id: string,
   user_id: string,
   team_id: string,
@@ -56,9 +49,6 @@ export async function ChangeUserRole(
       message: 'Database Error: Failed to change role to user.',
     }
   }
-
-  revalidatePath(prevUrl);
-  redirect(prevUrl);
 }
 
 

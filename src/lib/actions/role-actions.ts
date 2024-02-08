@@ -22,7 +22,6 @@ export type State = {
 
 // role作成
 export async function CreateRole(
-  prevUrl: string,
   team_id: string,
   prevstate: State,
   formData: FormData,
@@ -45,28 +44,27 @@ export async function CreateRole(
 
   // Insert data into the database
   try {
-    await prisma.role.create({
+    const newRole = await prisma.role.create({
       data: {
         team_id,
         role_name,
         role_description,
       },
     });
+
+    revalidatePath(`/team/${newRole.team_id}`);
+    redirect(`/team/${newRole.team_id}`);
   } catch(error) {
     return {
       message: 'Database Error: Failed to create role.',
     }
   }
-
-  revalidatePath(prevUrl);
-  redirect(prevUrl);
 }
 
 
 // role更新
 export async function UpdateRole(
-  prevUrl: string,
-  id: string, 
+  role_id: string, 
   prevstate: State,
   formData: FormData 
 ) {
@@ -85,21 +83,21 @@ export async function UpdateRole(
   const { role_name, role_description } = validatedFields.data;
 
   try {
-    await prisma.role.update({
-      where: { id },
+    const updatedRole = await prisma.role.update({
+      where: { id: role_id },
       data: {
         role_name,
         role_description,
       }
-    })
+    });
+
+    revalidatePath(`/team/${updatedRole.team_id}`);
+    redirect(`/team/${updatedRole.team_id}`);
   } catch(error) {
     return {
       message: 'Database Error: Failed to update role.'
     }
   }
-
-  revalidatePath(prevUrl);
-  redirect(prevUrl)
 }
 
 

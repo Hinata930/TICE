@@ -3,8 +3,6 @@
 import { useFormState, useFormStatus } from "react-dom"; 
 import { UpdateTeamName } from "@/lib/actions/team-actions"; 
 import { fetchTeam } from "@/lib/data"; 
-import { useRouter } from "next/router";
-
 
 
 function SubmitButton() {
@@ -19,10 +17,6 @@ function SubmitButton() {
 
 
 export async function EditForm(teamId: string) {
-  // useRouter().query.prevUrl as string | string[] | undefined
-  const router = useRouter();
-  const previousUrl = Array.isArray(router.query.prevUrl) ? router.query.prevUrl[0] : router.query.prevUrl || '/';
-  
   const teamChanges = await fetchTeam(teamId); 
   if (!teamChanges) {
     throw new Error('Failed to retrieve the team for the upcoming changes.')
@@ -30,7 +24,7 @@ export async function EditForm(teamId: string) {
 
   const initialState = { message: '', errors: {} }; 
   const [state, formAction] = useFormState(
-    (prevstate: any, formData: FormData) => UpdateTeamName( previousUrl, teamId, prevstate, formData ),
+    (prevstate: any, formData: FormData) => UpdateTeamName( teamId, prevstate, formData ),
     initialState
   );
 

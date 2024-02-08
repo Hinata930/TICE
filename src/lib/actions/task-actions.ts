@@ -23,7 +23,6 @@ export type State = {
 
 // task作成
 export async function CreateTask(
-  prevUrl: string,
   task_creator: string,
   team_id: string,
   prevstate: State,
@@ -47,7 +46,7 @@ export async function CreateTask(
 
   // Insert data into the database
   try {
-    await prisma.task.create({
+    const newTask = await prisma.task.create({
       data: {
         task_creator,
         team_id,
@@ -56,21 +55,20 @@ export async function CreateTask(
         task_description,
       },
     });
+    
+    revalidatePath(`/team/${newTask.team_id}/task/${newTask.id}`);
+    redirect(`/team/${newTask.team_id}/task/${newTask.id}`);
   } catch(error) {
     return {
       message: 'Database Error: Failed to create task.',
     }
   }
-
-  revalidatePath(prevUrl);
-  redirect(prevUrl);
 }
 
 
 // task更新
 export async function UpdateTask(
-  prevUrl: string,
-  id: string, 
+  task_id: string, 
   prevstate: State,
   formData: FormData, 
 ) {
@@ -90,22 +88,22 @@ export async function UpdateTask(
   const { due_date, task_title, task_description } = validatedFields.data;
 
   try {
-    await prisma.task.update({
-      where: { id },
+    const updatedTask = await prisma.task.update({
+      where: { id: task_id },
       data: {
         due_date,
         task_title,
         task_description,
       },
     });
+
+    revalidatePath(`/team/${updatedTask.team_id}/task/${task_id}`);
+    redirect(`/team/${updatedTask.team_id}/task/${task_id}`);
   } catch(error) {
     return {
       message: 'Database Error: Failed to update task.',
     }
   }
-
-  revalidatePath(prevUrl);
-  redirect(prevUrl);
 }
 
 

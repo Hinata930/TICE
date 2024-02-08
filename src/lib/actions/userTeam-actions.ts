@@ -1,15 +1,13 @@
 'use server';
 
 import { PrismaClient } from "@prisma/client"; 
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 const prisma = new PrismaClient();
 
 
+// ユーザーを追加する方法によるから一旦redirectは無し
 // teamにuserを追加
 export async function AddTeamMember(
-  prevUrl: string,
   user_id: string,
   team_id: string,
 ) {
@@ -26,9 +24,6 @@ export async function AddTeamMember(
       message: 'Database Error: Failed to add new team member.',
     }
   }
-
-  revalidatePath(prevUrl);
-  redirect(prevUrl);
 }
 
 
