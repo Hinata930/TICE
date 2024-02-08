@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { unstable_noStore as noStore } from "next/cache";
-import { currentUser } from "@clerk/nextjs/server"; 
+import { currentUser } from "@clerk/nextjs"; 
 
 const prisma = new PrismaClient();
 
