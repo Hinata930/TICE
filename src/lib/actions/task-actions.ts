@@ -3,13 +3,9 @@
 import { TaskSchema } from "@/prisma-types";
 import { PrismaClient } from "@prisma/client"; 
 import { revalidatePath } from "next/cache"; 
-import { useRouter } from "next/router"; 
+import { redirect } from "next/navigation";
 
 const prisma = new PrismaClient();
-
-const router = useRouter();
-// 配列の場合は配列の最初の要素を、文字列の場合は文字列を、undefinedの場合は'/'を返す
-const previousUrl = Array.isArray(router.query.prevUrl) ? router.query.prevUrl[0] : router.query.prevUrl || '/';
 
 const taskSchema = TaskSchema;
 
@@ -27,6 +23,7 @@ export type State = {
 
 // task作成
 export async function CreateTask(
+  prevUrl: string,
   task_creator: string,
   team_id: string,
   prevstate: State,
@@ -65,13 +62,14 @@ export async function CreateTask(
     }
   }
 
-  revalidatePath(previousUrl);
-  router.back();
+  revalidatePath(prevUrl);
+  redirect(prevUrl);
 }
 
 
 // task更新
 export async function UpdateTask(
+  prevUrl: string,
   id: string, 
   prevstate: State,
   formData: FormData, 
@@ -106,8 +104,8 @@ export async function UpdateTask(
     }
   }
 
-  revalidatePath(previousUrl);
-  router.back();
+  revalidatePath(prevUrl);
+  redirect(prevUrl);
 }
 
 

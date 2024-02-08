@@ -3,13 +3,9 @@
 import { RoleSchema } from "@/prisma-types";
 import { PrismaClient } from "@prisma/client"; 
 import { revalidatePath } from "next/cache";
-import { useRouter } from "next/router"; 
+import { redirect } from "next/navigation";
 
 const prisma = new PrismaClient();
-
-const router = useRouter();
-// 配列の場合は配列の最初の要素を、文字列の場合は文字列を、undefinedの場合は'/'を返す
-const previousUrl = Array.isArray(router.query.prevUrl) ? router.query.prevUrl[0] : router.query.prevUrl || '/';
 
 const roleSchema = RoleSchema;
 
@@ -26,6 +22,7 @@ export type State = {
 
 // role作成
 export async function CreateRole(
+  prevUrl: string,
   team_id: string,
   prevstate: State,
   formData: FormData,
@@ -61,13 +58,14 @@ export async function CreateRole(
     }
   }
 
-  revalidatePath(previousUrl);
-  router.back();
+  revalidatePath(prevUrl);
+  redirect(prevUrl);
 }
 
 
 // role更新
 export async function UpdateRole(
+  prevUrl: string,
   id: string, 
   prevstate: State,
   formData: FormData 
@@ -100,8 +98,8 @@ export async function UpdateRole(
     }
   }
 
-  revalidatePath(previousUrl);
-  router.back();
+  revalidatePath(prevUrl);
+  redirect(prevUrl)
 }
 
 

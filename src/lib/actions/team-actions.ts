@@ -3,13 +3,9 @@
 import { TeamSchema } from "@/prisma-types";
 import { PrismaClient } from "@prisma/client"; 
 import { revalidatePath } from "next/cache";
-import { useRouter } from "next/router";
+import { redirect } from "next/navigation";
 
 const prisma = new PrismaClient();
-
-const router = useRouter();
-// 配列の場合は配列の最初の要素を、文字列の場合は文字列を、undefinedの場合は'/'を返す
-const previousUrl = Array.isArray(router.query.prevUrl) ? router.query.prevUrl[0] : router.query.prevUrl || '/';
 
 const teamSchema = TeamSchema;
 
@@ -25,6 +21,7 @@ export type State = {
 
 // team作成、creatorはuser_teamに追加
 export async function CreateTeam(
+  prevUrl: string,
   creator: string,
   prevstate: State,
   formData: FormData,
@@ -64,13 +61,14 @@ export async function CreateTeam(
     }
   }
   
-  revalidatePath(previousUrl);
-  router.back();
+  revalidatePath(prevUrl);
+  redirect(prevUrl);
 }
 
 
 // teamの名前変更
 export async function UpdateTeamName(
+  prevUrl: string,
   id: string,
   prevstate: State,
   formData: FormData,
@@ -99,7 +97,8 @@ export async function UpdateTeamName(
     }
   }
 
-  window.history.back();
+  revalidatePath(prevUrl);
+  redirect(prevUrl);
 }
 
 

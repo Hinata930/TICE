@@ -2,25 +2,14 @@
 
 import { PrismaClient } from "@prisma/client"; 
 import { revalidatePath } from "next/cache";
-import { useRouter } from "next/router";
+import { redirect } from "next/navigation";
 
 const prisma = new PrismaClient();
-
-const router = useRouter();
-// 配列の場合は配列の最初の要素を、文字列の場合は文字列を、undefinedの場合は'/'を返す
-const previousUrl = Array.isArray(router.query.prevUrl) ? router.query.prevUrl[0] : router.query.prevUrl || '/';
-
-
-export type State = {
-  errors?: {
-
-  }
-};
-
 
 
 // teamにuserを追加
 export async function AddTeamMember(
+  prevUrl: string,
   user_id: string,
   team_id: string,
 ) {
@@ -38,8 +27,8 @@ export async function AddTeamMember(
     }
   }
 
-  revalidatePath(previousUrl);
-  router.back();
+  revalidatePath(prevUrl);
+  redirect(prevUrl);
 }
 
 

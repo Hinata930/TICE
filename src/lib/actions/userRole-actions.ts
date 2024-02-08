@@ -2,17 +2,14 @@
 
 import { PrismaClient } from "@prisma/client"; 
 import { revalidatePath } from "next/cache";
-import { useRouter } from "next/router";
+import { redirect } from "next/navigation";
 
 const prisma = new PrismaClient();
-
-const router = useRouter();
-// 配列の場合は配列の最初の要素を、文字列の場合は文字列を、undefinedの場合は'/'を返す
-const previousUrl = Array.isArray(router.query.prevUrl) ? router.query.prevUrl[0] : router.query.prevUrl || '/';
 
 
 // userにroleを付与
 export async function AddUserRole(
+  prevUrl: string,
   user_id: string,
   team_id: string,
   role_id: string,
@@ -32,13 +29,14 @@ export async function AddUserRole(
     }
   }
 
-  revalidatePath(previousUrl);
-  router.back();
+  revalidatePath(prevUrl);
+  redirect(prevUrl);
 }
 
 
 // userのroleを更新
 export async function ChangeUserRole(
+  prevUrl: string,
   id: string,
   user_id: string,
   team_id: string,
@@ -59,8 +57,8 @@ export async function ChangeUserRole(
     }
   }
 
-  revalidatePath(previousUrl);
-  router.back();
+  revalidatePath(prevUrl);
+  redirect(prevUrl);
 }
 
 
