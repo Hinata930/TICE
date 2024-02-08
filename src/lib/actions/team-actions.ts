@@ -3,7 +3,7 @@
 import { TeamSchema } from "@/prisma-types";
 import { PrismaClient } from "@prisma/client"; 
 import { revalidatePath } from "next/cache";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 
 const prisma = new PrismaClient();
 
