@@ -1,4 +1,4 @@
-import NavLinks from "./nav-links";
+import NavLinks from "@/app/components/nav-links";
 
 export default function Sidebar() {
   return(

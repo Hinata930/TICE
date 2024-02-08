@@ -1,8 +1,8 @@
 "use client"; 
 
 import { useFormState, useFormStatus } from "react-dom"; 
-import { UpdateTeamName } from "@/lib/actions/team-actions"; 
-import { fetchTeam } from "@/lib/data"; 
+import { UpdateTeamName } from "@/app/lib/actions/team-actions"; 
+import { fetchTeam } from "@/app/lib/data"; 
 
 
 function SubmitButton() {
