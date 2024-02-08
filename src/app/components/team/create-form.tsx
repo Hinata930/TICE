@@ -1,3 +1,5 @@
+'use client'
+
 import { useFormState, useFormStatus } from "react-dom";
 import { CreateTeam } from "@/app/lib/actions/team-actions"; 
 import { fetchCurrentUser } from "@/app/lib/data";
@@ -14,16 +16,10 @@ function SubmitButton() {
 }
 
 
-export async function CreateForm() {
-  // currentUser as string | null
-  const currentUser = await fetchCurrentUser();
-  if (!currentUser) {
-    throw new Error('Current user not found.');
-  }
-  
+export function CreateForm(currentUserId: {currentUserId: string}) {
   const initialState = { message: '', errors: {} };
   const [state, formAction] = useFormState(
-    (prevstate: any, formData: FormData) => CreateTeam( currentUser.id, prevstate, formData),
+    (prevstate: any, formData: FormData) => CreateTeam( currentUserId.currentUserId, prevstate, formData),
     initialState
   );
 

@@ -1,22 +1,16 @@
 'use server';
 
 import { PrismaClient } from "@prisma/client";
-import { currentUser } from "@clerk/nextjs"; 
 
 const prisma = new PrismaClient();
 
-export async function fetchCurrentUser() {
+export async function fetchCurrentUser(id: string) {
   try {
-    const user = await currentUser();
-    if (user) {
-      return await prisma.user.findUnique({
-        where: {
-          user_id: user.id,
-        }
-      });
-    } else {
-      throw new Error('Current user not found.');
-    }
+    return await prisma.user.findUnique({ 
+      where: {
+        user_id: id,
+      }
+    });
   } catch(error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch current user.');
