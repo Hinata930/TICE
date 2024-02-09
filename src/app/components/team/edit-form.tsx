@@ -1,47 +1,61 @@
-import { useFormState, useFormStatus } from "react-dom"; 
-import { UpdateTeamName } from "@/app/lib/actions/team-actions"; 
-import { fetchTeam } from "@/app/lib/data"; 
+'use client'
 
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { UpdateTeamName } from '@/app/lib/actions/team-actions';
+import { useRouter } from 'next/navigation'; 
+import { fetchTeam } from '@/app/lib/data';
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <button type="submit" aria-disabled={pending}>
-      編集
-    </button>
-  );
+interface FormData {
+  team_name: string
 }
 
+type Props = {
+  teamName: string
+  teamId: string
+}
 
-export async function EditForm(teamId: string) {
-  const teamChanges = await fetchTeam(teamId); 
-  if (!teamChanges) {
-    throw new Error('Failed to retrieve the team for the upcoming changes.')
-  }
+export function EditForm({ teamId, teamName }: Props) { 
+  const { 
+    register, 
+    handleSubmit, 
+    formState: { errors }, 
+    reset 
+  } = useForm<FormData>();
+  const router = useRouter();
 
-  const initialState = { message: '', errors: {} }; 
-  const [state, formAction] = useFormState(
-    (prevstate: any, formData: FormData) => UpdateTeamName( teamId, prevstate, formData ),
-    initialState
-  );
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
+    try {
+      const result = await UpdateTeamName(teamId, { message: '', errors: {} }, data);
+      if (result?.message) {
+        console.error('Error:', result.message);
+      } else {
+        console.log('Team updated successfully!');
+        // Reset the form after successful submission
+        reset();
+        router.push(`/team/${teamId}`);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   return (
-    <form action={formAction}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <label htmlFor="team_name">チーム名</label>
       <input 
         type="text" 
         id="team_name" 
-        name="team_name" 
-        placeholder={teamChanges.team_name} 
-        minLength={2} 
-        maxLength={32} 
-        required 
-      />
-      <SubmitButton />
-      <p aria-live="polite" className="sr-only" role="status">
-        {state?.message}
-      </p>
+        placeholder={teamName}
+        {...register('team_name', { 
+          required: 'チーム名は必須です',
+          min: { value: 2, message: 'チーム名は2文字以上で入力してください' }, 
+          max: { value: 32, message: 'チーム名は32文字以上で入力してください'} 
+        })} />
+      {errors.team_name && <p>{errors.team_name.message}</p>}
+      
+      <button type="submit" className='bg-sky-400 text-neutral-50 w-10 h-7 rounded' aria-disabled={false}>
+        編集
+      </button>
     </form>
   );
 }

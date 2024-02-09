@@ -1,9 +1,11 @@
 
 
-export default async function Page() {
+export default async function Page({ params }: { params: { team_id: string } }) {
   return (
-    <main>
-      
-    </main>
+    <>
+      <h2>
+        {params ? params.team_id : 'null'}
+      </h2>
+    </>
   );
 }

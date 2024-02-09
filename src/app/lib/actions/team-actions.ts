@@ -1,13 +1,13 @@
 'use server';
 
-import { TeamSchema } from "@/prisma-types";
 import { PrismaClient } from "@prisma/client"; 
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { z } from "zod";
 
 const prisma = new PrismaClient();
 
-const teamSchema = TeamSchema;
+const teamSchema = z.object({
+  team_name: z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),
+});
 
 
 // https://ja.react.dev/reference/react-dom/hooks/useFormState
@@ -16,6 +16,10 @@ export type State = {
     team_name?: string[];
   }
   message?: string | null;
+}
+
+interface FormData {
+  team_name: string;
 }
 
 
@@ -27,10 +31,11 @@ export async function CreateTeam(
 ) {
   // Validate form using Zod
   const validatedFields = teamSchema.safeParse({
-    team_name: formData.get('team_name'),
+    team_name: formData.team_name,
   });
 
   if (!validatedFields.success) {
+    console.error(validatedFields.error.flatten().fieldErrors);
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing Fields. Failed to Create Team.',
@@ -38,6 +43,8 @@ export async function CreateTeam(
   }
 
   const { team_name } = validatedFields.data;
+
+  console.log(`${team_name}, ${creator}`);
 
   // Insert data into the database
   try {
@@ -54,16 +61,12 @@ export async function CreateTeam(
         team_id: newTeam.id,
       }
     });
-
-    const teamId = newTeam.id;
-    revalidatePath(`/team/${teamId}`);
-    redirect(`/team/${teamId}`);
-    
   } catch(error) {
+    console.error('Error:', error)
     return {
       message: 'Database Error: Failed to inserting team.',
-    }
-  }
+    } 
+  } 
 }
 
 
@@ -74,7 +77,7 @@ export async function UpdateTeamName(
   formData: FormData,
 ) {
   const validatedFields = teamSchema.safeParse({
-    team_name: formData.get('team_name'),
+    team_name: formData.team_name,
   });
 
   if (!validatedFields.success) {
@@ -96,9 +99,6 @@ export async function UpdateTeamName(
       message: 'Database Error: Failed to update team name.',
     }
   }
-
-  revalidatePath(`/team/${team_id}`);
-  redirect(`/team/${team_id}`);
 }
 
 

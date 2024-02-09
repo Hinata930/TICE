@@ -12,7 +12,7 @@ export async function fetchCurrentUser(id: string) {
       }
     });
   } catch(error) {
-    console.log('Database Error:', error);
+    console.error('Database Error:', error);
     throw new Error('Failed to fetch current user.');
   }
 }
