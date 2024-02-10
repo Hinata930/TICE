@@ -83,7 +83,7 @@ export async function UpdateTeamName(
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to update team.',
+      message: validatedFields.error.message,
     }
   }
 
