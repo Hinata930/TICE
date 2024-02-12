@@ -17,7 +17,6 @@ export default async function Page() {
   return (
     <main>
       <CreateForm currentUserId={thisUser.id} />
-      <h2>currentUser: {thisUser.username}, {thisUser.id}</h2>
     </main>
   );
 }

@@ -1,6 +1,7 @@
-import { fetchCurrentUser, fetchTeamArray } from "@/app/lib/data";
+import { fetchCurrentUser, fetchTeams } from "@/app/lib/data";
 import { currentUser } from "@clerk/nextjs";
 import TeamList from "@/app/components/team/team-list"; 
+import Link from "next/link";
 
 
 export default async function Page() {
@@ -13,9 +14,10 @@ export default async function Page() {
     throw new Error('Failed to fetch current user');
   }
 
-  const teamArray = await fetchTeamArray(user.id);
+  const teamArray = await fetchTeams(user.id);
   return (
     <>
+      <Link href="/team/create">チームを作成する</Link> 
       <TeamList teamArray={teamArray} />
     </>
   );

@@ -2,12 +2,15 @@
 
 import { TaskSchema } from "@/prisma-types";
 import { PrismaClient } from "@prisma/client"; 
-import { revalidatePath } from "next/cache"; 
-import { redirect } from "next/navigation";
+import { z } from "zod";
 
 const prisma = new PrismaClient();
 
-const taskSchema = TaskSchema;
+const taskSchema = z.object({
+  due_date: z.coerce.date().nullable(),
+  task_title: z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),
+  task_description: z.string().max(2048, { message: "please keep it  under 2048 characters." }).nullable(),
+});
 
 
 // https://ja.react.dev/reference/react-dom/hooks/useFormState
@@ -20,6 +23,12 @@ export type State = {
   message?: string | null;
 }
 
+interface FormData {
+  due_date: Date;
+  task_title: string;
+  task_description: string;
+}
+
 
 // task作成
 export async function CreateTask(
@@ -30,9 +39,9 @@ export async function CreateTask(
 ) {
   // Validate form using Zod
   const validatedFields = taskSchema.safeParse({
-    due_date: formData.get('due_date'),
-    task_title: formData.get('task_title'),
-    task_description: formData.get('task_description'),
+    due_date: formData.due_date,
+    task_title: formData.task_title,
+    task_description: formData.task_description,
   });
 
   if (!validatedFields.success) {
@@ -55,13 +64,8 @@ export async function CreateTask(
         task_description,
       },
     });
-    
-    revalidatePath(`/team/${newTask.team_id}/task/${newTask.id}`);
-    redirect(`/team/${newTask.team_id}/task/${newTask.id}`);
   } catch(error) {
-    return {
-      message: 'Database Error: Failed to create task.',
-    }
+    console.error('Database Error:', error);
   }
 }
 
@@ -73,9 +77,9 @@ export async function UpdateTask(
   formData: FormData, 
 ) {
   const validatedFields = taskSchema.safeParse({
-    due_date: formData.get('due_date'),
-    task_title: formData.get('task_title'),
-    task_description: formData.get('task_description'),
+    due_date: formData.due_date,
+    task_title: formData.task_title,
+    task_description: formData.task_description,
   });
 
   if (!validatedFields.success) {
@@ -96,9 +100,6 @@ export async function UpdateTask(
         task_description,
       },
     });
-
-    revalidatePath(`/team/${updatedTask.team_id}/task/${task_id}`);
-    redirect(`/team/${updatedTask.team_id}/task/${task_id}`);
   } catch(error) {
     return {
       message: 'Database Error: Failed to update task.',

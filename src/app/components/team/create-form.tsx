@@ -47,7 +47,7 @@ export function CreateForm({ currentUserId }: Props) {
         {...register('team_name', { 
           required: 'チーム名は必須です',
           min: { value: 2, message: 'チーム名は2文字以上で入力してください' }, 
-          max: { value: 32, message: 'チーム名は32文字以上で入力してください'} 
+          max: { value: 32, message: 'チーム名は32文字以下で入力してください'} 
         })} />
       {errors.team_name && <p>{errors.team_name.message}</p>}
       

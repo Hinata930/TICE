@@ -44,8 +44,6 @@ export async function CreateTeam(
 
   const { team_name } = validatedFields.data;
 
-  console.log(`${team_name}, ${creator}`);
-
   // Insert data into the database
   try {
     const newTeam = await prisma.team.create({

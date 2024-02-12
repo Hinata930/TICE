@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { unstable_noStore as noStore } from "next/cache"; 
+import { team } from "./difinitions"; 
 
 const prisma = new PrismaClient();
 
@@ -31,15 +32,8 @@ export async function fetchTeam(team_id: string) {
   }
 }
 
-export async function fetchTeamArray(user_id: string) {
+export async function fetchTeams(user_id: string) {
   noStore();
-  type team = {
-    id: string
-    created_at: Date
-    updated_at: Date
-    team_name: string
-    creator: string | null
-  }
   try {
     const userTeamArray = await prisma.userTeam.findMany({
       where: {
@@ -75,5 +69,133 @@ export async function fetchTeamArray(user_id: string) {
   } catch(error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch team list');
+  }
+}
+
+// taskのsearchに使う
+const tasksItemsPerPage = 6;
+export async function fetchFilteredTasks(
+  query: string,
+  currentPage: number,
+  teamId: string,
+) {
+  noStore();
+  const offset = (currentPage - 1) * tasksItemsPerPage;
+
+  try {
+    if (query) {
+      const filteredTasks = await prisma.task.findMany({
+        include: {
+          users: true,
+        },
+        where: {
+          AND: [
+            { team_id: teamId },
+            {
+              OR: [
+                { users: { username: { contains: query, mode: 'insensitive' } } },
+                { users: { first_name: { contains: query, mode: 'insensitive' } } },
+                { users: { last_name: { contains: query, mode: 'insensitive' } } },
+                { users: { email_address: { contains: query, mode: 'insensitive' } } },
+                { task_title: { contains: query, mode: 'insensitive' } },
+                { task_description: { contains: query, mode: 'insensitive' } },
+              ],
+            },
+          ],
+        },
+        orderBy: {
+          created_at: 'desc',
+        },
+        take: tasksItemsPerPage,
+        skip: offset,
+      });
+      return filteredTasks;
+    } else {
+      const tasks = await prisma.task.findMany({
+        include: {
+          users: true,
+        },
+        where: {
+          team_id: teamId,
+        },
+      });
+      return tasks;
+    }
+  } catch(error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch filtered tasks.');
+  }
+}
+
+// queryが入ってるデータの数でページ数を算出(上のfetchFilteredTasksがsearchに使う関数)
+export async function fetchTasksPages(
+  query: string,
+  teamId: string,
+) {
+  noStore();
+  try {
+    // tasksテーブルにteam_idがteamIdのデータがあるかどうかを確認
+    const hasTasks = await prisma.task.findFirst({ where: { team_id: teamId } });
+
+    // taskがないからここで0を返す(ここで0を返さないとprisma.countでエラー吐く)
+    if (!hasTasks) {
+      return 0;
+    }
+
+    // queryないからteam_idだけでカウント。tasksItemPerPageで割って繰り上げてページ数を求める。
+    if (!query) {
+      const count = await prisma.task.count({ where: { team_id: teamId } });
+      const totalPages = Math.ceil(count / tasksItemsPerPage);
+      return totalPages;
+    }
+
+    // tasksテーブルにqueryを含んだデータがあるか確認
+    const hasQueryTasks = await prisma.task.findFirst({
+      where: {
+        AND: [
+          { team_id: teamId },
+          {
+            OR: [
+              { users: { username: { contains: query, mode: 'insensitive' } } },
+              { users: { first_name: { contains: query, mode: 'insensitive' } } },
+              { users: { last_name: { contains: query, mode: 'insensitive' } } },
+              { users: { email_address: { contains: query, mode: 'insensitive' } } },
+              { task_title: { contains: query, mode: 'insensitive' } },
+              { task_description: { contains: query, mode: 'insensitive' } },
+            ],
+          },
+        ],
+      },
+    });
+
+    // queryを含んだデータがなかったから0を返す。ここで返さないとcountメソッドでエラー吐く
+    if (!hasQueryTasks) {
+      return 0;
+    }
+
+    // query含むカウント。tasksItemPerPageで割って繰り上げてページ数を求める。
+    const count = await prisma.task.count({
+      where: {
+        AND: [
+          { team_id: teamId },
+          {
+            OR: [
+              { users: { username: { contains: query, mode: 'insensitive' } } },
+              { users: { first_name: { contains: query, mode: 'insensitive' } } },
+              { users: { last_name: { contains: query, mode: 'insensitive' } } },
+              { users: { email_address: { contains: query, mode: 'insensitive' } } },
+              { task_title: { contains: query, mode: 'insensitive' } },
+              { task_description: { contains: query, mode: 'insensitive' } },
+            ],
+          },
+        ],
+      },
+    });
+
+    const totalPages = Math.ceil(count / tasksItemsPerPage);
+    return totalPages;
+  } catch(error) { 
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of tasks.');
   }
 }
