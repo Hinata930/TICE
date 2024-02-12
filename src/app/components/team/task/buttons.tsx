@@ -1,6 +1,6 @@
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { DeleteTeam } from '@/app/lib/actions/team-actions';
+import { DeleteTask } from '@/app/lib/actions/task-actions';
 
 export function CreateTaskButton({ teamId }: { teamId: string }) {
   return (
@@ -32,10 +32,10 @@ export function UpdateTaskButton({
 }
 
 export function DeleteTaskButton({ team_id }: { team_id: string }) {
-  const deleteTeamWithId = DeleteTeam.bind(null, team_id);
+  const deleteTaskWithId = DeleteTask.bind(null, team_id);
 
   return (
-    <form action={deleteTeamWithId}>
+    <form action={deleteTaskWithId}>
       <button className="rounded-md border p-2 hover:bg-gray-100">
         <span className="sr-only">チームの削除</span>
         <TrashIcon className="w-5" />
