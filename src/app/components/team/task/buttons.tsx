@@ -37,7 +37,7 @@ export function DeleteTaskButton({ team_id }: { team_id: string }) {
   return (
     <form action={deleteTaskWithId}>
       <button className="rounded-md border p-2 hover:bg-gray-100">
-        <span className="sr-only">チームの削除</span>
+        <span className="sr-only">課題の削除</span>
         <TrashIcon className="w-5" />
       </button>
     </form>
