@@ -1,7 +1,6 @@
 import Pagination from "@/app/components/team/task/pagination";
 import Search from "@/app/components/search";
 import TasksTable from "@/app/components/team/task/table";
-import { lusitana } from "@/app/components/fonts";
 import { Suspense } from "react"; 
 import { fetchTasksPages } from "@/app/lib/data"; 
 import { CreateTaskButton } from "@/app/components/team/task/buttons";
@@ -25,12 +24,9 @@ export default async function Page({
   const totalPages = await fetchTasksPages(query, params.team_id); // ページ数
 
   return (
-    <div className="w-full">
-      <div className="flex w-full items-center justify-between">
-        <h1 className={`${lusitana.className} text-2xl`}>課題</h1>
-      </div>
-      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="課題を検索" />
+    <div className="pt-2 max-w-[62.5rem] mx-auto">
+      <div className="mt-4 flex items-center justify-between gap-2">
+        <Search placeholder="課題を検索..." />
         <CreateTaskButton teamId={params.team_id} />
       </div>
       <Suspense key={query + currentPage} fallback={<TasksTableSkeleton />}>

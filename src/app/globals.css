@@ -44,3 +44,13 @@
   width: 36px;
   height: 36px;
 }
+
+.child-width {
+  width: calc(100vw - 50px);
+}
+
+@media (min-width: 768px) {
+  .child-width {
+    width: calc(100vw - 256px);
+  }
+}
