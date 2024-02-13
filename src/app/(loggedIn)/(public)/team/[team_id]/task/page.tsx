@@ -2,9 +2,10 @@ import Pagination from "@/app/components/team/task/pagination";
 import Search from "@/app/components/search";
 import TasksTable from "@/app/components/team/task/table";
 import { Suspense } from "react"; 
-import { fetchTasksPages } from "@/app/lib/data"; 
+import { fetchTasksPages, teamExists } from "@/app/lib/data"; 
 import { CreateTaskButton } from "@/app/components/team/task/buttons";
 import { TasksTableSkeleton } from "@/app/components/team/task/skeletons";
+import { notFound } from "next/navigation";
 
 export default async function Page({ 
   params, 
@@ -18,6 +19,10 @@ export default async function Page({
     page?: string;
   };
 }) {
+  const team = await teamExists(params.team_id);
+  if (!team) {
+    notFound();
+  }
   const query = searchParams?.query || ''; // 検索してる文字列
   const currentPage = Number(searchParams?.page) || 1; // 今のページ
 

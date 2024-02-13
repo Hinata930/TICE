@@ -28,13 +28,36 @@ export async function fetchCurrentUser(user_id: string) {
 export async function fetchTeam(team_id: string) {
   noStore();
   try {
-    return await prisma.team.findUnique({
+    const team = await prisma.team.findUnique({
       where: {
         id: team_id,
       }
     });
+    if (!team) {
+      throw new Error('Failed to fetch team');
+    }
+    return team;
   } catch(error) {
     return null;
+  }
+}
+
+// teamが存在するかどうかを調べる関数
+export async function teamExists(team_id: string) {
+  noStore();
+  try {
+    const team = await prisma.team.findUnique({
+      where: {
+        id: team_id,
+      }
+    });
+    if (!team) {
+      return false;
+    } 
+    return true;
+    
+  } catch(error) {
+    return false;
   }
 }
 

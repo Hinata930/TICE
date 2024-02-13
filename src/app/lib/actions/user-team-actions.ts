@@ -19,6 +19,27 @@ export async function AddTeamMember(
         team_id,
       },
     });
+
+    const team = await prisma.team.findUnique({
+      where: {
+        id: team_id,
+      },
+    });
+
+    const role = await prisma.role.findFirst({
+      where: {
+        team_id: team?.id,
+        role_name: 'member',
+      },
+    });
+
+    await prisma.userRole.create({
+      data: {
+        user_id,
+        team_id,
+        role_id: role?.id,
+      },
+    });
   } catch(error) {
     return {
       message: 'Database Error: Failed to add new team member.',

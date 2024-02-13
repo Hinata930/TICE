@@ -1,6 +1,7 @@
 import { CreateForm } from "@/app/components/team/task/create-form";
-import { fetchCurrentUser } from "@/app/lib/data";
+import { fetchCurrentUser, teamExists } from "@/app/lib/data";
 import { currentUser } from "@clerk/nextjs";
+import { notFound } from "next/navigation";
 
 export default async function Page({ params }: { params: { team_id: string } }) {
   const userFromClerk = await currentUser();
@@ -8,6 +9,11 @@ export default async function Page({ params }: { params: { team_id: string } }) 
     throw new Error('Failed to fetch current user');
   }
   const user = await fetchCurrentUser(userFromClerk.id);
+
+  const team = await teamExists(params.team_id);
+  if (!team) {
+    notFound();
+  }
   
   return (
     <main>

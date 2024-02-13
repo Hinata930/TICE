@@ -46,6 +46,7 @@ export async function CreateTeam(
 
   // Insert data into the database
   try {
+    // team作成
     const newTeam = await prisma.team.create({
       data: {
         team_name,
@@ -53,11 +54,39 @@ export async function CreateTeam(
       },
     });
 
+    // creatorをteamに入れる
     await prisma.userTeam.create({
       data: {
         user_id: creator,
         team_id: newTeam.id,
-      }
+      },
+    });
+
+    // デフォルトのroleを作成(member)
+    await prisma.role.create({
+      data: {
+        team_id: newTeam.id,
+        role_name: 'member',
+        role_description: 'デフォルトの権限',
+      },
+    });
+
+    // デフォルトのroleを作成(admin)
+    const administrator = await prisma.role.create({
+      data: {
+        team_id: newTeam.id,
+        role_name: 'admin',
+        role_description: 'チームの管理者',
+      },
+    });
+
+    // creatorをadminにする
+    await prisma.userRole.create({
+      data: {
+        user_id: creator,
+        team_id: newTeam.id,
+        role_id: administrator.id
+      },
     });
   } catch(error) {
     console.error('Error:', error)

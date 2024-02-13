@@ -1,3 +1,5 @@
+/* 今は使う理由が無いため封印
+
 'use server';
 
 import { RoleSchema } from "@/prisma-types";
@@ -113,3 +115,5 @@ export async function DeleteRole( id: string ) {
     }
   }
 }
+
+*/

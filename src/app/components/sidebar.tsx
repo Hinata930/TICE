@@ -12,7 +12,7 @@ const links = [
   { name: 'チーム', href: '/team', icon: UsersIcon },
 ];
 
-export default async function Sidebar() {
+export default function Sidebar() {
   const pathname = usePathname();
   return(
     <div className="fixed h-screen w-[50px] border-r-[1px] border-[var(--color-light-gray)] md:w-64 z-50">
