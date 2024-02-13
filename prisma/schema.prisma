@@ -2,6 +2,8 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// zod-prisma-typesのgenerator
+// prisma generateで型を生成してくれる
 generator zod {
   provider                         = "zod-prisma-types"
   // output                           = "./generated/zod" // default is ./generated/zod
@@ -31,6 +33,8 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
+// 役職を管理するモデル。
+// チームに複数同じ名前の役職は存在しない
 model Role {
   id               String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   created_at       DateTime    @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
@@ -47,6 +51,7 @@ model Role {
   @@map("roles")
 }
 
+// 課題を管理するモデル
 model Task {
   id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   created_at       DateTime  @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
@@ -64,6 +69,8 @@ model Task {
   @@map("tasks")
 }
 
+// チームを管理するモデル
+// creatorがいるかどうかはこれから次第
 model Team {
   id         String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   created_at DateTime    @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
@@ -71,15 +78,20 @@ model Team {
   /// @zod.string.min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." })
   team_name  String      @db.VarChar(32)
   creator    String?     @db.Uuid 
-  users      User?      @relation(fields: [creator], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  roles      Role[]
-  tasks      Task[]
-  user_role  UserRole[]
-  user_team  UserTeam[]
+  users                         User?             @relation(fields: [creator], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  roles                         Role[]
+  tasks                         Task[]
+  user_role                     UserRole[]
+  user_team                     UserTeam[]
+  team_parent_child_team_a      TeamParentChild[] @relation(name: "team_parent_child_team_a")
+  team_parent_child_team_b      TeamParentChild[] @relation(name: "team_parent_child_team_b")
+  team_parent_child_parent_team TeamParentChild[] @relation(name: "team_parent_child_parent_team")
+  team_parent_child_child_team  TeamParentChild[] @relation(name: "team_parent_child_child_team")
 
   @@map("teams")
 }
 
+// ユーザーが所属しているチームを表すモデル。
 model UserTeam {
   created_at DateTime @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
   updated_at DateTime @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
@@ -89,9 +101,13 @@ model UserTeam {
   teams      Team?   @relation(fields: [team_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user_team_team_id")
   users      User?   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user_team_user_id")
   
+  @@unique([user_id, team_id])
   @@map("user_team")
 }
 
+// ユーザーモデル
+// clerkが生成してくれたユーザーから一部情報を抜いてきてる。
+// user_idカラムはclerkのuserのidと同一だからこれでclerkの方の処理ができる
 model User {
   id            String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   created_at    DateTime    @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
@@ -110,6 +126,9 @@ model User {
   @@map("users")
 }
 
+// ユーザーのチーム内での役職を表すモデル。
+// ユーザーはチームにつき１つのみ持てる
+// roleモデルでteamとroleのuniqueを設定している
 model UserRole {
   id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   created_at DateTime @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
@@ -123,4 +142,27 @@ model UserRole {
 
   @@unique([team_id, user_id])
   @@map("user_role")
+}
+
+// チームの親子関係を表すモデル。
+// team_aとteam_bはinsertする前に2つのチームidを配列に入れて
+// teamIds.sort((a, b) => a.localeCompare(b));
+// でソートをすること。
+// 
+model TeamParentChild {
+  id                            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at                    DateTime @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
+  updated_at                    DateTime @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
+  team_a                        String?  @db.Uuid
+  team_b                        String?  @db.Uuid
+  parent_team                   String?  @db.Uuid
+  child_team                    String?  @db.Uuid
+
+  team_parent_child_team_a      Team?    @relation(name: "team_parent_child_team_a", fields: [team_a], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  team_parent_child_team_b      Team?    @relation(name: "team_parent_child_team_b", fields: [team_b], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  team_parent_child_parent_team Team?    @relation(name: "team_parent_child_parent_team", fields: [parent_team], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  team_parent_child_child_team  Team?    @relation(name: "team_parent_child_child_team", fields: [child_team], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([team_a, team_b])
+  @@map("team_parent_child")
 }

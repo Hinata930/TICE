@@ -31,7 +31,7 @@ export function CreateForm({ currentUserId }: Props) {
         console.log('Team created successfully!');
         // Reset the form after successful submission
         reset();
-        router.push('/team');
+        router.push('/revalidate?path=/team');
       }
     } catch (error) {
       console.error('Error:', error);
@@ -44,6 +44,7 @@ export function CreateForm({ currentUserId }: Props) {
       <input 
         type="text" 
         id="team_name" 
+        placeholder='チーム名'
         {...register('team_name', { 
           required: 'チーム名は必須です',
           min: { value: 2, message: 'チーム名は2文字以上で入力してください' }, 

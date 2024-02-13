@@ -1,7 +1,7 @@
 'use server';
 
-import { TaskSchema } from "@/prisma-types";
 import { PrismaClient } from "@prisma/client"; 
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 const prisma = new PrismaClient();
@@ -101,6 +101,7 @@ export async function UpdateTask(
       },
     });
   } catch(error) {
+    console.error('Error:', error)
     return {
       message: 'Database Error: Failed to update task.',
     }
@@ -114,7 +115,9 @@ export async function DeleteTask( id: string ) {
     await prisma.task.delete({
       where: { id },
     });
+    revalidatePath('./');
   } catch(error) {
+    console.error('Database Error:', error);
     return {
       message: 'Database Error: Failed to delete task.',
     }

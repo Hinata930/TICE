@@ -2,7 +2,7 @@
 
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { CreateTask } from '@/app/lib/actions/task-actions';
+import { UpdateTask } from '@/app/lib/actions/task-actions';
 
 
 interface FormData {
@@ -12,12 +12,15 @@ interface FormData {
 }
 
 interface Props {
-  currentUserId: string
   team_id: string
+  task_id: string
+  taskTitle: string
+  taskDescription: string | null
+  taskDate: Date | null
 }
 
 
-export function CreateForm({ currentUserId, team_id }: Props) {
+export function EditForm({ team_id, task_id, taskTitle, taskDescription, taskDate }: Props) {
   const { 
     register, 
     handleSubmit, 
@@ -26,10 +29,11 @@ export function CreateForm({ currentUserId, team_id }: Props) {
   } = useForm<FormData>();
   const router = useRouter();
   const currentDate = new Date().toISOString().split('T')[0];
+  
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
-      const result = await CreateTask(currentUserId, team_id, { message: '', errors: {} }, data);
+      const result = await UpdateTask( task_id, { message: '', errors: {} }, data);
       if (result?.message) {
         console.error('Error:', result.message);
       } else {
@@ -46,26 +50,29 @@ export function CreateForm({ currentUserId, team_id }: Props) {
 
   return (
     <>
-      <h2>課題作成</h2>
+      <h2>作成</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
+        {/* text */}
         <label htmlFor="task_title">タイトル</label>
         <input 
           type="text" 
           id="task_title" 
-          placeholder='タイトル'
+          defaultValue={taskTitle}
           {...register('task_title', { 
-            required: 'タイトルは必須です',
+            required: 'は必須です',
             min: { value: 1, message: 'タイトルは1文字以上で入力してください' }, 
-            max: { value: 2048, message: 'タイトルは2048文字以下で入力してください'} 
+            max: { value: 64, message: 'タイトルは64文字以下で入力してください'} 
           })} />
         {errors.task_title && <p>{errors.task_title.message}</p>}
 
 
+        {/* date */}
         <label htmlFor="due_date">提出締め切り</label>
         <input 
           type='date'
           id='due_date'
           min={currentDate}
+          defaultValue={taskDate?.toISOString().split('T')[0]}
           {...register('due_date', {
             required: '提出締め切りは必須です',
             min: { value: currentDate, message: '提出締め切りは今日以降にしてください' },
@@ -76,14 +83,14 @@ export function CreateForm({ currentUserId, team_id }: Props) {
         <label htmlFor='task_description'>内容</label>
         <textarea 
           id='task_description'
-          placeholder='課題の内容'
+          defaultValue={taskDescription? taskDescription : ''}
           {...register('task_description', {
             max: { value: 2048, message: '課題の内容は2048文字以下で入力してください' },
           })} />
         {errors.task_description && <p>{errors.task_description.message}</p>}
-      
+
         <button type="submit" className='bg-sky-400 text-neutral-50 w-10 h-7 rounded' aria-disabled={false}>
-          課題を作成
+          課題を編集
         </button>
       </form>
     </>

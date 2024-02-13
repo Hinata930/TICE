@@ -11,7 +11,6 @@ export default async function TasksTable({
   currentPage: number;
   teamId: string;
 }) {
-
   const tasks = await fetchFilteredTasks(query, currentPage, teamId);
 
   return (
@@ -51,7 +50,7 @@ export default async function TasksTable({
                   </div>
                   <div className="flex justify-end gap-2">
                     <UpdateTaskButton teamId={teamId} taskId={task.id} />
-                    <DeleteTaskButton team_id={teamId} />
+                    <DeleteTaskButton taskId={task.id} />
                   </div>
                 </div>
               </div>
@@ -107,7 +106,7 @@ export default async function TasksTable({
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
                       <UpdateTaskButton teamId={teamId} taskId={task.id} />
-                      <DeleteTaskButton team_id={teamId} />
+                      <DeleteTaskButton taskId={task.id} />
                     </div>
                   </td>
                 </tr>

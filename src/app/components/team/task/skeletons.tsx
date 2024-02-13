@@ -2,6 +2,43 @@
 const shimmer =
   'before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent';
 
+// なにかしら要素があるところはbg-gray-100?
+
+
+
+export function NavLinkRowSkeleton() {
+  return (
+    <div className='flex h-[48px] items-center rounded-lg gap-2 p-3 md:flex-none md:p-2 md:px-3 bg-gray-50'>
+      <div className="w-6">
+        <div className="w-6 h-6 bg-gray-100"></div>
+      </div>
+      <p className="hidden md:block bg-gray-100"></p>
+    </div>
+  );
+
+}
+
+// teamList
+export function TeamListSkeleton() {
+  return (
+    <>
+      <div className="h-6 bg-gray-100 w-32"></div>
+      <TeamListRowSkeleton />
+      <TeamListRowSkeleton />
+      <TeamListRowSkeleton />
+      <TeamListRowSkeleton />
+      <TeamListRowSkeleton />
+    </>
+  );
+}
+
+export function TeamListRowSkeleton() {
+  return (
+    <div className="block h-16 w-auto bg-gray-100 rounded-lg my-2"></div>
+  );
+}
+
+// tasks table
 export function TableRowSkeleton() {
   return (
     <tr className="w-full border-b border-gray-100 last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg">
@@ -12,15 +49,15 @@ export function TableRowSkeleton() {
           <div className="h-6 w-24 rounded bg-gray-100"></div>
         </div>
       </td>
-      {/* Amount */}
+      {/* Task title */}
       <td className="whitespace-nowrap px-3 py-3">
         <div className="h-6 w-16 rounded bg-gray-100"></div>
       </td>
-      {/* Date */}
+      {/* Due date */}
       <td className="whitespace-nowrap px-3 py-3">
         <div className="h-6 w-16 rounded bg-gray-100"></div>
       </td>
-      {/* Status */}
+      {/* Task description */}
       <td className="whitespace-nowrap px-3 py-3">
         <div className="h-6 w-16 rounded bg-gray-100"></div>
       </td>

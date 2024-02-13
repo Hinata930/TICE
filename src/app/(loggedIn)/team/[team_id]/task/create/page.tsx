@@ -8,9 +8,6 @@ export default async function Page({ params }: { params: { team_id: string } }) 
     throw new Error('Failed to fetch current user');
   }
   const user = await fetchCurrentUser(userFromClerk.id);
-  if (!user) {
-    throw new Error('Failed to fetch current user');
-  }
   
   return (
     <main>

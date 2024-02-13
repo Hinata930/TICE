@@ -4,21 +4,27 @@ import { team } from "./difinitions";
 
 const prisma = new PrismaClient();
 
-// clerkの方のuser_idからticeのデータベースにいるuserを見つける
+// clerkの方のuserのidからデータベースのuserのデータを見つける
 export async function fetchCurrentUser(user_id: string) {
   noStore();
   try {
-    return await prisma.user.findUnique({ 
+    // user_idはclerkのuserのid
+    const user = await prisma.user.findUnique({ 
       where: {
         user_id,
       }
     });
+    if (!user) {
+      throw new Error('Failed to fetch current user.');
+    }
+    return user;
   } catch(error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch current user.');
   }
 }
 
+// teamのidでteamを取得したいときに使う
 export async function fetchTeam(team_id: string) {
   noStore();
   try {
@@ -32,6 +38,7 @@ export async function fetchTeam(team_id: string) {
   }
 }
 
+// あるユーザーが所属しているチームの配列を取得する
 export async function fetchTeams(user_id: string) {
   noStore();
   try {
@@ -197,5 +204,24 @@ export async function fetchTasksPages(
   } catch(error) { 
     console.error('Database Error:', error);
     throw new Error('Failed to fetch total number of tasks.');
+  }
+}
+
+// taskのidでtaskを取得したいときに使う
+export async function fetchTask(taskId: string) {
+  try {
+    const task = await prisma.task.findUnique({
+      where: {
+        id: taskId,
+      },
+    });
+
+    if (!task) {
+      throw new Error('Failed to fetch task.');
+    }
+    return task;
+  } catch(error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch task.');
   }
 }

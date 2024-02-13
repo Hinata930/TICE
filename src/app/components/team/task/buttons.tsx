@@ -31,8 +31,8 @@ export function UpdateTaskButton({
   );
 }
 
-export function DeleteTaskButton({ team_id }: { team_id: string }) {
-  const deleteTaskWithId = DeleteTask.bind(null, team_id);
+export function DeleteTaskButton({ taskId }: { taskId: string }) {
+  const deleteTaskWithId = DeleteTask.bind(null, taskId);
 
   return (
     <form action={deleteTaskWithId}>

@@ -6,13 +6,10 @@ import { fetchCurrentUser } from "@/app/lib/data";
 export default async function Page() {
   const user = await currentUser();
   if (!user) {
-    throw new Error('Failed to fetch current user.- 1');
+    throw new Error('Failed to fetch current user.');
   }
 
   const thisUser = await fetchCurrentUser(user.id);
-  if (!thisUser) {
-    throw new Error('Failed to fetch current user.- 2');
-  }
 
   return (
     <main>

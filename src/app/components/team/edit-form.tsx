@@ -3,7 +3,6 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { UpdateTeamName } from '@/app/lib/actions/team-actions';
 import { useRouter } from 'next/navigation'; 
-import { fetchTeam } from '@/app/lib/data';
 
 interface FormData {
   team_name: string
@@ -32,7 +31,7 @@ export function EditForm({ teamId, teamName }: Props) {
         console.log('Team updated successfully!');
         // Reset the form after successful submission
         reset();
-        router.push(`/team/${teamId}`);
+        router.push(`/revalidate?path=/team/${teamId}`);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -45,7 +44,7 @@ export function EditForm({ teamId, teamName }: Props) {
       <input 
         type="text" 
         id="team_name" 
-        placeholder={teamName}
+        defaultValue={teamName}
         {...register('team_name', { 
           required: 'チーム名は必須です',
           min: { value: 2, message: 'チーム名は2文字以上で入力してください' }, 

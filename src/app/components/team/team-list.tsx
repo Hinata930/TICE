@@ -1,19 +1,9 @@
+import { fetchTeams } from "@/app/lib/data";
 import Link from "next/link";
 
 
-type Team = {
-  id: string
-  created_at: Date
-  updated_at: Date
-  team_name: string
-  creator: string | null
-}
-
-type TeamListProps = {
-  teamArray: Team[];
-}
-
-export default function TeamList({ teamArray }: TeamListProps) {
+export default async function TeamList({ user_id }: { user_id: string }) {
+  const teamArray = await fetchTeams(user_id);
   return (
     <>
       {teamArray.map((team) => {
