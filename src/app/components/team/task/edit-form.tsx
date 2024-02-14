@@ -50,7 +50,6 @@ export function EditForm({ team_id, task_id, taskTitle, taskDescription, taskDat
 
   return (
     <>
-      <h2>作成</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* text */}
         <label htmlFor="task_title">タイトル</label>

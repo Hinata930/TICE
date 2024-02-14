@@ -51,6 +51,6 @@
 
 @media (min-width: 768px) {
   .child-width {
-    width: calc(100vw - 256px);
+    width: calc(100vw - 255px);
   }
 }

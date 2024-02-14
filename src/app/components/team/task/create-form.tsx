@@ -3,7 +3,7 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { CreateTask } from '@/app/lib/actions/task-actions';
-import { convertUtcToJapanIso8601Date } from '@/app/lib/utils';
+import { fetchCurrentDate } from '@/app/lib/utils';
 import Link from 'next/link';
 
 
@@ -27,7 +27,7 @@ export function CreateForm({ currentUserId, team_id }: Props) {
     reset 
   } = useForm<FormData>();
   const router = useRouter();
-  const currentDate = convertUtcToJapanIso8601Date(new Date());
+  const currentDate = fetchCurrentDate();
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
@@ -50,7 +50,7 @@ export function CreateForm({ currentUserId, team_id }: Props) {
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="rounded-md bg-gray-50 p-4 md:p-6">
-          
+        <h2 className='text-2xl text-neutral-900 mb-4'>課題の作成</h2> 
           {/* タイトル */}
           <div className='mb-4'>
             <label htmlFor="task_title" className='mb-2 block text-sm text-[var(--color-black)] font-medium'>

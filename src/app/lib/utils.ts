@@ -34,7 +34,16 @@ export function generatePagination(
   ];
 };
 
-export function convertUtcToJapanIso8601Date(currentDateUTC: Date) {
-  const currentDateJP = new Date(currentDateUTC.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' })); // 日本のタイムゾーンでの日付を取得
-  return currentDateJP.toISOString().split('T')[0]; // ISO 8601形式に変換
+export function fetchCurrentDate() {
+  // ローカル現在時刻の取得
+  const nowLocal = new Date()
+
+  // UTCとローカルタイムゾーンとの差を取得し、分からミリ秒に変換
+  const diff = nowLocal.getTimezoneOffset() * 60 * 1000    
+
+  // toISOString()で、UTC時間になってしまうので、ローカルタイムとの差を無くす
+  const plusLocal = new Date(nowLocal.getTime() - diff)    
+
+  // ISO形式に変換後、日付のみ取得。タイムゾーンは考慮しない
+  return plusLocal.toISOString().split('T')[0]
 }

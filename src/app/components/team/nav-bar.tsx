@@ -17,7 +17,7 @@ export default function NavBar({ teamId }: Props) {
   ];
 
   return (
-    <div className="fixed h-12 w-full border-b-[1px] border-[var(--color-light-gray)] z-50">
+    <div className="fixed h-12 w-full bg-white border-b-[1px] border-[var(--color-light-gray)] z-50">
       <div className="flex items-center h-full w-full pl-4">
         {links.map((link) => {
           return (
