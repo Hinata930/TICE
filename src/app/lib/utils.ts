@@ -33,3 +33,8 @@ export function generatePagination(
     totalPages,
   ];
 };
+
+export function convertUtcToJapanIso8601Date(currentDateUTC: Date) {
+  const currentDateJP = new Date(currentDateUTC.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' })); // 日本のタイムゾーンでの日付を取得
+  return currentDateJP.toISOString().split('T')[0]; // ISO 8601形式に変換
+}

@@ -27,7 +27,7 @@ export default async function TasksTable({
                     <div className="flex flex-col items-center">
                       {/* 提出期限 */}
                       <p className='w-full text-gray-500 pb-1'>
-                        提出期限：{task.due_date ? task.due_date.toDateString() : '取得失敗'}
+                        提出期限：{task.due_date ? task.due_date.toISOString().split('T')[0] : '取得失敗'}
                       </p>
                       <div className="flex flex-row items-center w-full pb-[2px]">
                         {/* 課題のタイトル */}
@@ -49,7 +49,7 @@ export default async function TasksTable({
                       height={16}
                       alt={`${task.users? task.users.username : '作成者'}のプロフィール写真`}
                     />
-                    <p className='text-base text-gray-500'>
+                    <p className='line-clamp-1 text-base text-gray-500'>
                       {task.users? task.users.username : '作成者'}
                     </p>
                   </div>
