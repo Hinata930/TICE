@@ -7,7 +7,7 @@ import { z } from "zod";
 const prisma = new PrismaClient();
 
 const taskSchema = z.object({
-  due_date: z.coerce.date().nullable(),
+  due_date: z.coerce.date(),
   task_title: z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),
   task_description: z.string().max(2048, { message: "please keep it  under 2048 characters." }).nullable(),
 });

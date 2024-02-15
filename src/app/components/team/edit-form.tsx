@@ -45,6 +45,7 @@ export function EditForm({ teamId, teamName }: Props) {
         type="text" 
         id="team_name" 
         defaultValue={teamName}
+        autoComplete='off'
         {...register('team_name', { 
           required: 'チーム名は必須です',
           min: { value: 2, message: 'チーム名は2文字以上で入力してください' }, 

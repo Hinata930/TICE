@@ -34,16 +34,41 @@ export function generatePagination(
   ];
 };
 
+// ISOStringの日本の日付 (yyyy-mm-dd)
 export function fetchCurrentDate() {
   // ローカル現在時刻の取得
-  const nowLocal = new Date()
+  const nowLocal = new Date();
 
   // UTCとローカルタイムゾーンとの差を取得し、分からミリ秒に変換
-  const diff = nowLocal.getTimezoneOffset() * 60 * 1000    
+  const diff = nowLocal.getTimezoneOffset() * 60 * 1000;
 
   // toISOString()で、UTC時間になってしまうので、ローカルタイムとの差を無くす
-  const plusLocal = new Date(nowLocal.getTime() - diff)    
+  const plusLocal = new Date(nowLocal.getTime() - diff);    
 
   // ISO形式に変換後、日付のみ取得。タイムゾーンは考慮しない
-  return plusLocal.toISOString().split('T')[0]
+  return plusLocal.toISOString().split('T')[0];
+}
+
+// yyyy年mm月dd日にする
+export function convertDateToJapaneseFormatDate(postgresDate: Date) {
+  // PostgreSQLのDate型からDateオブジェクトを作成
+  const dateObject = new Date(postgresDate);
+
+  // yyyy年mm月dd日の形式に変換
+  const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+  const formattedDate = new Intl.DateTimeFormat('ja-jp', options).format(dateObject)
+
+  return formattedDate;
+}
+
+// 上のyyyy年mm月dd日HH:MMのバージョン
+export function convertTimeToJapaneseFormatTime(postgresDate: Date) {
+  // PostgreSQLのDate型からDateオブジェクトを作成
+  const dateObject = new Date(postgresDate);
+
+  // yyyy年mm月dd日HH:MMの形式に変換
+  const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+  const formattedDate = new Intl.DateTimeFormat('ja-jp', options).format(dateObject)
+
+  return formattedDate;
 }

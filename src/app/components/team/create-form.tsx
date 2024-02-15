@@ -45,6 +45,7 @@ export function CreateForm({ currentUserId }: Props) {
         type="text" 
         id="team_name" 
         placeholder='チーム名'
+        autoComplete='off'
         {...register('team_name', { 
           required: 'チーム名は必須です',
           min: { value: 2, message: 'チーム名は2文字以上で入力してください' }, 

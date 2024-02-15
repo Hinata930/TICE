@@ -58,7 +58,7 @@ model Task {
   updated_at       DateTime  @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
   task_creator     String?   @db.Uuid
   team_id          String?   @db.Uuid
-  due_date         DateTime? @db.Date
+  due_date         DateTime @db.Date
   /// @zod.string.min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." })
   task_title       String    @db.VarChar(64)
   /// @zod.string.max(2048, { message: "please keep it  under 2048 characters." })

@@ -15,7 +15,7 @@ const links = [
 export default function Sidebar() {
   const pathname = usePathname();
   return(
-    <div className="fixed h-screen w-[50px] bg-white border-r-[1px] border-[var(--color-light-gray)] md:w-64 z-50">
+    <div className="fixed h-screen w-[50px] bg-white border-r-[1px] border-[var(--color-light-gray)] md:w-64 z-20">
       <nav className="flex flex-col pr-1 py-2 space-y-[6px] md:pr-2">
         {links.map((link) => {
           const LinkIcon = link.icon;

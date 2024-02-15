@@ -37,7 +37,7 @@ export function EditForm({ team_id, task_id, taskTitle, taskDescription, taskDat
       if (result?.message) {
         console.error('Error:', result.message);
       } else {
-        console.log('Team created successfully!');
+        console.log('Task Edited successfully!');
         // Reset the form after successful submission
         reset();
         router.push(`/revalidate?path=/team/${team_id}/task`);
@@ -57,6 +57,7 @@ export function EditForm({ team_id, task_id, taskTitle, taskDescription, taskDat
           type="text" 
           id="task_title" 
           defaultValue={taskTitle}
+          autoComplete='off'
           {...register('task_title', { 
             required: 'は必須です',
             min: { value: 1, message: 'タイトルは1文字以上で入力してください' }, 
@@ -72,6 +73,7 @@ export function EditForm({ team_id, task_id, taskTitle, taskDescription, taskDat
           id='due_date'
           min={currentDate}
           defaultValue={taskDate?.toISOString().split('T')[0]}
+          autoComplete='off'
           {...register('due_date', {
             required: '提出締め切りは必須です',
             min: { value: currentDate, message: '提出締め切りは今日以降にしてください' },

@@ -13,11 +13,11 @@ export default async function Page({
 }: { 
   params: { 
     team_id: string;
-  };
+  },
   searchParams?: {
     query?: string;
     page?: string;
-  };
+  },
 }) {
   const team = await teamExists(params.team_id);
   if (!team) {

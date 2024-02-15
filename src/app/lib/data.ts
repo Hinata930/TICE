@@ -1,3 +1,5 @@
+'use server'
+
 import { PrismaClient } from "@prisma/client";
 import { unstable_noStore as noStore } from "next/cache"; 
 import { team } from "./difinitions"; 
@@ -148,6 +150,11 @@ export async function fetchFilteredTasks(
         where: {
           team_id: teamId,
         },
+        orderBy: {
+          created_at: 'desc',
+        },
+        take: tasksItemsPerPage,
+        skip: offset,
       });
       return tasks;
     }
@@ -246,5 +253,56 @@ export async function fetchTask(taskId: string) {
   } catch(error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch task.');
+  }
+}
+
+// task_idでcreatorのuserのデータを取得したいときに使う
+export async function fetchTaskCreator(taskId: string) {
+  try {
+    const task = await prisma.task.findUnique({
+      where: {
+        id: taskId,
+      },
+    });
+    if (!task || !task.task_creator) {
+      throw new Error('Failed to fetch task.');
+    }
+    
+    const creator = await prisma.user.findUnique({
+      where: {
+        id: task.task_creator
+      },
+    });
+    if (!creator) {
+      throw new Error('Failed to fetch task creator.');
+    }
+
+    return creator;    
+  } catch(error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch task.');
+  }
+}
+
+// userの役職を割り出す(一人)
+export async function findUserTeamRole(
+  teamId: string,
+  userId: string,
+) {
+  try {
+    const role = await prisma.userRole.findFirst({
+      where: {
+        AND: {
+          team_id: teamId,
+          user_id: userId,
+        },
+      },
+    });
+    if (!role) {
+      return null;
+    }
+    return role;
+  } catch(error) {
+    throw new Error('Failed to find user role at team.');
   }
 }

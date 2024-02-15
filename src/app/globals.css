@@ -23,18 +23,18 @@
   --color-black-contrast: #ffffff;
   --color-black-contrast-rgb: 255, 255, 255;
 
-  --color-gray: #737373;
-  --color-gray-rgb: 115, 115, 115;
+  --color-gray: #6b7280;
+  --color-gray-rgb: 107, 114, 128;
   --color-gray-contrast: #ffffff;
   --color-gray-contrast-rgb: 255, 255, 255;
 
-  --color-light-gray: #e5e5e5;
-  --color-light-gray-rgb: 229, 229, 229;
+  --color-light-gray: #e5e7eb;
+  --color-light-gray-rgb: 229, 231, 235;
   --color-light-gray-contrast: var(--color-gray);
   --color-light-gray-contrast-rgb: var(--color-gray-rgb);
 
-  --color-base-gray: #f5f5f5;
-  --color-base-gray-rgb: 245, 245, 245;
+  --color-base-gray: #f9fafb;
+  --color-base-gray-rgb: 249, 250, 251;
   --color-base-gray-contrast: var(--color-gray);
   --color-base-gray-contrast-rgb: var(--color-gray-rgb);
 }
@@ -47,6 +47,10 @@
 
 .child-width {
   width: calc(100vw - 50px);
+}
+
+.team-task-title-width {
+  max-width: calc(100vw - 576px);
 }
 
 @media (min-width: 768px) {

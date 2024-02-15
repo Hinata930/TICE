@@ -35,7 +35,7 @@ export function CreateForm({ currentUserId, team_id }: Props) {
       if (result?.message) {
         console.error('Error:', result.message);
       } else {
-        console.log('Team created successfully!');
+        console.log('Task created successfully!');
         // Reset the form after successful submission
         reset();
         router.push(`/revalidate?path=/team/${team_id}/task`);
@@ -49,8 +49,8 @@ export function CreateForm({ currentUserId, team_id }: Props) {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        <h2 className='text-2xl text-neutral-900 mb-4'>課題の作成</h2> 
+        <div className="rounded-md bg-[var(--color-base-gray)] p-4 md:p-6">
+          <h2 className='text-2xl text-[var(--color-black)] mb-4'>課題の作成</h2> 
           {/* タイトル */}
           <div className='mb-4'>
             <label htmlFor="task_title" className='mb-2 block text-sm text-[var(--color-black)] font-medium'>
@@ -61,6 +61,7 @@ export function CreateForm({ currentUserId, team_id }: Props) {
                 type="text" 
                 id="task_title" 
                 placeholder='タイトル'
+                autoComplete='off'
                 className='block w-full rounded-md border border-gray-200 p-2 text-sm outline-2 placeholder:text-gray-500'
                 aria-describedby="task_title-error"
                 {...register('task_title', { 
@@ -88,6 +89,7 @@ export function CreateForm({ currentUserId, team_id }: Props) {
                   type='date'
                   id='due_date'
                   min={currentDate}
+                  autoComplete='off'
                   className='block w-auto rounded-md border border-gray-200 p-2 text-sm outline-2 placeholder:text-gray-500'
                   {...register('due_date', {
                     required: '提出締め切りは必須です',

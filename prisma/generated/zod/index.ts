@@ -60,7 +60,7 @@ export const TaskSchema = z.object({
   updated_at: z.coerce.date(),
   task_creator: z.string().nullable(),
   team_id: z.string().nullable(),
-  due_date: z.coerce.date().nullable(),
+  due_date: z.coerce.date(),
   task_title: z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),
   task_description: z.string().max(2048, { message: "please keep it  under 2048 characters." }).nullable(),
 })
@@ -474,7 +474,7 @@ export const TaskWhereInputSchema: z.ZodType<Prisma.TaskWhereInput> = z.object({
   updated_at: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   task_creator: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
   team_id: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
-  due_date: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
+  due_date: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   task_title: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   task_description: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   teams: z.union([ z.lazy(() => TeamNullableRelationFilterSchema),z.lazy(() => TeamWhereInputSchema) ]).optional().nullable(),
@@ -487,7 +487,7 @@ export const TaskOrderByWithRelationInputSchema: z.ZodType<Prisma.TaskOrderByWit
   updated_at: z.lazy(() => SortOrderSchema).optional(),
   task_creator: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   team_id: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  due_date: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  due_date: z.lazy(() => SortOrderSchema).optional(),
   task_title: z.lazy(() => SortOrderSchema).optional(),
   task_description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   teams: z.lazy(() => TeamOrderByWithRelationInputSchema).optional(),
@@ -506,7 +506,7 @@ export const TaskWhereUniqueInputSchema: z.ZodType<Prisma.TaskWhereUniqueInput> 
   updated_at: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   task_creator: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
   team_id: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
-  due_date: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
+  due_date: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   task_title: z.union([ z.lazy(() => StringFilterSchema),z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }) ]).optional(),
   task_description: z.union([ z.lazy(() => StringNullableFilterSchema),z.string().max(2048, { message: "please keep it  under 2048 characters." }) ]).optional().nullable(),
   teams: z.union([ z.lazy(() => TeamNullableRelationFilterSchema),z.lazy(() => TeamWhereInputSchema) ]).optional().nullable(),
@@ -519,7 +519,7 @@ export const TaskOrderByWithAggregationInputSchema: z.ZodType<Prisma.TaskOrderBy
   updated_at: z.lazy(() => SortOrderSchema).optional(),
   task_creator: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   team_id: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  due_date: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  due_date: z.lazy(() => SortOrderSchema).optional(),
   task_title: z.lazy(() => SortOrderSchema).optional(),
   task_description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   _count: z.lazy(() => TaskCountOrderByAggregateInputSchema).optional(),
@@ -536,7 +536,7 @@ export const TaskScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.TaskScal
   updated_at: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
   task_creator: z.union([ z.lazy(() => UuidNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   team_id: z.union([ z.lazy(() => UuidNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
-  due_date: z.union([ z.lazy(() => DateTimeNullableWithAggregatesFilterSchema),z.coerce.date() ]).optional().nullable(),
+  due_date: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
   task_title: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   task_description: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
 }).strict();
@@ -1042,7 +1042,7 @@ export const TaskCreateInputSchema: z.ZodType<Prisma.TaskCreateInput> = z.object
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
-  due_date: z.coerce.date().optional().nullable(),
+  due_date: z.coerce.date(),
   task_title: z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),
   task_description: z.string().max(2048, { message: "please keep it  under 2048 characters." }).optional().nullable(),
   teams: z.lazy(() => TeamCreateNestedOneWithoutTasksInputSchema).optional(),
@@ -1055,7 +1055,7 @@ export const TaskUncheckedCreateInputSchema: z.ZodType<Prisma.TaskUncheckedCreat
   updated_at: z.coerce.date().optional(),
   task_creator: z.string().optional().nullable(),
   team_id: z.string().optional().nullable(),
-  due_date: z.coerce.date().optional().nullable(),
+  due_date: z.coerce.date(),
   task_title: z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),
   task_description: z.string().max(2048, { message: "please keep it  under 2048 characters." }).optional().nullable()
 }).strict();
@@ -1064,7 +1064,7 @@ export const TaskUpdateInputSchema: z.ZodType<Prisma.TaskUpdateInput> = z.object
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  due_date: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  due_date: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   task_title: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   task_description: z.union([ z.string().max(2048, { message: "please keep it  under 2048 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   teams: z.lazy(() => TeamUpdateOneWithoutTasksNestedInputSchema).optional(),
@@ -1077,7 +1077,7 @@ export const TaskUncheckedUpdateInputSchema: z.ZodType<Prisma.TaskUncheckedUpdat
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   task_creator: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  due_date: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  due_date: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   task_title: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   task_description: z.union([ z.string().max(2048, { message: "please keep it  under 2048 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
@@ -1088,7 +1088,7 @@ export const TaskCreateManyInputSchema: z.ZodType<Prisma.TaskCreateManyInput> = 
   updated_at: z.coerce.date().optional(),
   task_creator: z.string().optional().nullable(),
   team_id: z.string().optional().nullable(),
-  due_date: z.coerce.date().optional().nullable(),
+  due_date: z.coerce.date(),
   task_title: z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),
   task_description: z.string().max(2048, { message: "please keep it  under 2048 characters." }).optional().nullable()
 }).strict();
@@ -1097,7 +1097,7 @@ export const TaskUpdateManyMutationInputSchema: z.ZodType<Prisma.TaskUpdateManyM
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  due_date: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  due_date: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   task_title: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   task_description: z.union([ z.string().max(2048, { message: "please keep it  under 2048 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
@@ -1108,7 +1108,7 @@ export const TaskUncheckedUpdateManyInputSchema: z.ZodType<Prisma.TaskUncheckedU
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   task_creator: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  due_date: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  due_date: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   task_title: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   task_description: z.union([ z.string().max(2048, { message: "please keep it  under 2048 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
@@ -1677,17 +1677,6 @@ export const StringNullableWithAggregatesFilterSchema: z.ZodType<Prisma.StringNu
   _max: z.lazy(() => NestedStringNullableFilterSchema).optional()
 }).strict();
 
-export const DateTimeNullableFilterSchema: z.ZodType<Prisma.DateTimeNullableFilter> = z.object({
-  equals: z.coerce.date().optional().nullable(),
-  in: z.coerce.date().array().optional().nullable(),
-  notIn: z.coerce.date().array().optional().nullable(),
-  lt: z.coerce.date().optional(),
-  lte: z.coerce.date().optional(),
-  gt: z.coerce.date().optional(),
-  gte: z.coerce.date().optional(),
-  not: z.union([ z.coerce.date(),z.lazy(() => NestedDateTimeNullableFilterSchema) ]).optional().nullable(),
-}).strict();
-
 export const UserNullableRelationFilterSchema: z.ZodType<Prisma.UserNullableRelationFilter> = z.object({
   is: z.lazy(() => UserWhereInputSchema).optional().nullable(),
   isNot: z.lazy(() => UserWhereInputSchema).optional().nullable()
@@ -1724,20 +1713,6 @@ export const TaskMinOrderByAggregateInputSchema: z.ZodType<Prisma.TaskMinOrderBy
   due_date: z.lazy(() => SortOrderSchema).optional(),
   task_title: z.lazy(() => SortOrderSchema).optional(),
   task_description: z.lazy(() => SortOrderSchema).optional()
-}).strict();
-
-export const DateTimeNullableWithAggregatesFilterSchema: z.ZodType<Prisma.DateTimeNullableWithAggregatesFilter> = z.object({
-  equals: z.coerce.date().optional().nullable(),
-  in: z.coerce.date().array().optional().nullable(),
-  notIn: z.coerce.date().array().optional().nullable(),
-  lt: z.coerce.date().optional(),
-  lte: z.coerce.date().optional(),
-  gt: z.coerce.date().optional(),
-  gte: z.coerce.date().optional(),
-  not: z.union([ z.coerce.date(),z.lazy(() => NestedDateTimeNullableWithAggregatesFilterSchema) ]).optional().nullable(),
-  _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
-  _min: z.lazy(() => NestedDateTimeNullableFilterSchema).optional(),
-  _max: z.lazy(() => NestedDateTimeNullableFilterSchema).optional()
 }).strict();
 
 export const RoleListRelationFilterSchema: z.ZodType<Prisma.RoleListRelationFilter> = z.object({
@@ -2031,10 +2006,6 @@ export const UserCreateNestedOneWithoutTasksInputSchema: z.ZodType<Prisma.UserCr
   create: z.union([ z.lazy(() => UserCreateWithoutTasksInputSchema),z.lazy(() => UserUncheckedCreateWithoutTasksInputSchema) ]).optional(),
   connectOrCreate: z.lazy(() => UserCreateOrConnectWithoutTasksInputSchema).optional(),
   connect: z.lazy(() => UserWhereUniqueInputSchema).optional()
-}).strict();
-
-export const NullableDateTimeFieldUpdateOperationsInputSchema: z.ZodType<Prisma.NullableDateTimeFieldUpdateOperationsInput> = z.object({
-  set: z.coerce.date().optional().nullable()
 }).strict();
 
 export const TeamUpdateOneWithoutTasksNestedInputSchema: z.ZodType<Prisma.TeamUpdateOneWithoutTasksNestedInput> = z.object({
@@ -2880,31 +2851,6 @@ export const NestedStringNullableWithAggregatesFilterSchema: z.ZodType<Prisma.Ne
   _max: z.lazy(() => NestedStringNullableFilterSchema).optional()
 }).strict();
 
-export const NestedDateTimeNullableFilterSchema: z.ZodType<Prisma.NestedDateTimeNullableFilter> = z.object({
-  equals: z.coerce.date().optional().nullable(),
-  in: z.coerce.date().array().optional().nullable(),
-  notIn: z.coerce.date().array().optional().nullable(),
-  lt: z.coerce.date().optional(),
-  lte: z.coerce.date().optional(),
-  gt: z.coerce.date().optional(),
-  gte: z.coerce.date().optional(),
-  not: z.union([ z.coerce.date(),z.lazy(() => NestedDateTimeNullableFilterSchema) ]).optional().nullable(),
-}).strict();
-
-export const NestedDateTimeNullableWithAggregatesFilterSchema: z.ZodType<Prisma.NestedDateTimeNullableWithAggregatesFilter> = z.object({
-  equals: z.coerce.date().optional().nullable(),
-  in: z.coerce.date().array().optional().nullable(),
-  notIn: z.coerce.date().array().optional().nullable(),
-  lt: z.coerce.date().optional(),
-  lte: z.coerce.date().optional(),
-  gt: z.coerce.date().optional(),
-  gte: z.coerce.date().optional(),
-  not: z.union([ z.coerce.date(),z.lazy(() => NestedDateTimeNullableWithAggregatesFilterSchema) ]).optional().nullable(),
-  _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
-  _min: z.lazy(() => NestedDateTimeNullableFilterSchema).optional(),
-  _max: z.lazy(() => NestedDateTimeNullableFilterSchema).optional()
-}).strict();
-
 export const TeamCreateWithoutRolesInputSchema: z.ZodType<Prisma.TeamCreateWithoutRolesInput> = z.object({
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
@@ -3254,7 +3200,7 @@ export const TaskCreateWithoutTeamsInputSchema: z.ZodType<Prisma.TaskCreateWitho
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
-  due_date: z.coerce.date().optional().nullable(),
+  due_date: z.coerce.date(),
   task_title: z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),
   task_description: z.string().max(2048, { message: "please keep it  under 2048 characters." }).optional().nullable(),
   users: z.lazy(() => UserCreateNestedOneWithoutTasksInputSchema).optional()
@@ -3265,7 +3211,7 @@ export const TaskUncheckedCreateWithoutTeamsInputSchema: z.ZodType<Prisma.TaskUn
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
   task_creator: z.string().optional().nullable(),
-  due_date: z.coerce.date().optional().nullable(),
+  due_date: z.coerce.date(),
   task_title: z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),
   task_description: z.string().max(2048, { message: "please keep it  under 2048 characters." }).optional().nullable()
 }).strict();
@@ -3536,7 +3482,7 @@ export const TaskScalarWhereInputSchema: z.ZodType<Prisma.TaskScalarWhereInput> 
   updated_at: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   task_creator: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
   team_id: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
-  due_date: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
+  due_date: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   task_title: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   task_description: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
 }).strict();
@@ -3817,7 +3763,7 @@ export const TaskCreateWithoutUsersInputSchema: z.ZodType<Prisma.TaskCreateWitho
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
-  due_date: z.coerce.date().optional().nullable(),
+  due_date: z.coerce.date(),
   task_title: z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),
   task_description: z.string().max(2048, { message: "please keep it  under 2048 characters." }).optional().nullable(),
   teams: z.lazy(() => TeamCreateNestedOneWithoutTasksInputSchema).optional()
@@ -3828,7 +3774,7 @@ export const TaskUncheckedCreateWithoutUsersInputSchema: z.ZodType<Prisma.TaskUn
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
   team_id: z.string().optional().nullable(),
-  due_date: z.coerce.date().optional().nullable(),
+  due_date: z.coerce.date(),
   task_title: z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),
   task_description: z.string().max(2048, { message: "please keep it  under 2048 characters." }).optional().nullable()
 }).strict();
@@ -4561,7 +4507,7 @@ export const TaskCreateManyTeamsInputSchema: z.ZodType<Prisma.TaskCreateManyTeam
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
   task_creator: z.string().optional().nullable(),
-  due_date: z.coerce.date().optional().nullable(),
+  due_date: z.coerce.date(),
   task_title: z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),
   task_description: z.string().max(2048, { message: "please keep it  under 2048 characters." }).optional().nullable()
 }).strict();
@@ -4647,7 +4593,7 @@ export const TaskUpdateWithoutTeamsInputSchema: z.ZodType<Prisma.TaskUpdateWitho
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  due_date: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  due_date: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   task_title: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   task_description: z.union([ z.string().max(2048, { message: "please keep it  under 2048 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   users: z.lazy(() => UserUpdateOneWithoutTasksNestedInputSchema).optional()
@@ -4658,7 +4604,7 @@ export const TaskUncheckedUpdateWithoutTeamsInputSchema: z.ZodType<Prisma.TaskUn
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   task_creator: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  due_date: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  due_date: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   task_title: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   task_description: z.union([ z.string().max(2048, { message: "please keep it  under 2048 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
@@ -4668,7 +4614,7 @@ export const TaskUncheckedUpdateManyWithoutTeamsInputSchema: z.ZodType<Prisma.Ta
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   task_creator: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  due_date: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  due_date: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   task_title: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   task_description: z.union([ z.string().max(2048, { message: "please keep it  under 2048 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
@@ -4831,7 +4777,7 @@ export const TaskCreateManyUsersInputSchema: z.ZodType<Prisma.TaskCreateManyUser
   created_at: z.coerce.date().optional(),
   updated_at: z.coerce.date().optional(),
   team_id: z.string().optional().nullable(),
-  due_date: z.coerce.date().optional().nullable(),
+  due_date: z.coerce.date(),
   task_title: z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),
   task_description: z.string().max(2048, { message: "please keep it  under 2048 characters." }).optional().nullable()
 }).strict();
@@ -4862,7 +4808,7 @@ export const TaskUpdateWithoutUsersInputSchema: z.ZodType<Prisma.TaskUpdateWitho
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  due_date: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  due_date: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   task_title: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   task_description: z.union([ z.string().max(2048, { message: "please keep it  under 2048 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   teams: z.lazy(() => TeamUpdateOneWithoutTasksNestedInputSchema).optional()
@@ -4873,7 +4819,7 @@ export const TaskUncheckedUpdateWithoutUsersInputSchema: z.ZodType<Prisma.TaskUn
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  due_date: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  due_date: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   task_title: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   task_description: z.union([ z.string().max(2048, { message: "please keep it  under 2048 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
@@ -4883,7 +4829,7 @@ export const TaskUncheckedUpdateManyWithoutUsersInputSchema: z.ZodType<Prisma.Ta
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  due_date: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  due_date: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   task_title: z.union([ z.string().min(1, { message: "please use at least 1 character." }).max(64, { message: "please keep it under 64 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   task_description: z.union([ z.string().max(2048, { message: "please keep it  under 2048 characters." }),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
