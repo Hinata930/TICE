@@ -20,7 +20,7 @@ export default async function RootLayout({
   return (
     <ClerkProvider>
       <html lang="ja">
-        <body className={inter.className}>
+        <body className={`${inter.className}`}>
           {children}
           <Analytics />
           <SpeedInsights />

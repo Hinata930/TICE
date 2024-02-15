@@ -10,12 +10,10 @@ export default async function LoggedInLayout({
     <>
       <Header />
       {/* flexでサイドバーとchildrenを横並びにする。top-16はヘッダー分 */}
-      <div className="flex relative top-16 w-screen">
+      <div className="flex relative top-16 100%">
         <Sidebar />
-        <div className="relative left-[50px] h-auto md:left-64">
-          <div className='child-width h-full'>
-            {children}
-          </div>
+        <div className="relative left-[50px] h-auto child-width md:left-64">
+          {children}
         </div>
       </div>
     </>  

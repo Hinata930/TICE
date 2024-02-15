@@ -14,7 +14,7 @@ export default async function Modal({ isOpen, onClose, children }: Props) {
     <>
       <button onClick={onClose} aria-label='close' className='fixed top-0 left-0 w-screen h-screen bg-opacity-50 bg-neutral-900 z-30'>
       </button>
-      <div className='fixed mx-auto inset-32 rounded-lg z-50 bg-[var(--color-base-gray)]'>
+      <div className='fixed inset-32 rounded-lg z-50 bg-[var(--color-base-gray)]'>
         {children} {/* TaskDetailsModalコンポーネントがここに入る */}
       </div>
     </>

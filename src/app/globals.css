@@ -46,7 +46,7 @@
 }
 
 .child-width {
-  width: calc(100vw - 50px);
+  width: calc((100vw - (100vw - 100%)) - 50px);
 }
 
 .team-task-title-width {
@@ -55,6 +55,6 @@
 
 @media (min-width: 768px) {
   .child-width {
-    width: calc(100vw - 255px);
+    width: calc((100vw - (100vw - 100%)) - 256px);
   }
 }

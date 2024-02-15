@@ -1,5 +1,6 @@
 import { EditForm } from "@/app/components/team/task/edit-form"; 
-import { fetchTask } from "@/app/lib/data";
+import { fetchTask, fetchTeam } from "@/app/lib/data";
+import { notFound } from "next/navigation";
 
 export default async function Page({ 
   params 
@@ -9,6 +10,10 @@ export default async function Page({
     task_id: string 
   } 
 }) {
+  const team = await fetchTeam(params.team_id);
+  if (!team) {
+    notFound();
+  }
   const task = await fetchTask(params.task_id);
 
   return (

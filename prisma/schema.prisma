@@ -87,6 +87,7 @@ model Team {
   team_parent_child_team_b      TeamParentChild[] @relation(name: "team_parent_child_team_b")
   team_parent_child_parent_team TeamParentChild[] @relation(name: "team_parent_child_parent_team")
   team_parent_child_child_team  TeamParentChild[] @relation(name: "team_parent_child_child_team")
+  team_invites                  TeamInvites[]
 
   @@map("teams")
 }
@@ -122,6 +123,7 @@ model User {
   user_role     UserRole[]
   user_team     UserTeam[]
   teams         Team[]
+  team_invites  TeamInvites[]
 
   @@map("users")
 }
@@ -165,4 +167,18 @@ model TeamParentChild {
 
   @@unique([team_a, team_b])
   @@map("team_parent_child")
+}
+
+model TeamInvites {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at DateTime @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
+  updated_at DateTime @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
+  user_id    String?  @db.Uuid
+  team_id    String?  @db.Uuid
+
+  users      User?    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  teams      Team?   @relation(fields: [team_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, team_id])
+  @@map("team_invites")
 }
