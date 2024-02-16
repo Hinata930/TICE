@@ -329,6 +329,7 @@ export async function fetchTasksByTeamId(teamId: string) {
 
 // teamの配列を入れて{ チームオブジェクト, タスクの配列 }
 export async function fetchTasksByTeams(teams: Team[]) {
+  noStore();
   return await Promise.all(
     teams.map(async (team) => {
       const tasks = await fetchTasksByTeamId(team.id);
@@ -388,4 +389,38 @@ export async function fetchWeeklyTasks( teams: Team[] ) {
   });
 
   return weeklyTeamTasks;
+}
+
+export async function fetchTeamsByTeamIds(teamIds: string[]) {
+  try {
+    const teams = teamIds.map(async (teamId) => {
+      return await prisma.team.findUnique({
+        where: { id: teamId }
+      });
+    })
+
+    return Promise.all(teams);
+  } catch(error) {
+    console.error('Database Error', error);
+    throw new Error('Failed to fetch teams.');
+  }
+}
+
+// userのidでuserが訪問したチームのArrayを取得
+export async function fetchVisitedTeamIdsByUserId( userId: string ) {
+  try {
+    const visitedTeams = await prisma.visitedTeam.findMany({
+      where: {user_id: userId},
+    });
+    const teams = visitedTeams.map(async (visitedTeam) => {
+      return await prisma.team.findUnique({
+        where: { id: visitedTeam.team_id }
+      });
+    });
+
+    return Promise.all(teams);
+  } catch(error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch visited teams.');
+  }
 }

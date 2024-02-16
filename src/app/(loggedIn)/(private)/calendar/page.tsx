@@ -1,6 +1,8 @@
 import { Calendar } from "@/app/components/calendar/calendar";
+import { CalendarSkeleton } from "@/app/components/calendar/skeleton";
 import { fetchCurrentUser } from "@/app/lib/data";
 import { currentUser } from "@clerk/nextjs";
+import { Suspense } from "react";
 
 
 export default async function Page() {
@@ -14,7 +16,9 @@ export default async function Page() {
   return (
     <>
       <div className='w-full child-height'>
-        <Calendar userId={user.id} />
+        <Suspense fallback={<CalendarSkeleton />}>
+          <Calendar userId={user.id} />
+        </Suspense>
       </div>
     </>
   );

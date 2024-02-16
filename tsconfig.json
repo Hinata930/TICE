@@ -22,7 +22,7 @@
       "@/prisma-types": ["./prisma/generated/zod/index.ts"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/lib/actions/visited-teamts"],
   "exclude": ["node_modules"],
   "strict": true,
   "strictNullChecks": true
