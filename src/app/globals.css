@@ -49,12 +49,24 @@
   width: calc(100% - 50px);
 }
 
+.child-height {
+  height: calc(100vh - 64px);
+}
+
 .modal-description-height {
   height: calc(100vh - (256px + (8px + 32px) + 16px + (68px + 24px + 2px + 24px) + 38px + 16px));
 }
 
 .team-task-title-width {
   max-width: calc(100vw - 576px);
+}
+
+.calendar-date-width {
+  min-height: calc(100% / 7);
+}
+
+.calendar-height {
+  height: calc(100vh - (64px + 36px))
 }
 
 @media (min-width: 768px) {

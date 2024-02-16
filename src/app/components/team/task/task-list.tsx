@@ -73,9 +73,12 @@ export default function TaskList({ tasks, user }: props) {
                     </p>
                   </div>
                   {/* 内容 */}
-                  <p className='flex line-clamp-1 w-full text-gray-500'>
-                    {task.task_description ? task.task_description : ' '}
-                  </p>
+                  <div className='flex justify-self-start w-full'>
+                    <p className='line-clamp-1 text-gray-500'>
+                      {task.task_description ? task.task_description : ' '}
+                    </p>
+                  </div>
+                  
                 </div>
                 <div className='flex flex-row items-center w-full'>
                   {/* タスク作った人の image と username */}

@@ -49,7 +49,7 @@ export function fetchCurrentDate() {
   return plusLocal.toISOString().split('T')[0];
 }
 
-// yyyy年mm月dd日にする
+// yyyy年mm月dd日にする(日本の日時にする)
 export function convertDateToJapaneseFormatDate(postgresDate: Date) {
   // PostgreSQLのDate型からDateオブジェクトを作成
   const dateObject = new Date(postgresDate);
@@ -71,4 +71,42 @@ export function convertTimeToJapaneseFormatTime(postgresDate: Date) {
   const formattedDate = new Intl.DateTimeFormat('ja-jp', options).format(dateObject)
 
   return formattedDate;
+}
+
+// 最後の2文字を取り出す
+export function getLastTwoCharacters(input: string) {
+  if (input.length < 2) {
+    return input; // 文字列が2文字未満の場合、そのまま返す
+  }
+  return input.slice(-2); // 文字列の最後の2文字を返す
+}
+
+// numberから曜日を取得
+export function convertIndexToJapaneseDayOfWeek(input: number) {
+  switch (input) {
+    case 0:
+      return '日';
+
+    case 1:
+      return '月';
+
+    case 2:
+      return '火';
+
+    case 3:
+      return '水';
+
+    case 4:
+      return '木';
+    
+    case 5:
+      return '金';
+
+    case 6:
+      return '土';
+
+    default:
+      console.log(input);
+      return '？';
+  }
 }

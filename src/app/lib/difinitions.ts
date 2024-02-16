@@ -1,7 +1,15 @@
-export type team = {
-  id: string
-  created_at: Date
-  updated_at: Date
-  team_name: string
-  creator: string | null
+import { Task, Team } from "@prisma/client";
+
+export type TeamTask = {
+  team: Team;
+  tasks: Task[];
+}
+
+export type WeeklyTask = {
+  date: string,
+  dayOfWeek: number,
+  teamTasks: {
+    team: Team | null,
+    tasks: Task[], 
+  }[],
 }

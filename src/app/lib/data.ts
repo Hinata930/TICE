@@ -1,8 +1,10 @@
 'use server'
 
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Task, Team } from "@prisma/client";
 import { unstable_noStore as noStore } from "next/cache"; 
-import { team } from "./difinitions"; 
+import { addDays, startOfWeek, endOfWeek, format } from 'date-fns';
+import { WeeklyTask } from "./difinitions";
+import { fetchCurrentDate } from "./utils";
 
 const prisma = new PrismaClient();
 
@@ -80,7 +82,7 @@ export async function fetchTeams(user_id: string) {
       return userTeam.team_id;
     });
 
-    const teamList: Promise<team>[] = teamIdList.map(async (teamId) => {
+    const teamList: Promise<Team>[] = teamIdList.map(async (teamId) => {
       try {
         const team = await prisma.team.findUnique({
           where: { id: teamId },
@@ -239,6 +241,7 @@ export async function fetchTasksPages(
 
 // taskのidでtaskを取得したいときに使う
 export async function fetchTask(taskId: string) {
+  noStore();
   try {
     const task = await prisma.task.findUnique({
       where: {
@@ -258,6 +261,7 @@ export async function fetchTask(taskId: string) {
 
 // task_idでcreatorのuserのデータを取得したいときに使う
 export async function fetchTaskCreator(taskId: string) {
+  noStore();
   try {
     const task = await prisma.task.findUnique({
       where: {
@@ -289,6 +293,7 @@ export async function findUserTeamRole(
   teamId: string,
   userId: string,
 ) {
+  noStore();
   try {
     const role = await prisma.userRole.findFirst({
       where: {
@@ -305,4 +310,82 @@ export async function findUserTeamRole(
   } catch(error) {
     throw new Error('Failed to find user role at team.');
   }
+}
+
+// 特定のチームのtaskのリストを返す
+export async function fetchTasksByTeamId(teamId: string) {
+  noStore();
+  try {
+    return await prisma.task.findMany({
+      where: {
+        team_id: teamId,
+      },
+    });
+  } catch(error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch tasks by team.');
+  }
+}
+
+// teamの配列を入れて{ チームオブジェクト, タスクの配列 }
+export async function fetchTasksByTeams(teams: Team[]) {
+  return await Promise.all(
+    teams.map(async (team) => {
+      const tasks = await fetchTasksByTeamId(team.id);
+      return { team, tasks };
+    })
+  );
+}
+
+// 一週間分のタスクをチームごとに取得する関数
+export async function fetchWeeklyTasks( teams: Team[] ) {
+  noStore();
+  const japaneseDate = fetchCurrentDate(); // yyyy-mm-ddのみ
+  
+  const startDate = startOfWeek(new Date(japaneseDate), { weekStartsOn: 0 }); // 今週の日曜日
+  const endDate = addDays(startDate, 6); // 今週の土曜日
+
+  // 一週間の日付を生成(日曜から土曜まで入れる)
+  const weekDates: Date[] = [];
+  let currentDate = startDate;
+  while (currentDate <= endDate) {
+    weekDates.push(currentDate);
+    currentDate = addDays(currentDate, 1);
+  }
+
+  // チームごとのタスクを取得
+  const tasksByTeams = await fetchTasksByTeams(teams);
+
+  // 一週間分のタスクを入れるオブジェクトの配列 
+  const weeklyTeamTasks: WeeklyTask[] = weekDates.map(date => ({
+    date: format(date, 'yyyy-MM-dd'),
+    dayOfWeek: -1,
+    teamTasks: tasksByTeams.map(() => {
+      return {
+        team: null,
+        tasks: [],
+      };
+    }) // チームの数だけteamTasks作る
+  }));
+
+
+  // チームごとのタスクを日付ごとに振り分ける
+  weekDates.forEach((date, weekIndex) => { // 日付でわける
+    weeklyTeamTasks[weekIndex].dayOfWeek = weekIndex; // 曜日
+    weeklyTeamTasks[weekIndex].teamTasks.forEach((dailyTaskTeam, index) => { // チームで分ける
+      tasksByTeams.forEach((taskTeam, taskIndex) => { // tasksByTeamsとweeklyTeamTasks.teamTasks同じ
+        if (index === taskIndex) {
+          taskTeam.tasks.forEach((task) => {
+            const taskDueDate = new Date(task.due_date); 
+            if (taskDueDate.toDateString() === date.toDateString()) {
+              weeklyTeamTasks[weekIndex].teamTasks[index].tasks.push(task);
+              weeklyTeamTasks[weekIndex].teamTasks[index].team = taskTeam.team;
+            }
+          });
+        }
+      });
+    })
+  });
+
+  return weeklyTeamTasks;
 }
