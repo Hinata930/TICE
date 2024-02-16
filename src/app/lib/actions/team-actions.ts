@@ -89,10 +89,8 @@ export async function CreateTeam(
       },
     });
   } catch(error) {
-    console.error('Error:', error)
-    return {
-      message: 'Database Error: Failed to inserting team.',
-    } 
+    console.error('Database Error:', error);
+    throw new Error('Failed to inserting team.')
   } 
 }
 

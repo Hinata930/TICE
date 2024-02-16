@@ -6,7 +6,7 @@ import { Fragment, useState } from 'react';
 import TaskDatailModal from '@/app/components/team/task/task-details-modal';
 import Modal from '@/app/components/team/task/modal';
 import { User } from '@prisma/client';
-import { DeleteTaskButton, UpdateTaskButton } from '@/app/components/team/task/buttons';
+
 
 interface Task {
   id: string;
@@ -33,10 +33,9 @@ interface Task {
 interface props {
   tasks: Task[];
   user: User;
-  teamId: string;
 };
 
-export default function TaskList({ tasks, user, teamId }: props) {
+export default function TaskList({ tasks, user }: props) {
   const [selectedTask, setSelectedTask] = useState<string | null>(null);
   const [taskModals, setTaskModals] = useState<{ [taskId: string]: boolean }>({});
 
@@ -61,20 +60,13 @@ export default function TaskList({ tasks, user, teamId }: props) {
                 className='mb-2 w-full rounded-md bg-white p-4 hover:translate-y-[-1px] hover:shadow'
               >
                 <div className='flex flex-col items-center'>
+                  {/* 提出期限 */}
                   <div className='flex w-full pb-1'>
                     <p className='text-gray-500'>
                       提出期限：{convertDateToJapaneseFormatDate(task.due_date)}
                     </p>
-                    <div className='flex-grow'></div>
-                    {user.id === task.task_creator &&
-                      <div className='flex flex-grow-0 flex-row'>
-                        <UpdateTaskButton teamId={teamId} taskId={task.id} />
-                        <div className='w-1'></div>
-                        <DeleteTaskButton taskId={task.id} />
-                      </div>
-                    }
                   </div>
-                  
+                  {/* タイトル */}
                   <div className='flex flex-row items-center w-full pb-[2px]'>
                     <p className='flex justify-start text-2xl text-[var(--color-black)] font-medium line-clamp-1'>
                       {task.task_title}
@@ -86,6 +78,7 @@ export default function TaskList({ tasks, user, teamId }: props) {
                   </p>
                 </div>
                 <div className='flex flex-row items-center w-full'>
+                  {/* タスク作った人の image と username */}
                   <Image
                     src={task.users ? task.users.image_url : '/preview.png'}
                     className='mr-2 rounded-full'
@@ -97,13 +90,15 @@ export default function TaskList({ tasks, user, teamId }: props) {
                     {task.users ? task.users.username : '作成者'}
                   </p>
                   <div className='flex-grow'></div>
+                  {/* 作成日時 */}
                   <p className='flex-grow-0 text-sm text-gray-500 min-w-64'>
                     {`課題の作成日時：${convertTimeToJapaneseFormatTime(task.created_at)}`}
                   </p>
                 </div>
               </button>
+              {/* クリックしたら出現するモーダル */}
               <Modal isOpen={taskModals[task.id] || false} onClose={handleCloseModal}>
-                {taskModals[task.id] && <TaskDatailModal taskId={task.id} user={user} />} 
+                {taskModals[task.id] && <TaskDatailModal taskId={task.id} user={user}/>} 
               </Modal>
             </Fragment>
           ))}

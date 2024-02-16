@@ -16,6 +16,6 @@ export default async function TasksTable({
   const tasks = await fetchFilteredTasks(query, currentPage, teamId);
 
   return (
-    <TaskList tasks={tasks} user={user} teamId={teamId} />
+    <TaskList tasks={tasks} user={user}/>
   );
 }

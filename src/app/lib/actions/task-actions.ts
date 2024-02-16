@@ -66,6 +66,7 @@ export async function CreateTask(
     });
   } catch(error) {
     console.error('Database Error:', error);
+    throw new Error('Failed to inserting task.');
   }
 }
 
@@ -101,10 +102,8 @@ export async function UpdateTask(
       },
     });
   } catch(error) {
-    console.error('Error:', error)
-    return {
-      message: 'Database Error: Failed to update task.',
-    }
+    console.error('Database Error:', error);
+    throw new Error('Failed to updating task.');
   }
 }
 
@@ -118,8 +117,6 @@ export async function DeleteTask( id: string ) {
     revalidatePath('./');
   } catch(error) {
     console.error('Database Error:', error);
-    return {
-      message: 'Database Error: Failed to delete task.',
-    }
+    throw new Error('Failed to deleting task.')
   }
 }
