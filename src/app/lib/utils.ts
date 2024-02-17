@@ -43,7 +43,6 @@ export function fetchCurrentDate() {
   const jstDate = new Intl.DateTimeFormat('ja-jp', options).format(dateObject);
 
   const formattedDate = jstDate.replace(/\//g, "-");
-  console.log(formattedDate)
   return formattedDate;
 }
 

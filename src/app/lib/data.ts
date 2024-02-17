@@ -552,7 +552,7 @@ export async function fetchTasksByDateForCurrentWeekByTeam( teamId: string ) {
 // あるチームの今週のタスクを日付ごとに分けて取得する。期限が過ぎたタスクは取得しない。
 export async function fetchValidTasksByDateForCurrentWeekByTeam( teamId: string ) {
   noStore();
-  const japaneseDate = fetchCurrentDate(); // yyyy-mm-ddのみ
+  const japaneseDate = new Date(fetchCurrentDate()); // yyyy-mm-ddのみ
   
   const startDate = startOfWeek(new Date(japaneseDate), { weekStartsOn: 0 }); // 今週の日曜日
   const endDate = addDays(startDate, 6); // 今週の土曜日
