@@ -670,3 +670,16 @@ export async function fetchUserArrayByTeamId(teamId: string) {
 
 
 
+// usernameからuserをgetする関数
+export async function getUserByUsername(username: string) {
+  try {
+    return await prisma.user.findFirst({
+      where: {
+        username,
+      },
+    });
+  } catch(error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to get user.');
+  }
+}

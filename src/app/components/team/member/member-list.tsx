@@ -1,6 +1,7 @@
 import { fetchUserArrayByTeamId } from '@/app/lib/data';
 import { Fragment } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 
 interface props {
@@ -13,9 +14,18 @@ export default async function MemberList({ teamId }: props) {
     <>
       <div className='flex flex-col w-full'>
         <div className='border-b-2 border-[var(--color-light-gray)] w-full'>
-          <h2 className='text-3xl text-[var(--color-black)] font-medium p-4'>
-            メンバー一覧
-          </h2>
+          <div className='flex flex-row p-4'>
+            <h2 className='flex flex-grow text-3xl text-[var(--color-black)] font-medium'>
+              メンバー一覧
+            </h2>
+            <Link
+              href={`/team/${teamId}/invite`}
+              className='flex flex-grow-0 items-end'
+            >
+              メンバーを追加
+            </Link>
+          </div>
+          
         </div>
         <div className='px-4 pt-2'>
           {userArray.map((user) => (

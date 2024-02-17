@@ -2,23 +2,24 @@
 
 import { PrismaClient } from '@prisma/client'; 
 import { z } from 'zod';
+import { getUserByUsername } from '../data';
 
 const prisma = new PrismaClient();
 
 const teamInvitesSchema = z.object({
-  user_id: z.string(),
+  username: z.string(),
 });
 
 // https://ja.react.dev/reference/react-dom/hooks/useFormState
 export type State = {
   errors?: {
-    user_id?: string[];
+    username?: string[];
   }
   message?: string | null;
 }
 
 interface FormData {
-  user_id: string;
+  username: string;
 }
 
 
@@ -30,7 +31,7 @@ export async function createTeamInvites(
 ) {
   // Validate form using Zod
   const validatedFields = teamInvitesSchema.safeParse({
-    user_id: formData.user_id,
+    username: formData.username,
   });
 
   if (!validatedFields.success) {
@@ -40,13 +41,15 @@ export async function createTeamInvites(
     }
   }
 
-  const { user_id } = validatedFields.data;
+  const { username } = validatedFields.data;
+
+  const user = await getUserByUsername(username);
 
   // Insert data into the database
   try {
     const newInvite = await prisma.teamInvites.create({
       data: {
-        user_id,
+        user_id: user?.id,
         team_id,
       }, 
     });

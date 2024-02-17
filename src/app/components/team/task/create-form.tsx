@@ -15,11 +15,11 @@ interface FormData {
 
 interface Props {
   currentUserId: string
-  team_id: string
+  teamId: string
 }
 
 
-export function CreateForm({ currentUserId, team_id }: Props) {
+export function CreateForm({ currentUserId, teamId }: Props) {
   const { 
     register, 
     handleSubmit, 
@@ -31,14 +31,14 @@ export function CreateForm({ currentUserId, team_id }: Props) {
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
-      const result = await CreateTask(currentUserId, team_id, { message: '', errors: {} }, data);
+      const result = await CreateTask(currentUserId, teamId, { message: '', errors: {} }, data);
       if (result?.message) {
         console.error('Error:', result.message);
       } else {
         console.log('Task created successfully!');
         // Reset the form after successful submission
         reset();
-        router.push(`/revalidate?path=/team/${team_id}/task`);
+        router.push(`/revalidate?path=/team/${teamId}/task`);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -133,7 +133,7 @@ export function CreateForm({ currentUserId, team_id }: Props) {
         </div>
         <div className='mt-6 flex justify-end gap-4'>
           <Link
-            href={`/team/${team_id}/task`}
+            href={`/team/${teamId}/task`}
             className='flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200'
           >
             キャンセル
