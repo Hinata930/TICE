@@ -37,10 +37,12 @@ export function generatePagination(
 // ISOStringの日本の日付 (yyyy-mm-dd)
 export function fetchCurrentDate() {
   const dateObject = new Date();
+  console.log(dateObject)
 
   // yyyy年mm月dd日の形式に変換
   const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: '2-digit', day: '2-digit' };
   const jstDate = new Intl.DateTimeFormat('ja-jp', options).format(dateObject);
+  console.log(jstDate);
 
   const formattedDate = jstDate.replace(/\//g, "-");
   return formattedDate;

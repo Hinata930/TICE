@@ -554,7 +554,7 @@ export async function fetchValidTasksByDateForCurrentWeekByTeam( teamId: string 
   noStore();
   const japaneseDate = new Date(fetchCurrentDate());
   
-  const startDate = startOfWeek(japaneseDate, { weekStartsOn: 0 }); // 今週の日曜日
+  const startDate = startOfWeek(new Date(japaneseDate), { weekStartsOn: 0 }); // 今週の日曜日
   const endDate = addDays(startDate, 6); // 今週の土曜日
 
   // 一週間の日付を生成(日曜から土曜まで入れる)
