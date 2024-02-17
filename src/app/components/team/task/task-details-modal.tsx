@@ -1,5 +1,5 @@
 import { fetchTask, fetchTaskCreator } from '@/app/lib/data';
-import { convertDateToJapaneseFormatDate } from '@/app/lib/utils';
+import { convertDateToJapaneseFormatDate, fetchCurrentDate } from '@/app/lib/utils';
 import { User } from '@prisma/client';
 import Image from 'next/image';
 import { useEffect, useState } from 'react'; 
@@ -43,7 +43,7 @@ export default function TaskDetailModal({ taskId, user }: props) {
   }, [taskId]);
 
 
-  const currentDate = new Date();
+  const currentDate = new Date(fetchCurrentDate());
   const dueDateJapaneseFormat = convertDateToJapaneseFormatDate(task? task.due_date: new Date(0-0-0));
   const daysUntilDueDate = Math.floor(task? ((task.due_date.getTime() - currentDate.getTime()) / 1000 / 60 / 60 / 24): 1);
 
@@ -60,7 +60,7 @@ export default function TaskDetailModal({ taskId, user }: props) {
             <div className='flex flex-row items-center w-auto'>
               <Image
                 src={taskCreator? taskCreator.image_url: '/preview.png'}
-                className='mr-2 rounded-full'
+                className="mr-2 rounded-full"
                 width={16}
                 height={16}
                 alt={`${taskCreator? taskCreator.username: '読み込み中'}のプロフィール写真`}
