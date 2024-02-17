@@ -366,7 +366,7 @@ export async function fetchTasksByTeams(teams: Team[]) {
 // 一週間分のタスクをチームごとに取得する関数
 export async function fetchWeeklyTasks( teams: Team[] ) {
   noStore();
-  const japaneseDate = fetchCurrentDate(); // yyyy-mm-ddのみ
+  const japaneseDate = new Date(fetchCurrentDate());
   
   const startDate = startOfWeek(new Date(japaneseDate), { weekStartsOn: 0 }); // 今週の日曜日
   const endDate = addDays(startDate, 6); // 今週の土曜日
@@ -511,7 +511,7 @@ export async function fetchValidTasksForTodayByTeam(teamId: string) {
 // あるチームの今週のタスクを日付ごとに分けて取得する。
 export async function fetchTasksByDateForCurrentWeekByTeam( teamId: string ) {
   noStore();
-  const japaneseDate = fetchCurrentDate(); // yyyy-mm-ddのみ
+  const japaneseDate = new Date(fetchCurrentDate());
   
   const startDate = startOfWeek(new Date(japaneseDate), { weekStartsOn: 0 }); // 今週の日曜日
   const endDate = addDays(startDate, 6); // 今週の土曜日
@@ -552,9 +552,9 @@ export async function fetchTasksByDateForCurrentWeekByTeam( teamId: string ) {
 // あるチームの今週のタスクを日付ごとに分けて取得する。期限が過ぎたタスクは取得しない。
 export async function fetchValidTasksByDateForCurrentWeekByTeam( teamId: string ) {
   noStore();
-  const japaneseDate = new Date(fetchCurrentDate()); // yyyy-mm-ddのみ
+  const japaneseDate = new Date(fetchCurrentDate());
   
-  const startDate = startOfWeek(new Date(japaneseDate), { weekStartsOn: 0 }); // 今週の日曜日
+  const startDate = startOfWeek(japaneseDate, { weekStartsOn: 0 }); // 今週の日曜日
   const endDate = addDays(startDate, 6); // 今週の土曜日
 
   // 一週間の日付を生成(日曜から土曜まで入れる)
