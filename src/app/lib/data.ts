@@ -118,7 +118,7 @@ export async function fetchTeams(user_id: string) {
 
 
 // taskのsearchに使う
-const tasksItemsPerPage = 6;
+const tasksItemsPerPage = 4;
 export async function fetchFilteredTasks(
   query: string,
   currentPage: number,
