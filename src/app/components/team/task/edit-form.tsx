@@ -12,15 +12,16 @@ interface FormData {
 }
 
 interface Props {
-  team_id: string
-  task_id: string
-  taskTitle: string
-  taskDescription: string | null
-  taskDate: Date | null
+  teamId: string;
+  userId: string;
+  taskId: string;
+  taskTitle: string;
+  taskDescription: string | null;
+  taskDate: Date | null;
 }
 
 
-export function EditForm({ team_id, task_id, taskTitle, taskDescription, taskDate }: Props) {
+export function EditForm({ teamId, taskId, userId, taskTitle, taskDescription, taskDate }: Props) {
   const { 
     register, 
     handleSubmit, 
@@ -33,14 +34,14 @@ export function EditForm({ team_id, task_id, taskTitle, taskDescription, taskDat
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
-      const result = await UpdateTask( task_id, { message: '', errors: {} }, data);
+      const result = await UpdateTask( taskId, userId, { message: '', errors: {} }, data);
       if (result?.message) {
         console.error('Error:', result.message);
       } else {
         console.log('Task Edited successfully!');
         // Reset the form after successful submission
         reset();
-        router.push(`/revalidate?path=/team/${team_id}/task`);
+        router.push(`/revalidate?path=/team/${teamId}/task`);
       }
     } catch (error) {
       console.error('Error:', error);

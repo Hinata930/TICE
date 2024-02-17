@@ -110,3 +110,4 @@ export function convertIndexToJapaneseDayOfWeek(input: number) {
       return '？';
   }
 }
+

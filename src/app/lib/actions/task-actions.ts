@@ -64,6 +64,22 @@ export async function CreateTask(
         task_description,
       },
     });
+
+    const activityType = await prisma.teamActivityType.findFirst({
+      where: {
+        activity_type: 'NewTaskCreated',
+      },
+    });
+    if (activityType) {
+      await prisma.teamActivity.create({
+        data: {
+          user_id: newTask.task_creator,
+          team_id: newTask.team_id,
+          activity_type: activityType.id,
+        },
+      });
+    }
+    
   } catch(error) {
     console.error('Database Error:', error);
     throw new Error('Failed to inserting task.');
@@ -73,7 +89,8 @@ export async function CreateTask(
 
 // task更新
 export async function UpdateTask(
-  task_id: string, 
+  taskId: string, 
+  userId: string,
   prevstate: State,
   formData: FormData, 
 ) {
@@ -94,13 +111,29 @@ export async function UpdateTask(
 
   try {
     const updatedTask = await prisma.task.update({
-      where: { id: task_id },
+      where: { id: taskId },
       data: {
         due_date,
         task_title,
         task_description,
       },
     });
+
+    const activityType = await prisma.teamActivityType.findFirst({
+      where: {
+        activity_type: 'TaskUpdated',
+      },
+    });
+    if (activityType) {
+      await prisma.teamActivity.create({
+        data: {
+          user_id: userId,
+          team_id: updatedTask.team_id,
+          activity_type: activityType.id,
+        },
+      });
+    }
+
   } catch(error) {
     console.error('Database Error:', error);
     throw new Error('Failed to updating task.');
@@ -109,11 +142,29 @@ export async function UpdateTask(
 
 
 // task削除
-export async function DeleteTask( id: string ) {
+export async function DeleteTask( id: string, userId: string ) {
   try {
-    await prisma.task.delete({
+    const task = await prisma.task.findUnique({
       where: { id },
     });
+
+    if (task) {
+      const activityType = await prisma.teamActivityType.findFirst({
+        where: {
+          activity_type: 'TaskDeleted',
+        },
+      });
+      if (activityType) {
+        await prisma.teamActivity.create({
+          data: {
+            user_id: userId,
+            team_id: task.team_id,
+            activity_type: activityType.id,
+          },
+        });
+      }
+    }
+
     revalidatePath('./');
   } catch(error) {
     console.error('Database Error:', error);

@@ -30,6 +30,10 @@ export const TeamInvitesScalarFieldEnumSchema = z.enum(['id','created_at','updat
 
 export const VisitedTeamScalarFieldEnumSchema = z.enum(['id','createdAt','updatedAt','user_id','team_id']);
 
+export const TeamActivityTypeScalarFieldEnumSchema = z.enum(['id','createdAt','updatedAt','activity_type']);
+
+export const TeamActivityScalarFieldEnumSchema = z.enum(['id','createdAt','updatedAt','user_id','team_id','activity_type']);
+
 export const SortOrderSchema = z.enum(['asc','desc']);
 
 export const QueryModeSchema = z.enum(['default','insensitive']);
@@ -170,11 +174,39 @@ export const VisitedTeamSchema = z.object({
   id: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-  user_id: z.string(),
-  team_id: z.string(),
+  user_id: z.string().nullable(),
+  team_id: z.string().nullable(),
 })
 
 export type VisitedTeam = z.infer<typeof VisitedTeamSchema>
+
+/////////////////////////////////////////
+// TEAM ACTIVITY TYPE SCHEMA
+/////////////////////////////////////////
+
+export const TeamActivityTypeSchema = z.object({
+  id: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  activity_type: z.string(),
+})
+
+export type TeamActivityType = z.infer<typeof TeamActivityTypeSchema>
+
+/////////////////////////////////////////
+// TEAM ACTIVITY SCHEMA
+/////////////////////////////////////////
+
+export const TeamActivitySchema = z.object({
+  id: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  user_id: z.string().nullable(),
+  team_id: z.string().nullable(),
+  activity_type: z.string().nullable(),
+})
+
+export type TeamActivity = z.infer<typeof TeamActivitySchema>
 
 /////////////////////////////////////////
 // SELECT & INCLUDE
@@ -255,6 +287,7 @@ export const TeamIncludeSchema: z.ZodType<Prisma.TeamInclude> = z.object({
   team_parent_child_child_team: z.union([z.boolean(),z.lazy(() => TeamParentChildFindManyArgsSchema)]).optional(),
   team_invites: z.union([z.boolean(),z.lazy(() => TeamInvitesFindManyArgsSchema)]).optional(),
   visited_team: z.union([z.boolean(),z.lazy(() => VisitedTeamFindManyArgsSchema)]).optional(),
+  team_activity: z.union([z.boolean(),z.lazy(() => TeamActivityFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => TeamCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -278,6 +311,7 @@ export const TeamCountOutputTypeSelectSchema: z.ZodType<Prisma.TeamCountOutputTy
   team_parent_child_child_team: z.boolean().optional(),
   team_invites: z.boolean().optional(),
   visited_team: z.boolean().optional(),
+  team_activity: z.boolean().optional(),
 }).strict();
 
 export const TeamSelectSchema: z.ZodType<Prisma.TeamSelect> = z.object({
@@ -297,6 +331,7 @@ export const TeamSelectSchema: z.ZodType<Prisma.TeamSelect> = z.object({
   team_parent_child_child_team: z.union([z.boolean(),z.lazy(() => TeamParentChildFindManyArgsSchema)]).optional(),
   team_invites: z.union([z.boolean(),z.lazy(() => TeamInvitesFindManyArgsSchema)]).optional(),
   visited_team: z.union([z.boolean(),z.lazy(() => VisitedTeamFindManyArgsSchema)]).optional(),
+  team_activity: z.union([z.boolean(),z.lazy(() => TeamActivityFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => TeamCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -333,6 +368,7 @@ export const UserIncludeSchema: z.ZodType<Prisma.UserInclude> = z.object({
   teams: z.union([z.boolean(),z.lazy(() => TeamFindManyArgsSchema)]).optional(),
   team_invites: z.union([z.boolean(),z.lazy(() => TeamInvitesFindManyArgsSchema)]).optional(),
   visited_team: z.union([z.boolean(),z.lazy(() => VisitedTeamFindManyArgsSchema)]).optional(),
+  team_activity: z.union([z.boolean(),z.lazy(() => TeamActivityFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => UserCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -352,6 +388,7 @@ export const UserCountOutputTypeSelectSchema: z.ZodType<Prisma.UserCountOutputTy
   teams: z.boolean().optional(),
   team_invites: z.boolean().optional(),
   visited_team: z.boolean().optional(),
+  team_activity: z.boolean().optional(),
 }).strict();
 
 export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z.object({
@@ -370,6 +407,7 @@ export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z.object({
   teams: z.union([z.boolean(),z.lazy(() => TeamFindManyArgsSchema)]).optional(),
   team_invites: z.union([z.boolean(),z.lazy(() => TeamInvitesFindManyArgsSchema)]).optional(),
   visited_team: z.union([z.boolean(),z.lazy(() => VisitedTeamFindManyArgsSchema)]).optional(),
+  team_activity: z.union([z.boolean(),z.lazy(() => TeamActivityFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => UserCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -472,6 +510,62 @@ export const VisitedTeamSelectSchema: z.ZodType<Prisma.VisitedTeamSelect> = z.ob
   team_id: z.boolean().optional(),
   user: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
   team: z.union([z.boolean(),z.lazy(() => TeamArgsSchema)]).optional(),
+}).strict()
+
+// TEAM ACTIVITY TYPE
+//------------------------------------------------------
+
+export const TeamActivityTypeIncludeSchema: z.ZodType<Prisma.TeamActivityTypeInclude> = z.object({
+  team_activity: z.union([z.boolean(),z.lazy(() => TeamActivityFindManyArgsSchema)]).optional(),
+  _count: z.union([z.boolean(),z.lazy(() => TeamActivityTypeCountOutputTypeArgsSchema)]).optional(),
+}).strict()
+
+export const TeamActivityTypeArgsSchema: z.ZodType<Prisma.TeamActivityTypeDefaultArgs> = z.object({
+  select: z.lazy(() => TeamActivityTypeSelectSchema).optional(),
+  include: z.lazy(() => TeamActivityTypeIncludeSchema).optional(),
+}).strict();
+
+export const TeamActivityTypeCountOutputTypeArgsSchema: z.ZodType<Prisma.TeamActivityTypeCountOutputTypeDefaultArgs> = z.object({
+  select: z.lazy(() => TeamActivityTypeCountOutputTypeSelectSchema).nullish(),
+}).strict();
+
+export const TeamActivityTypeCountOutputTypeSelectSchema: z.ZodType<Prisma.TeamActivityTypeCountOutputTypeSelect> = z.object({
+  team_activity: z.boolean().optional(),
+}).strict();
+
+export const TeamActivityTypeSelectSchema: z.ZodType<Prisma.TeamActivityTypeSelect> = z.object({
+  id: z.boolean().optional(),
+  createdAt: z.boolean().optional(),
+  updatedAt: z.boolean().optional(),
+  activity_type: z.boolean().optional(),
+  team_activity: z.union([z.boolean(),z.lazy(() => TeamActivityFindManyArgsSchema)]).optional(),
+  _count: z.union([z.boolean(),z.lazy(() => TeamActivityTypeCountOutputTypeArgsSchema)]).optional(),
+}).strict()
+
+// TEAM ACTIVITY
+//------------------------------------------------------
+
+export const TeamActivityIncludeSchema: z.ZodType<Prisma.TeamActivityInclude> = z.object({
+  user: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
+  team: z.union([z.boolean(),z.lazy(() => TeamArgsSchema)]).optional(),
+  team_activity_type: z.union([z.boolean(),z.lazy(() => TeamActivityTypeArgsSchema)]).optional(),
+}).strict()
+
+export const TeamActivityArgsSchema: z.ZodType<Prisma.TeamActivityDefaultArgs> = z.object({
+  select: z.lazy(() => TeamActivitySelectSchema).optional(),
+  include: z.lazy(() => TeamActivityIncludeSchema).optional(),
+}).strict();
+
+export const TeamActivitySelectSchema: z.ZodType<Prisma.TeamActivitySelect> = z.object({
+  id: z.boolean().optional(),
+  createdAt: z.boolean().optional(),
+  updatedAt: z.boolean().optional(),
+  user_id: z.boolean().optional(),
+  team_id: z.boolean().optional(),
+  activity_type: z.boolean().optional(),
+  user: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
+  team: z.union([z.boolean(),z.lazy(() => TeamArgsSchema)]).optional(),
+  team_activity_type: z.union([z.boolean(),z.lazy(() => TeamActivityTypeArgsSchema)]).optional(),
 }).strict()
 
 
@@ -650,7 +744,8 @@ export const TeamWhereInputSchema: z.ZodType<Prisma.TeamWhereInput> = z.object({
   team_parent_child_parent_team: z.lazy(() => TeamParentChildListRelationFilterSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildListRelationFilterSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesListRelationFilterSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamListRelationFilterSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamListRelationFilterSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityListRelationFilterSchema).optional()
 }).strict();
 
 export const TeamOrderByWithRelationInputSchema: z.ZodType<Prisma.TeamOrderByWithRelationInput> = z.object({
@@ -669,7 +764,8 @@ export const TeamOrderByWithRelationInputSchema: z.ZodType<Prisma.TeamOrderByWit
   team_parent_child_parent_team: z.lazy(() => TeamParentChildOrderByRelationAggregateInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildOrderByRelationAggregateInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesOrderByRelationAggregateInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamOrderByRelationAggregateInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamOrderByRelationAggregateInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityOrderByRelationAggregateInputSchema).optional()
 }).strict();
 
 export const TeamWhereUniqueInputSchema: z.ZodType<Prisma.TeamWhereUniqueInput> = z.object({
@@ -694,7 +790,8 @@ export const TeamWhereUniqueInputSchema: z.ZodType<Prisma.TeamWhereUniqueInput> 
   team_parent_child_parent_team: z.lazy(() => TeamParentChildListRelationFilterSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildListRelationFilterSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesListRelationFilterSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamListRelationFilterSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamListRelationFilterSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityListRelationFilterSchema).optional()
 }).strict());
 
 export const TeamOrderByWithAggregationInputSchema: z.ZodType<Prisma.TeamOrderByWithAggregationInput> = z.object({
@@ -808,7 +905,8 @@ export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z.object({
   user_team: z.lazy(() => UserTeamListRelationFilterSchema).optional(),
   teams: z.lazy(() => TeamListRelationFilterSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesListRelationFilterSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamListRelationFilterSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamListRelationFilterSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityListRelationFilterSchema).optional()
 }).strict();
 
 export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWithRelationInput> = z.object({
@@ -826,7 +924,8 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
   user_team: z.lazy(() => UserTeamOrderByRelationAggregateInputSchema).optional(),
   teams: z.lazy(() => TeamOrderByRelationAggregateInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesOrderByRelationAggregateInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamOrderByRelationAggregateInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamOrderByRelationAggregateInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityOrderByRelationAggregateInputSchema).optional()
 }).strict();
 
 export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> = z.union([
@@ -875,7 +974,8 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
   user_team: z.lazy(() => UserTeamListRelationFilterSchema).optional(),
   teams: z.lazy(() => TeamListRelationFilterSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesListRelationFilterSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamListRelationFilterSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamListRelationFilterSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityListRelationFilterSchema).optional()
 }).strict());
 
 export const UserOrderByWithAggregationInputSchema: z.ZodType<Prisma.UserOrderByWithAggregationInput> = z.object({
@@ -1152,18 +1252,18 @@ export const VisitedTeamWhereInputSchema: z.ZodType<Prisma.VisitedTeamWhereInput
   id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  user_id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
-  team_id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
-  user: z.union([ z.lazy(() => UserRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
-  team: z.union([ z.lazy(() => TeamRelationFilterSchema),z.lazy(() => TeamWhereInputSchema) ]).optional(),
+  user_id: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
+  team_id: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
+  user: z.union([ z.lazy(() => UserNullableRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
+  team: z.union([ z.lazy(() => TeamNullableRelationFilterSchema),z.lazy(() => TeamWhereInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const VisitedTeamOrderByWithRelationInputSchema: z.ZodType<Prisma.VisitedTeamOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional(),
-  user_id: z.lazy(() => SortOrderSchema).optional(),
-  team_id: z.lazy(() => SortOrderSchema).optional(),
+  user_id: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  team_id: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   user: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
   team: z.lazy(() => TeamOrderByWithRelationInputSchema).optional()
 }).strict();
@@ -1188,18 +1288,18 @@ export const VisitedTeamWhereUniqueInputSchema: z.ZodType<Prisma.VisitedTeamWher
   NOT: z.union([ z.lazy(() => VisitedTeamWhereInputSchema),z.lazy(() => VisitedTeamWhereInputSchema).array() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  user_id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
-  team_id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
-  user: z.union([ z.lazy(() => UserRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
-  team: z.union([ z.lazy(() => TeamRelationFilterSchema),z.lazy(() => TeamWhereInputSchema) ]).optional(),
+  user_id: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
+  team_id: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
+  user: z.union([ z.lazy(() => UserNullableRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
+  team: z.union([ z.lazy(() => TeamNullableRelationFilterSchema),z.lazy(() => TeamWhereInputSchema) ]).optional().nullable(),
 }).strict());
 
 export const VisitedTeamOrderByWithAggregationInputSchema: z.ZodType<Prisma.VisitedTeamOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional(),
-  user_id: z.lazy(() => SortOrderSchema).optional(),
-  team_id: z.lazy(() => SortOrderSchema).optional(),
+  user_id: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  team_id: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   _count: z.lazy(() => VisitedTeamCountOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => VisitedTeamMaxOrderByAggregateInputSchema).optional(),
   _min: z.lazy(() => VisitedTeamMinOrderByAggregateInputSchema).optional()
@@ -1212,8 +1312,139 @@ export const VisitedTeamScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.V
   id: z.union([ z.lazy(() => UuidWithAggregatesFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
-  user_id: z.union([ z.lazy(() => UuidWithAggregatesFilterSchema),z.string() ]).optional(),
-  team_id: z.union([ z.lazy(() => UuidWithAggregatesFilterSchema),z.string() ]).optional(),
+  user_id: z.union([ z.lazy(() => UuidNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
+  team_id: z.union([ z.lazy(() => UuidNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
+}).strict();
+
+export const TeamActivityTypeWhereInputSchema: z.ZodType<Prisma.TeamActivityTypeWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => TeamActivityTypeWhereInputSchema),z.lazy(() => TeamActivityTypeWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => TeamActivityTypeWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => TeamActivityTypeWhereInputSchema),z.lazy(() => TeamActivityTypeWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  activity_type: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  team_activity: z.lazy(() => TeamActivityListRelationFilterSchema).optional()
+}).strict();
+
+export const TeamActivityTypeOrderByWithRelationInputSchema: z.ZodType<Prisma.TeamActivityTypeOrderByWithRelationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  activity_type: z.lazy(() => SortOrderSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityOrderByRelationAggregateInputSchema).optional()
+}).strict();
+
+export const TeamActivityTypeWhereUniqueInputSchema: z.ZodType<Prisma.TeamActivityTypeWhereUniqueInput> = z.union([
+  z.object({
+    id: z.string(),
+    activity_type: z.string()
+  }),
+  z.object({
+    id: z.string(),
+  }),
+  z.object({
+    activity_type: z.string(),
+  }),
+])
+.and(z.object({
+  id: z.string().optional(),
+  activity_type: z.string().optional(),
+  AND: z.union([ z.lazy(() => TeamActivityTypeWhereInputSchema),z.lazy(() => TeamActivityTypeWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => TeamActivityTypeWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => TeamActivityTypeWhereInputSchema),z.lazy(() => TeamActivityTypeWhereInputSchema).array() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  team_activity: z.lazy(() => TeamActivityListRelationFilterSchema).optional()
+}).strict());
+
+export const TeamActivityTypeOrderByWithAggregationInputSchema: z.ZodType<Prisma.TeamActivityTypeOrderByWithAggregationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  activity_type: z.lazy(() => SortOrderSchema).optional(),
+  _count: z.lazy(() => TeamActivityTypeCountOrderByAggregateInputSchema).optional(),
+  _max: z.lazy(() => TeamActivityTypeMaxOrderByAggregateInputSchema).optional(),
+  _min: z.lazy(() => TeamActivityTypeMinOrderByAggregateInputSchema).optional()
+}).strict();
+
+export const TeamActivityTypeScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.TeamActivityTypeScalarWhereWithAggregatesInput> = z.object({
+  AND: z.union([ z.lazy(() => TeamActivityTypeScalarWhereWithAggregatesInputSchema),z.lazy(() => TeamActivityTypeScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  OR: z.lazy(() => TeamActivityTypeScalarWhereWithAggregatesInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => TeamActivityTypeScalarWhereWithAggregatesInputSchema),z.lazy(() => TeamActivityTypeScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidWithAggregatesFilterSchema),z.string() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
+  activity_type: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+}).strict();
+
+export const TeamActivityWhereInputSchema: z.ZodType<Prisma.TeamActivityWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => TeamActivityWhereInputSchema),z.lazy(() => TeamActivityWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => TeamActivityWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => TeamActivityWhereInputSchema),z.lazy(() => TeamActivityWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  user_id: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
+  team_id: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
+  activity_type: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
+  user: z.union([ z.lazy(() => UserNullableRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
+  team: z.union([ z.lazy(() => TeamNullableRelationFilterSchema),z.lazy(() => TeamWhereInputSchema) ]).optional().nullable(),
+  team_activity_type: z.union([ z.lazy(() => TeamActivityTypeNullableRelationFilterSchema),z.lazy(() => TeamActivityTypeWhereInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const TeamActivityOrderByWithRelationInputSchema: z.ZodType<Prisma.TeamActivityOrderByWithRelationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  user_id: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  team_id: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  activity_type: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  user: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
+  team: z.lazy(() => TeamOrderByWithRelationInputSchema).optional(),
+  team_activity_type: z.lazy(() => TeamActivityTypeOrderByWithRelationInputSchema).optional()
+}).strict();
+
+export const TeamActivityWhereUniqueInputSchema: z.ZodType<Prisma.TeamActivityWhereUniqueInput> = z.object({
+  id: z.string()
+})
+.and(z.object({
+  id: z.string().optional(),
+  AND: z.union([ z.lazy(() => TeamActivityWhereInputSchema),z.lazy(() => TeamActivityWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => TeamActivityWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => TeamActivityWhereInputSchema),z.lazy(() => TeamActivityWhereInputSchema).array() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  user_id: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
+  team_id: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
+  activity_type: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
+  user: z.union([ z.lazy(() => UserNullableRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
+  team: z.union([ z.lazy(() => TeamNullableRelationFilterSchema),z.lazy(() => TeamWhereInputSchema) ]).optional().nullable(),
+  team_activity_type: z.union([ z.lazy(() => TeamActivityTypeNullableRelationFilterSchema),z.lazy(() => TeamActivityTypeWhereInputSchema) ]).optional().nullable(),
+}).strict());
+
+export const TeamActivityOrderByWithAggregationInputSchema: z.ZodType<Prisma.TeamActivityOrderByWithAggregationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  user_id: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  team_id: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  activity_type: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  _count: z.lazy(() => TeamActivityCountOrderByAggregateInputSchema).optional(),
+  _max: z.lazy(() => TeamActivityMaxOrderByAggregateInputSchema).optional(),
+  _min: z.lazy(() => TeamActivityMinOrderByAggregateInputSchema).optional()
+}).strict();
+
+export const TeamActivityScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.TeamActivityScalarWhereWithAggregatesInput> = z.object({
+  AND: z.union([ z.lazy(() => TeamActivityScalarWhereWithAggregatesInputSchema),z.lazy(() => TeamActivityScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  OR: z.lazy(() => TeamActivityScalarWhereWithAggregatesInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => TeamActivityScalarWhereWithAggregatesInputSchema),z.lazy(() => TeamActivityScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidWithAggregatesFilterSchema),z.string() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
+  user_id: z.union([ z.lazy(() => UuidNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
+  team_id: z.union([ z.lazy(() => UuidNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
+  activity_type: z.union([ z.lazy(() => UuidNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
 }).strict();
 
 export const RoleCreateInputSchema: z.ZodType<Prisma.RoleCreateInput> = z.object({
@@ -1372,7 +1603,8 @@ export const TeamCreateInputSchema: z.ZodType<Prisma.TeamCreateInput> = z.object
   team_parent_child_parent_team: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_parent_teamInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_child_teamInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutTeamsInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutTeamInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutTeamInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedCreateInputSchema: z.ZodType<Prisma.TeamUncheckedCreateInput> = z.object({
@@ -1390,7 +1622,8 @@ export const TeamUncheckedCreateInputSchema: z.ZodType<Prisma.TeamUncheckedCreat
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_parent_teamInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_child_teamInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutTeamInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamUpdateInputSchema: z.ZodType<Prisma.TeamUpdateInput> = z.object({
@@ -1408,7 +1641,8 @@ export const TeamUpdateInputSchema: z.ZodType<Prisma.TeamUpdateInput> = z.object
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_parent_teamNestedInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_child_teamNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutTeamsNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutTeamNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutTeamNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedUpdateInputSchema: z.ZodType<Prisma.TeamUncheckedUpdateInput> = z.object({
@@ -1426,7 +1660,8 @@ export const TeamUncheckedUpdateInputSchema: z.ZodType<Prisma.TeamUncheckedUpdat
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_parent_teamNestedInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_child_teamNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutTeamNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const TeamCreateManyInputSchema: z.ZodType<Prisma.TeamCreateManyInput> = z.object({
@@ -1521,7 +1756,8 @@ export const UserCreateInputSchema: z.ZodType<Prisma.UserCreateInput> = z.object
   user_team: z.lazy(() => UserTeamCreateNestedManyWithoutUsersInputSchema).optional(),
   teams: z.lazy(() => TeamCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreateInput> = z.object({
@@ -1539,7 +1775,8 @@ export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreat
   user_team: z.lazy(() => UserTeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z.object({
@@ -1557,7 +1794,8 @@ export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z.object
   user_team: z.lazy(() => UserTeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   teams: z.lazy(() => TeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdateInput> = z.object({
@@ -1575,7 +1813,8 @@ export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdat
   user_team: z.lazy(() => UserTeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   teams: z.lazy(() => TeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserCreateManyInputSchema: z.ZodType<Prisma.UserCreateManyInput> = z.object({
@@ -1798,40 +2037,40 @@ export const VisitedTeamCreateInputSchema: z.ZodType<Prisma.VisitedTeamCreateInp
   id: z.string().optional(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-  user: z.lazy(() => UserCreateNestedOneWithoutVisited_teamInputSchema),
-  team: z.lazy(() => TeamCreateNestedOneWithoutVisited_teamInputSchema)
+  user: z.lazy(() => UserCreateNestedOneWithoutVisited_teamInputSchema).optional(),
+  team: z.lazy(() => TeamCreateNestedOneWithoutVisited_teamInputSchema).optional()
 }).strict();
 
 export const VisitedTeamUncheckedCreateInputSchema: z.ZodType<Prisma.VisitedTeamUncheckedCreateInput> = z.object({
   id: z.string().optional(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-  user_id: z.string(),
-  team_id: z.string()
+  user_id: z.string().optional().nullable(),
+  team_id: z.string().optional().nullable()
 }).strict();
 
 export const VisitedTeamUpdateInputSchema: z.ZodType<Prisma.VisitedTeamUpdateInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  user: z.lazy(() => UserUpdateOneRequiredWithoutVisited_teamNestedInputSchema).optional(),
-  team: z.lazy(() => TeamUpdateOneRequiredWithoutVisited_teamNestedInputSchema).optional()
+  user: z.lazy(() => UserUpdateOneWithoutVisited_teamNestedInputSchema).optional(),
+  team: z.lazy(() => TeamUpdateOneWithoutVisited_teamNestedInputSchema).optional()
 }).strict();
 
 export const VisitedTeamUncheckedUpdateInputSchema: z.ZodType<Prisma.VisitedTeamUncheckedUpdateInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  user_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  team_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  user_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const VisitedTeamCreateManyInputSchema: z.ZodType<Prisma.VisitedTeamCreateManyInput> = z.object({
   id: z.string().optional(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-  user_id: z.string(),
-  team_id: z.string()
+  user_id: z.string().optional().nullable(),
+  team_id: z.string().optional().nullable()
 }).strict();
 
 export const VisitedTeamUpdateManyMutationInputSchema: z.ZodType<Prisma.VisitedTeamUpdateManyMutationInput> = z.object({
@@ -1844,8 +2083,121 @@ export const VisitedTeamUncheckedUpdateManyInputSchema: z.ZodType<Prisma.Visited
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  user_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  team_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  user_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const TeamActivityTypeCreateInputSchema: z.ZodType<Prisma.TeamActivityTypeCreateInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  activity_type: z.string(),
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutTeam_activity_typeInputSchema).optional()
+}).strict();
+
+export const TeamActivityTypeUncheckedCreateInputSchema: z.ZodType<Prisma.TeamActivityTypeUncheckedCreateInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  activity_type: z.string(),
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutTeam_activity_typeInputSchema).optional()
+}).strict();
+
+export const TeamActivityTypeUpdateInputSchema: z.ZodType<Prisma.TeamActivityTypeUpdateInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  activity_type: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutTeam_activity_typeNestedInputSchema).optional()
+}).strict();
+
+export const TeamActivityTypeUncheckedUpdateInputSchema: z.ZodType<Prisma.TeamActivityTypeUncheckedUpdateInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  activity_type: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutTeam_activity_typeNestedInputSchema).optional()
+}).strict();
+
+export const TeamActivityTypeCreateManyInputSchema: z.ZodType<Prisma.TeamActivityTypeCreateManyInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  activity_type: z.string()
+}).strict();
+
+export const TeamActivityTypeUpdateManyMutationInputSchema: z.ZodType<Prisma.TeamActivityTypeUpdateManyMutationInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  activity_type: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const TeamActivityTypeUncheckedUpdateManyInputSchema: z.ZodType<Prisma.TeamActivityTypeUncheckedUpdateManyInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  activity_type: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const TeamActivityCreateInputSchema: z.ZodType<Prisma.TeamActivityCreateInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  user: z.lazy(() => UserCreateNestedOneWithoutTeam_activityInputSchema).optional(),
+  team: z.lazy(() => TeamCreateNestedOneWithoutTeam_activityInputSchema).optional(),
+  team_activity_type: z.lazy(() => TeamActivityTypeCreateNestedOneWithoutTeam_activityInputSchema).optional()
+}).strict();
+
+export const TeamActivityUncheckedCreateInputSchema: z.ZodType<Prisma.TeamActivityUncheckedCreateInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  user_id: z.string().optional().nullable(),
+  team_id: z.string().optional().nullable(),
+  activity_type: z.string().optional().nullable()
+}).strict();
+
+export const TeamActivityUpdateInputSchema: z.ZodType<Prisma.TeamActivityUpdateInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  user: z.lazy(() => UserUpdateOneWithoutTeam_activityNestedInputSchema).optional(),
+  team: z.lazy(() => TeamUpdateOneWithoutTeam_activityNestedInputSchema).optional(),
+  team_activity_type: z.lazy(() => TeamActivityTypeUpdateOneWithoutTeam_activityNestedInputSchema).optional()
+}).strict();
+
+export const TeamActivityUncheckedUpdateInputSchema: z.ZodType<Prisma.TeamActivityUncheckedUpdateInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  user_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  activity_type: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const TeamActivityCreateManyInputSchema: z.ZodType<Prisma.TeamActivityCreateManyInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  user_id: z.string().optional().nullable(),
+  team_id: z.string().optional().nullable(),
+  activity_type: z.string().optional().nullable()
+}).strict();
+
+export const TeamActivityUpdateManyMutationInputSchema: z.ZodType<Prisma.TeamActivityUpdateManyMutationInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const TeamActivityUncheckedUpdateManyInputSchema: z.ZodType<Prisma.TeamActivityUncheckedUpdateManyInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  user_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  activity_type: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const UuidFilterSchema: z.ZodType<Prisma.UuidFilter> = z.object({
@@ -2119,6 +2471,12 @@ export const VisitedTeamListRelationFilterSchema: z.ZodType<Prisma.VisitedTeamLi
   none: z.lazy(() => VisitedTeamWhereInputSchema).optional()
 }).strict();
 
+export const TeamActivityListRelationFilterSchema: z.ZodType<Prisma.TeamActivityListRelationFilter> = z.object({
+  every: z.lazy(() => TeamActivityWhereInputSchema).optional(),
+  some: z.lazy(() => TeamActivityWhereInputSchema).optional(),
+  none: z.lazy(() => TeamActivityWhereInputSchema).optional()
+}).strict();
+
 export const RoleOrderByRelationAggregateInputSchema: z.ZodType<Prisma.RoleOrderByRelationAggregateInput> = z.object({
   _count: z.lazy(() => SortOrderSchema).optional()
 }).strict();
@@ -2140,6 +2498,10 @@ export const TeamInvitesOrderByRelationAggregateInputSchema: z.ZodType<Prisma.Te
 }).strict();
 
 export const VisitedTeamOrderByRelationAggregateInputSchema: z.ZodType<Prisma.VisitedTeamOrderByRelationAggregateInput> = z.object({
+  _count: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const TeamActivityOrderByRelationAggregateInputSchema: z.ZodType<Prisma.TeamActivityOrderByRelationAggregateInput> = z.object({
   _count: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
@@ -2343,16 +2705,6 @@ export const TeamInvitesMinOrderByAggregateInputSchema: z.ZodType<Prisma.TeamInv
   team_id: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
-export const UserRelationFilterSchema: z.ZodType<Prisma.UserRelationFilter> = z.object({
-  is: z.lazy(() => UserWhereInputSchema).optional(),
-  isNot: z.lazy(() => UserWhereInputSchema).optional()
-}).strict();
-
-export const TeamRelationFilterSchema: z.ZodType<Prisma.TeamRelationFilter> = z.object({
-  is: z.lazy(() => TeamWhereInputSchema).optional(),
-  isNot: z.lazy(() => TeamWhereInputSchema).optional()
-}).strict();
-
 export const VisitedTeamUser_idTeam_idCompoundUniqueInputSchema: z.ZodType<Prisma.VisitedTeamUser_idTeam_idCompoundUniqueInput> = z.object({
   user_id: z.string(),
   team_id: z.string()
@@ -2380,6 +2732,59 @@ export const VisitedTeamMinOrderByAggregateInputSchema: z.ZodType<Prisma.Visited
   updatedAt: z.lazy(() => SortOrderSchema).optional(),
   user_id: z.lazy(() => SortOrderSchema).optional(),
   team_id: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const TeamActivityTypeCountOrderByAggregateInputSchema: z.ZodType<Prisma.TeamActivityTypeCountOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  activity_type: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const TeamActivityTypeMaxOrderByAggregateInputSchema: z.ZodType<Prisma.TeamActivityTypeMaxOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  activity_type: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const TeamActivityTypeMinOrderByAggregateInputSchema: z.ZodType<Prisma.TeamActivityTypeMinOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  activity_type: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const TeamActivityTypeNullableRelationFilterSchema: z.ZodType<Prisma.TeamActivityTypeNullableRelationFilter> = z.object({
+  is: z.lazy(() => TeamActivityTypeWhereInputSchema).optional().nullable(),
+  isNot: z.lazy(() => TeamActivityTypeWhereInputSchema).optional().nullable()
+}).strict();
+
+export const TeamActivityCountOrderByAggregateInputSchema: z.ZodType<Prisma.TeamActivityCountOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  user_id: z.lazy(() => SortOrderSchema).optional(),
+  team_id: z.lazy(() => SortOrderSchema).optional(),
+  activity_type: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const TeamActivityMaxOrderByAggregateInputSchema: z.ZodType<Prisma.TeamActivityMaxOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  user_id: z.lazy(() => SortOrderSchema).optional(),
+  team_id: z.lazy(() => SortOrderSchema).optional(),
+  activity_type: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const TeamActivityMinOrderByAggregateInputSchema: z.ZodType<Prisma.TeamActivityMinOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  user_id: z.lazy(() => SortOrderSchema).optional(),
+  team_id: z.lazy(() => SortOrderSchema).optional(),
+  activity_type: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const TeamCreateNestedOneWithoutRolesInputSchema: z.ZodType<Prisma.TeamCreateNestedOneWithoutRolesInput> = z.object({
@@ -2560,6 +2965,13 @@ export const VisitedTeamCreateNestedManyWithoutTeamInputSchema: z.ZodType<Prisma
   connect: z.union([ z.lazy(() => VisitedTeamWhereUniqueInputSchema),z.lazy(() => VisitedTeamWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
+export const TeamActivityCreateNestedManyWithoutTeamInputSchema: z.ZodType<Prisma.TeamActivityCreateNestedManyWithoutTeamInput> = z.object({
+  create: z.union([ z.lazy(() => TeamActivityCreateWithoutTeamInputSchema),z.lazy(() => TeamActivityCreateWithoutTeamInputSchema).array(),z.lazy(() => TeamActivityUncheckedCreateWithoutTeamInputSchema),z.lazy(() => TeamActivityUncheckedCreateWithoutTeamInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => TeamActivityCreateOrConnectWithoutTeamInputSchema),z.lazy(() => TeamActivityCreateOrConnectWithoutTeamInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => TeamActivityCreateManyTeamInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
 export const RoleUncheckedCreateNestedManyWithoutTeamsInputSchema: z.ZodType<Prisma.RoleUncheckedCreateNestedManyWithoutTeamsInput> = z.object({
   create: z.union([ z.lazy(() => RoleCreateWithoutTeamsInputSchema),z.lazy(() => RoleCreateWithoutTeamsInputSchema).array(),z.lazy(() => RoleUncheckedCreateWithoutTeamsInputSchema),z.lazy(() => RoleUncheckedCreateWithoutTeamsInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => RoleCreateOrConnectWithoutTeamsInputSchema),z.lazy(() => RoleCreateOrConnectWithoutTeamsInputSchema).array() ]).optional(),
@@ -2628,6 +3040,13 @@ export const VisitedTeamUncheckedCreateNestedManyWithoutTeamInputSchema: z.ZodTy
   connectOrCreate: z.union([ z.lazy(() => VisitedTeamCreateOrConnectWithoutTeamInputSchema),z.lazy(() => VisitedTeamCreateOrConnectWithoutTeamInputSchema).array() ]).optional(),
   createMany: z.lazy(() => VisitedTeamCreateManyTeamInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => VisitedTeamWhereUniqueInputSchema),z.lazy(() => VisitedTeamWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const TeamActivityUncheckedCreateNestedManyWithoutTeamInputSchema: z.ZodType<Prisma.TeamActivityUncheckedCreateNestedManyWithoutTeamInput> = z.object({
+  create: z.union([ z.lazy(() => TeamActivityCreateWithoutTeamInputSchema),z.lazy(() => TeamActivityCreateWithoutTeamInputSchema).array(),z.lazy(() => TeamActivityUncheckedCreateWithoutTeamInputSchema),z.lazy(() => TeamActivityUncheckedCreateWithoutTeamInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => TeamActivityCreateOrConnectWithoutTeamInputSchema),z.lazy(() => TeamActivityCreateOrConnectWithoutTeamInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => TeamActivityCreateManyTeamInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
 export const UserUpdateOneWithoutTeamsNestedInputSchema: z.ZodType<Prisma.UserUpdateOneWithoutTeamsNestedInput> = z.object({
@@ -2780,6 +3199,20 @@ export const VisitedTeamUpdateManyWithoutTeamNestedInputSchema: z.ZodType<Prisma
   deleteMany: z.union([ z.lazy(() => VisitedTeamScalarWhereInputSchema),z.lazy(() => VisitedTeamScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
+export const TeamActivityUpdateManyWithoutTeamNestedInputSchema: z.ZodType<Prisma.TeamActivityUpdateManyWithoutTeamNestedInput> = z.object({
+  create: z.union([ z.lazy(() => TeamActivityCreateWithoutTeamInputSchema),z.lazy(() => TeamActivityCreateWithoutTeamInputSchema).array(),z.lazy(() => TeamActivityUncheckedCreateWithoutTeamInputSchema),z.lazy(() => TeamActivityUncheckedCreateWithoutTeamInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => TeamActivityCreateOrConnectWithoutTeamInputSchema),z.lazy(() => TeamActivityCreateOrConnectWithoutTeamInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => TeamActivityUpsertWithWhereUniqueWithoutTeamInputSchema),z.lazy(() => TeamActivityUpsertWithWhereUniqueWithoutTeamInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => TeamActivityCreateManyTeamInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => TeamActivityUpdateWithWhereUniqueWithoutTeamInputSchema),z.lazy(() => TeamActivityUpdateWithWhereUniqueWithoutTeamInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => TeamActivityUpdateManyWithWhereWithoutTeamInputSchema),z.lazy(() => TeamActivityUpdateManyWithWhereWithoutTeamInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => TeamActivityScalarWhereInputSchema),z.lazy(() => TeamActivityScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
 export const RoleUncheckedUpdateManyWithoutTeamsNestedInputSchema: z.ZodType<Prisma.RoleUncheckedUpdateManyWithoutTeamsNestedInput> = z.object({
   create: z.union([ z.lazy(() => RoleCreateWithoutTeamsInputSchema),z.lazy(() => RoleCreateWithoutTeamsInputSchema).array(),z.lazy(() => RoleUncheckedCreateWithoutTeamsInputSchema),z.lazy(() => RoleUncheckedCreateWithoutTeamsInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => RoleCreateOrConnectWithoutTeamsInputSchema),z.lazy(() => RoleCreateOrConnectWithoutTeamsInputSchema).array() ]).optional(),
@@ -2920,6 +3353,20 @@ export const VisitedTeamUncheckedUpdateManyWithoutTeamNestedInputSchema: z.ZodTy
   deleteMany: z.union([ z.lazy(() => VisitedTeamScalarWhereInputSchema),z.lazy(() => VisitedTeamScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
+export const TeamActivityUncheckedUpdateManyWithoutTeamNestedInputSchema: z.ZodType<Prisma.TeamActivityUncheckedUpdateManyWithoutTeamNestedInput> = z.object({
+  create: z.union([ z.lazy(() => TeamActivityCreateWithoutTeamInputSchema),z.lazy(() => TeamActivityCreateWithoutTeamInputSchema).array(),z.lazy(() => TeamActivityUncheckedCreateWithoutTeamInputSchema),z.lazy(() => TeamActivityUncheckedCreateWithoutTeamInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => TeamActivityCreateOrConnectWithoutTeamInputSchema),z.lazy(() => TeamActivityCreateOrConnectWithoutTeamInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => TeamActivityUpsertWithWhereUniqueWithoutTeamInputSchema),z.lazy(() => TeamActivityUpsertWithWhereUniqueWithoutTeamInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => TeamActivityCreateManyTeamInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => TeamActivityUpdateWithWhereUniqueWithoutTeamInputSchema),z.lazy(() => TeamActivityUpdateWithWhereUniqueWithoutTeamInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => TeamActivityUpdateManyWithWhereWithoutTeamInputSchema),z.lazy(() => TeamActivityUpdateManyWithWhereWithoutTeamInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => TeamActivityScalarWhereInputSchema),z.lazy(() => TeamActivityScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
 export const TeamCreateNestedOneWithoutUser_teamInputSchema: z.ZodType<Prisma.TeamCreateNestedOneWithoutUser_teamInput> = z.object({
   create: z.union([ z.lazy(() => TeamCreateWithoutUser_teamInputSchema),z.lazy(() => TeamUncheckedCreateWithoutUser_teamInputSchema) ]).optional(),
   connectOrCreate: z.lazy(() => TeamCreateOrConnectWithoutUser_teamInputSchema).optional(),
@@ -2994,6 +3441,13 @@ export const VisitedTeamCreateNestedManyWithoutUserInputSchema: z.ZodType<Prisma
   connect: z.union([ z.lazy(() => VisitedTeamWhereUniqueInputSchema),z.lazy(() => VisitedTeamWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
+export const TeamActivityCreateNestedManyWithoutUserInputSchema: z.ZodType<Prisma.TeamActivityCreateNestedManyWithoutUserInput> = z.object({
+  create: z.union([ z.lazy(() => TeamActivityCreateWithoutUserInputSchema),z.lazy(() => TeamActivityCreateWithoutUserInputSchema).array(),z.lazy(() => TeamActivityUncheckedCreateWithoutUserInputSchema),z.lazy(() => TeamActivityUncheckedCreateWithoutUserInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => TeamActivityCreateOrConnectWithoutUserInputSchema),z.lazy(() => TeamActivityCreateOrConnectWithoutUserInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => TeamActivityCreateManyUserInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
 export const TaskUncheckedCreateNestedManyWithoutUsersInputSchema: z.ZodType<Prisma.TaskUncheckedCreateNestedManyWithoutUsersInput> = z.object({
   create: z.union([ z.lazy(() => TaskCreateWithoutUsersInputSchema),z.lazy(() => TaskCreateWithoutUsersInputSchema).array(),z.lazy(() => TaskUncheckedCreateWithoutUsersInputSchema),z.lazy(() => TaskUncheckedCreateWithoutUsersInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TaskCreateOrConnectWithoutUsersInputSchema),z.lazy(() => TaskCreateOrConnectWithoutUsersInputSchema).array() ]).optional(),
@@ -3034,6 +3488,13 @@ export const VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema: z.ZodTy
   connectOrCreate: z.union([ z.lazy(() => VisitedTeamCreateOrConnectWithoutUserInputSchema),z.lazy(() => VisitedTeamCreateOrConnectWithoutUserInputSchema).array() ]).optional(),
   createMany: z.lazy(() => VisitedTeamCreateManyUserInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => VisitedTeamWhereUniqueInputSchema),z.lazy(() => VisitedTeamWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema: z.ZodType<Prisma.TeamActivityUncheckedCreateNestedManyWithoutUserInput> = z.object({
+  create: z.union([ z.lazy(() => TeamActivityCreateWithoutUserInputSchema),z.lazy(() => TeamActivityCreateWithoutUserInputSchema).array(),z.lazy(() => TeamActivityUncheckedCreateWithoutUserInputSchema),z.lazy(() => TeamActivityUncheckedCreateWithoutUserInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => TeamActivityCreateOrConnectWithoutUserInputSchema),z.lazy(() => TeamActivityCreateOrConnectWithoutUserInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => TeamActivityCreateManyUserInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
 export const TaskUpdateManyWithoutUsersNestedInputSchema: z.ZodType<Prisma.TaskUpdateManyWithoutUsersNestedInput> = z.object({
@@ -3120,6 +3581,20 @@ export const VisitedTeamUpdateManyWithoutUserNestedInputSchema: z.ZodType<Prisma
   deleteMany: z.union([ z.lazy(() => VisitedTeamScalarWhereInputSchema),z.lazy(() => VisitedTeamScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
+export const TeamActivityUpdateManyWithoutUserNestedInputSchema: z.ZodType<Prisma.TeamActivityUpdateManyWithoutUserNestedInput> = z.object({
+  create: z.union([ z.lazy(() => TeamActivityCreateWithoutUserInputSchema),z.lazy(() => TeamActivityCreateWithoutUserInputSchema).array(),z.lazy(() => TeamActivityUncheckedCreateWithoutUserInputSchema),z.lazy(() => TeamActivityUncheckedCreateWithoutUserInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => TeamActivityCreateOrConnectWithoutUserInputSchema),z.lazy(() => TeamActivityCreateOrConnectWithoutUserInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => TeamActivityUpsertWithWhereUniqueWithoutUserInputSchema),z.lazy(() => TeamActivityUpsertWithWhereUniqueWithoutUserInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => TeamActivityCreateManyUserInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => TeamActivityUpdateWithWhereUniqueWithoutUserInputSchema),z.lazy(() => TeamActivityUpdateWithWhereUniqueWithoutUserInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => TeamActivityUpdateManyWithWhereWithoutUserInputSchema),z.lazy(() => TeamActivityUpdateManyWithWhereWithoutUserInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => TeamActivityScalarWhereInputSchema),z.lazy(() => TeamActivityScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
 export const TaskUncheckedUpdateManyWithoutUsersNestedInputSchema: z.ZodType<Prisma.TaskUncheckedUpdateManyWithoutUsersNestedInput> = z.object({
   create: z.union([ z.lazy(() => TaskCreateWithoutUsersInputSchema),z.lazy(() => TaskCreateWithoutUsersInputSchema).array(),z.lazy(() => TaskUncheckedCreateWithoutUsersInputSchema),z.lazy(() => TaskUncheckedCreateWithoutUsersInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TaskCreateOrConnectWithoutUsersInputSchema),z.lazy(() => TaskCreateOrConnectWithoutUsersInputSchema).array() ]).optional(),
@@ -3202,6 +3677,20 @@ export const VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema: z.ZodTy
   update: z.union([ z.lazy(() => VisitedTeamUpdateWithWhereUniqueWithoutUserInputSchema),z.lazy(() => VisitedTeamUpdateWithWhereUniqueWithoutUserInputSchema).array() ]).optional(),
   updateMany: z.union([ z.lazy(() => VisitedTeamUpdateManyWithWhereWithoutUserInputSchema),z.lazy(() => VisitedTeamUpdateManyWithWhereWithoutUserInputSchema).array() ]).optional(),
   deleteMany: z.union([ z.lazy(() => VisitedTeamScalarWhereInputSchema),z.lazy(() => VisitedTeamScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema: z.ZodType<Prisma.TeamActivityUncheckedUpdateManyWithoutUserNestedInput> = z.object({
+  create: z.union([ z.lazy(() => TeamActivityCreateWithoutUserInputSchema),z.lazy(() => TeamActivityCreateWithoutUserInputSchema).array(),z.lazy(() => TeamActivityUncheckedCreateWithoutUserInputSchema),z.lazy(() => TeamActivityUncheckedCreateWithoutUserInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => TeamActivityCreateOrConnectWithoutUserInputSchema),z.lazy(() => TeamActivityCreateOrConnectWithoutUserInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => TeamActivityUpsertWithWhereUniqueWithoutUserInputSchema),z.lazy(() => TeamActivityUpsertWithWhereUniqueWithoutUserInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => TeamActivityCreateManyUserInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => TeamActivityUpdateWithWhereUniqueWithoutUserInputSchema),z.lazy(() => TeamActivityUpdateWithWhereUniqueWithoutUserInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => TeamActivityUpdateManyWithWhereWithoutUserInputSchema),z.lazy(() => TeamActivityUpdateManyWithWhereWithoutUserInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => TeamActivityScalarWhereInputSchema),z.lazy(() => TeamActivityScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
 export const RoleCreateNestedOneWithoutUser_roleInputSchema: z.ZodType<Prisma.RoleCreateNestedOneWithoutUser_roleInput> = z.object({
@@ -3360,20 +3849,114 @@ export const TeamCreateNestedOneWithoutVisited_teamInputSchema: z.ZodType<Prisma
   connect: z.lazy(() => TeamWhereUniqueInputSchema).optional()
 }).strict();
 
-export const UserUpdateOneRequiredWithoutVisited_teamNestedInputSchema: z.ZodType<Prisma.UserUpdateOneRequiredWithoutVisited_teamNestedInput> = z.object({
+export const UserUpdateOneWithoutVisited_teamNestedInputSchema: z.ZodType<Prisma.UserUpdateOneWithoutVisited_teamNestedInput> = z.object({
   create: z.union([ z.lazy(() => UserCreateWithoutVisited_teamInputSchema),z.lazy(() => UserUncheckedCreateWithoutVisited_teamInputSchema) ]).optional(),
   connectOrCreate: z.lazy(() => UserCreateOrConnectWithoutVisited_teamInputSchema).optional(),
   upsert: z.lazy(() => UserUpsertWithoutVisited_teamInputSchema).optional(),
+  disconnect: z.union([ z.boolean(),z.lazy(() => UserWhereInputSchema) ]).optional(),
+  delete: z.union([ z.boolean(),z.lazy(() => UserWhereInputSchema) ]).optional(),
   connect: z.lazy(() => UserWhereUniqueInputSchema).optional(),
   update: z.union([ z.lazy(() => UserUpdateToOneWithWhereWithoutVisited_teamInputSchema),z.lazy(() => UserUpdateWithoutVisited_teamInputSchema),z.lazy(() => UserUncheckedUpdateWithoutVisited_teamInputSchema) ]).optional(),
 }).strict();
 
-export const TeamUpdateOneRequiredWithoutVisited_teamNestedInputSchema: z.ZodType<Prisma.TeamUpdateOneRequiredWithoutVisited_teamNestedInput> = z.object({
+export const TeamUpdateOneWithoutVisited_teamNestedInputSchema: z.ZodType<Prisma.TeamUpdateOneWithoutVisited_teamNestedInput> = z.object({
   create: z.union([ z.lazy(() => TeamCreateWithoutVisited_teamInputSchema),z.lazy(() => TeamUncheckedCreateWithoutVisited_teamInputSchema) ]).optional(),
   connectOrCreate: z.lazy(() => TeamCreateOrConnectWithoutVisited_teamInputSchema).optional(),
   upsert: z.lazy(() => TeamUpsertWithoutVisited_teamInputSchema).optional(),
+  disconnect: z.union([ z.boolean(),z.lazy(() => TeamWhereInputSchema) ]).optional(),
+  delete: z.union([ z.boolean(),z.lazy(() => TeamWhereInputSchema) ]).optional(),
   connect: z.lazy(() => TeamWhereUniqueInputSchema).optional(),
   update: z.union([ z.lazy(() => TeamUpdateToOneWithWhereWithoutVisited_teamInputSchema),z.lazy(() => TeamUpdateWithoutVisited_teamInputSchema),z.lazy(() => TeamUncheckedUpdateWithoutVisited_teamInputSchema) ]).optional(),
+}).strict();
+
+export const TeamActivityCreateNestedManyWithoutTeam_activity_typeInputSchema: z.ZodType<Prisma.TeamActivityCreateNestedManyWithoutTeam_activity_typeInput> = z.object({
+  create: z.union([ z.lazy(() => TeamActivityCreateWithoutTeam_activity_typeInputSchema),z.lazy(() => TeamActivityCreateWithoutTeam_activity_typeInputSchema).array(),z.lazy(() => TeamActivityUncheckedCreateWithoutTeam_activity_typeInputSchema),z.lazy(() => TeamActivityUncheckedCreateWithoutTeam_activity_typeInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => TeamActivityCreateOrConnectWithoutTeam_activity_typeInputSchema),z.lazy(() => TeamActivityCreateOrConnectWithoutTeam_activity_typeInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => TeamActivityCreateManyTeam_activity_typeInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const TeamActivityUncheckedCreateNestedManyWithoutTeam_activity_typeInputSchema: z.ZodType<Prisma.TeamActivityUncheckedCreateNestedManyWithoutTeam_activity_typeInput> = z.object({
+  create: z.union([ z.lazy(() => TeamActivityCreateWithoutTeam_activity_typeInputSchema),z.lazy(() => TeamActivityCreateWithoutTeam_activity_typeInputSchema).array(),z.lazy(() => TeamActivityUncheckedCreateWithoutTeam_activity_typeInputSchema),z.lazy(() => TeamActivityUncheckedCreateWithoutTeam_activity_typeInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => TeamActivityCreateOrConnectWithoutTeam_activity_typeInputSchema),z.lazy(() => TeamActivityCreateOrConnectWithoutTeam_activity_typeInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => TeamActivityCreateManyTeam_activity_typeInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const TeamActivityUpdateManyWithoutTeam_activity_typeNestedInputSchema: z.ZodType<Prisma.TeamActivityUpdateManyWithoutTeam_activity_typeNestedInput> = z.object({
+  create: z.union([ z.lazy(() => TeamActivityCreateWithoutTeam_activity_typeInputSchema),z.lazy(() => TeamActivityCreateWithoutTeam_activity_typeInputSchema).array(),z.lazy(() => TeamActivityUncheckedCreateWithoutTeam_activity_typeInputSchema),z.lazy(() => TeamActivityUncheckedCreateWithoutTeam_activity_typeInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => TeamActivityCreateOrConnectWithoutTeam_activity_typeInputSchema),z.lazy(() => TeamActivityCreateOrConnectWithoutTeam_activity_typeInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => TeamActivityUpsertWithWhereUniqueWithoutTeam_activity_typeInputSchema),z.lazy(() => TeamActivityUpsertWithWhereUniqueWithoutTeam_activity_typeInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => TeamActivityCreateManyTeam_activity_typeInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => TeamActivityUpdateWithWhereUniqueWithoutTeam_activity_typeInputSchema),z.lazy(() => TeamActivityUpdateWithWhereUniqueWithoutTeam_activity_typeInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => TeamActivityUpdateManyWithWhereWithoutTeam_activity_typeInputSchema),z.lazy(() => TeamActivityUpdateManyWithWhereWithoutTeam_activity_typeInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => TeamActivityScalarWhereInputSchema),z.lazy(() => TeamActivityScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const TeamActivityUncheckedUpdateManyWithoutTeam_activity_typeNestedInputSchema: z.ZodType<Prisma.TeamActivityUncheckedUpdateManyWithoutTeam_activity_typeNestedInput> = z.object({
+  create: z.union([ z.lazy(() => TeamActivityCreateWithoutTeam_activity_typeInputSchema),z.lazy(() => TeamActivityCreateWithoutTeam_activity_typeInputSchema).array(),z.lazy(() => TeamActivityUncheckedCreateWithoutTeam_activity_typeInputSchema),z.lazy(() => TeamActivityUncheckedCreateWithoutTeam_activity_typeInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => TeamActivityCreateOrConnectWithoutTeam_activity_typeInputSchema),z.lazy(() => TeamActivityCreateOrConnectWithoutTeam_activity_typeInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => TeamActivityUpsertWithWhereUniqueWithoutTeam_activity_typeInputSchema),z.lazy(() => TeamActivityUpsertWithWhereUniqueWithoutTeam_activity_typeInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => TeamActivityCreateManyTeam_activity_typeInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => TeamActivityUpdateWithWhereUniqueWithoutTeam_activity_typeInputSchema),z.lazy(() => TeamActivityUpdateWithWhereUniqueWithoutTeam_activity_typeInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => TeamActivityUpdateManyWithWhereWithoutTeam_activity_typeInputSchema),z.lazy(() => TeamActivityUpdateManyWithWhereWithoutTeam_activity_typeInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => TeamActivityScalarWhereInputSchema),z.lazy(() => TeamActivityScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const UserCreateNestedOneWithoutTeam_activityInputSchema: z.ZodType<Prisma.UserCreateNestedOneWithoutTeam_activityInput> = z.object({
+  create: z.union([ z.lazy(() => UserCreateWithoutTeam_activityInputSchema),z.lazy(() => UserUncheckedCreateWithoutTeam_activityInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => UserCreateOrConnectWithoutTeam_activityInputSchema).optional(),
+  connect: z.lazy(() => UserWhereUniqueInputSchema).optional()
+}).strict();
+
+export const TeamCreateNestedOneWithoutTeam_activityInputSchema: z.ZodType<Prisma.TeamCreateNestedOneWithoutTeam_activityInput> = z.object({
+  create: z.union([ z.lazy(() => TeamCreateWithoutTeam_activityInputSchema),z.lazy(() => TeamUncheckedCreateWithoutTeam_activityInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => TeamCreateOrConnectWithoutTeam_activityInputSchema).optional(),
+  connect: z.lazy(() => TeamWhereUniqueInputSchema).optional()
+}).strict();
+
+export const TeamActivityTypeCreateNestedOneWithoutTeam_activityInputSchema: z.ZodType<Prisma.TeamActivityTypeCreateNestedOneWithoutTeam_activityInput> = z.object({
+  create: z.union([ z.lazy(() => TeamActivityTypeCreateWithoutTeam_activityInputSchema),z.lazy(() => TeamActivityTypeUncheckedCreateWithoutTeam_activityInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => TeamActivityTypeCreateOrConnectWithoutTeam_activityInputSchema).optional(),
+  connect: z.lazy(() => TeamActivityTypeWhereUniqueInputSchema).optional()
+}).strict();
+
+export const UserUpdateOneWithoutTeam_activityNestedInputSchema: z.ZodType<Prisma.UserUpdateOneWithoutTeam_activityNestedInput> = z.object({
+  create: z.union([ z.lazy(() => UserCreateWithoutTeam_activityInputSchema),z.lazy(() => UserUncheckedCreateWithoutTeam_activityInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => UserCreateOrConnectWithoutTeam_activityInputSchema).optional(),
+  upsert: z.lazy(() => UserUpsertWithoutTeam_activityInputSchema).optional(),
+  disconnect: z.union([ z.boolean(),z.lazy(() => UserWhereInputSchema) ]).optional(),
+  delete: z.union([ z.boolean(),z.lazy(() => UserWhereInputSchema) ]).optional(),
+  connect: z.lazy(() => UserWhereUniqueInputSchema).optional(),
+  update: z.union([ z.lazy(() => UserUpdateToOneWithWhereWithoutTeam_activityInputSchema),z.lazy(() => UserUpdateWithoutTeam_activityInputSchema),z.lazy(() => UserUncheckedUpdateWithoutTeam_activityInputSchema) ]).optional(),
+}).strict();
+
+export const TeamUpdateOneWithoutTeam_activityNestedInputSchema: z.ZodType<Prisma.TeamUpdateOneWithoutTeam_activityNestedInput> = z.object({
+  create: z.union([ z.lazy(() => TeamCreateWithoutTeam_activityInputSchema),z.lazy(() => TeamUncheckedCreateWithoutTeam_activityInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => TeamCreateOrConnectWithoutTeam_activityInputSchema).optional(),
+  upsert: z.lazy(() => TeamUpsertWithoutTeam_activityInputSchema).optional(),
+  disconnect: z.union([ z.boolean(),z.lazy(() => TeamWhereInputSchema) ]).optional(),
+  delete: z.union([ z.boolean(),z.lazy(() => TeamWhereInputSchema) ]).optional(),
+  connect: z.lazy(() => TeamWhereUniqueInputSchema).optional(),
+  update: z.union([ z.lazy(() => TeamUpdateToOneWithWhereWithoutTeam_activityInputSchema),z.lazy(() => TeamUpdateWithoutTeam_activityInputSchema),z.lazy(() => TeamUncheckedUpdateWithoutTeam_activityInputSchema) ]).optional(),
+}).strict();
+
+export const TeamActivityTypeUpdateOneWithoutTeam_activityNestedInputSchema: z.ZodType<Prisma.TeamActivityTypeUpdateOneWithoutTeam_activityNestedInput> = z.object({
+  create: z.union([ z.lazy(() => TeamActivityTypeCreateWithoutTeam_activityInputSchema),z.lazy(() => TeamActivityTypeUncheckedCreateWithoutTeam_activityInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => TeamActivityTypeCreateOrConnectWithoutTeam_activityInputSchema).optional(),
+  upsert: z.lazy(() => TeamActivityTypeUpsertWithoutTeam_activityInputSchema).optional(),
+  disconnect: z.union([ z.boolean(),z.lazy(() => TeamActivityTypeWhereInputSchema) ]).optional(),
+  delete: z.union([ z.boolean(),z.lazy(() => TeamActivityTypeWhereInputSchema) ]).optional(),
+  connect: z.lazy(() => TeamActivityTypeWhereUniqueInputSchema).optional(),
+  update: z.union([ z.lazy(() => TeamActivityTypeUpdateToOneWithWhereWithoutTeam_activityInputSchema),z.lazy(() => TeamActivityTypeUpdateWithoutTeam_activityInputSchema),z.lazy(() => TeamActivityTypeUncheckedUpdateWithoutTeam_activityInputSchema) ]).optional(),
 }).strict();
 
 export const NestedUuidFilterSchema: z.ZodType<Prisma.NestedUuidFilter> = z.object({
@@ -3549,7 +4132,8 @@ export const TeamCreateWithoutRolesInputSchema: z.ZodType<Prisma.TeamCreateWitho
   team_parent_child_parent_team: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_parent_teamInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_child_teamInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutTeamsInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutTeamInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutTeamInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedCreateWithoutRolesInputSchema: z.ZodType<Prisma.TeamUncheckedCreateWithoutRolesInput> = z.object({
@@ -3566,7 +4150,8 @@ export const TeamUncheckedCreateWithoutRolesInputSchema: z.ZodType<Prisma.TeamUn
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_parent_teamInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_child_teamInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutTeamInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamCreateOrConnectWithoutRolesInputSchema: z.ZodType<Prisma.TeamCreateOrConnectWithoutRolesInput> = z.object({
@@ -3625,7 +4210,8 @@ export const TeamUpdateWithoutRolesInputSchema: z.ZodType<Prisma.TeamUpdateWitho
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_parent_teamNestedInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_child_teamNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutTeamsNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutTeamNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutTeamNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedUpdateWithoutRolesInputSchema: z.ZodType<Prisma.TeamUncheckedUpdateWithoutRolesInput> = z.object({
@@ -3642,7 +4228,8 @@ export const TeamUncheckedUpdateWithoutRolesInputSchema: z.ZodType<Prisma.TeamUn
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_parent_teamNestedInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_child_teamNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutTeamNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const UserRoleUpsertWithWhereUniqueWithoutRolesInputSchema: z.ZodType<Prisma.UserRoleUpsertWithWhereUniqueWithoutRolesInput> = z.object({
@@ -3687,7 +4274,8 @@ export const TeamCreateWithoutTasksInputSchema: z.ZodType<Prisma.TeamCreateWitho
   team_parent_child_parent_team: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_parent_teamInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_child_teamInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutTeamsInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutTeamInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutTeamInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedCreateWithoutTasksInputSchema: z.ZodType<Prisma.TeamUncheckedCreateWithoutTasksInput> = z.object({
@@ -3704,7 +4292,8 @@ export const TeamUncheckedCreateWithoutTasksInputSchema: z.ZodType<Prisma.TeamUn
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_parent_teamInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_child_teamInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutTeamInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamCreateOrConnectWithoutTasksInputSchema: z.ZodType<Prisma.TeamCreateOrConnectWithoutTasksInput> = z.object({
@@ -3726,7 +4315,8 @@ export const UserCreateWithoutTasksInputSchema: z.ZodType<Prisma.UserCreateWitho
   user_team: z.lazy(() => UserTeamCreateNestedManyWithoutUsersInputSchema).optional(),
   teams: z.lazy(() => TeamCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateWithoutTasksInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutTasksInput> = z.object({
@@ -3743,7 +4333,8 @@ export const UserUncheckedCreateWithoutTasksInputSchema: z.ZodType<Prisma.UserUn
   user_team: z.lazy(() => UserTeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserCreateOrConnectWithoutTasksInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutTasksInput> = z.object({
@@ -3776,7 +4367,8 @@ export const TeamUpdateWithoutTasksInputSchema: z.ZodType<Prisma.TeamUpdateWitho
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_parent_teamNestedInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_child_teamNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutTeamsNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutTeamNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutTeamNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedUpdateWithoutTasksInputSchema: z.ZodType<Prisma.TeamUncheckedUpdateWithoutTasksInput> = z.object({
@@ -3793,7 +4385,8 @@ export const TeamUncheckedUpdateWithoutTasksInputSchema: z.ZodType<Prisma.TeamUn
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_parent_teamNestedInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_child_teamNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutTeamNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const UserUpsertWithoutTasksInputSchema: z.ZodType<Prisma.UserUpsertWithoutTasksInput> = z.object({
@@ -3821,7 +4414,8 @@ export const UserUpdateWithoutTasksInputSchema: z.ZodType<Prisma.UserUpdateWitho
   user_team: z.lazy(() => UserTeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   teams: z.lazy(() => TeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateWithoutTasksInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutTasksInput> = z.object({
@@ -3838,7 +4432,8 @@ export const UserUncheckedUpdateWithoutTasksInputSchema: z.ZodType<Prisma.UserUn
   user_team: z.lazy(() => UserTeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   teams: z.lazy(() => TeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserCreateWithoutTeamsInputSchema: z.ZodType<Prisma.UserCreateWithoutTeamsInput> = z.object({
@@ -3855,7 +4450,8 @@ export const UserCreateWithoutTeamsInputSchema: z.ZodType<Prisma.UserCreateWitho
   user_role: z.lazy(() => UserRoleCreateNestedManyWithoutUsersInputSchema).optional(),
   user_team: z.lazy(() => UserTeamCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateWithoutTeamsInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutTeamsInput> = z.object({
@@ -3872,7 +4468,8 @@ export const UserUncheckedCreateWithoutTeamsInputSchema: z.ZodType<Prisma.UserUn
   user_role: z.lazy(() => UserRoleUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   user_team: z.lazy(() => UserTeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserCreateOrConnectWithoutTeamsInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutTeamsInput> = z.object({
@@ -4128,14 +4725,14 @@ export const VisitedTeamCreateWithoutTeamInputSchema: z.ZodType<Prisma.VisitedTe
   id: z.string().optional(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-  user: z.lazy(() => UserCreateNestedOneWithoutVisited_teamInputSchema)
+  user: z.lazy(() => UserCreateNestedOneWithoutVisited_teamInputSchema).optional()
 }).strict();
 
 export const VisitedTeamUncheckedCreateWithoutTeamInputSchema: z.ZodType<Prisma.VisitedTeamUncheckedCreateWithoutTeamInput> = z.object({
   id: z.string().optional(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-  user_id: z.string()
+  user_id: z.string().optional().nullable()
 }).strict();
 
 export const VisitedTeamCreateOrConnectWithoutTeamInputSchema: z.ZodType<Prisma.VisitedTeamCreateOrConnectWithoutTeamInput> = z.object({
@@ -4145,6 +4742,32 @@ export const VisitedTeamCreateOrConnectWithoutTeamInputSchema: z.ZodType<Prisma.
 
 export const VisitedTeamCreateManyTeamInputEnvelopeSchema: z.ZodType<Prisma.VisitedTeamCreateManyTeamInputEnvelope> = z.object({
   data: z.union([ z.lazy(() => VisitedTeamCreateManyTeamInputSchema),z.lazy(() => VisitedTeamCreateManyTeamInputSchema).array() ]),
+  skipDuplicates: z.boolean().optional()
+}).strict();
+
+export const TeamActivityCreateWithoutTeamInputSchema: z.ZodType<Prisma.TeamActivityCreateWithoutTeamInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  user: z.lazy(() => UserCreateNestedOneWithoutTeam_activityInputSchema).optional(),
+  team_activity_type: z.lazy(() => TeamActivityTypeCreateNestedOneWithoutTeam_activityInputSchema).optional()
+}).strict();
+
+export const TeamActivityUncheckedCreateWithoutTeamInputSchema: z.ZodType<Prisma.TeamActivityUncheckedCreateWithoutTeamInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  user_id: z.string().optional().nullable(),
+  activity_type: z.string().optional().nullable()
+}).strict();
+
+export const TeamActivityCreateOrConnectWithoutTeamInputSchema: z.ZodType<Prisma.TeamActivityCreateOrConnectWithoutTeamInput> = z.object({
+  where: z.lazy(() => TeamActivityWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => TeamActivityCreateWithoutTeamInputSchema),z.lazy(() => TeamActivityUncheckedCreateWithoutTeamInputSchema) ]),
+}).strict();
+
+export const TeamActivityCreateManyTeamInputEnvelopeSchema: z.ZodType<Prisma.TeamActivityCreateManyTeamInputEnvelope> = z.object({
+  data: z.union([ z.lazy(() => TeamActivityCreateManyTeamInputSchema),z.lazy(() => TeamActivityCreateManyTeamInputSchema).array() ]),
   skipDuplicates: z.boolean().optional()
 }).strict();
 
@@ -4173,7 +4796,8 @@ export const UserUpdateWithoutTeamsInputSchema: z.ZodType<Prisma.UserUpdateWitho
   user_role: z.lazy(() => UserRoleUpdateManyWithoutUsersNestedInputSchema).optional(),
   user_team: z.lazy(() => UserTeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateWithoutTeamsInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutTeamsInput> = z.object({
@@ -4190,7 +4814,8 @@ export const UserUncheckedUpdateWithoutTeamsInputSchema: z.ZodType<Prisma.UserUn
   user_role: z.lazy(() => UserRoleUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   user_team: z.lazy(() => UserTeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const RoleUpsertWithWhereUniqueWithoutTeamsInputSchema: z.ZodType<Prisma.RoleUpsertWithWhereUniqueWithoutTeamsInput> = z.object({
@@ -4421,8 +5046,36 @@ export const VisitedTeamScalarWhereInputSchema: z.ZodType<Prisma.VisitedTeamScal
   id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  user_id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
-  team_id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  user_id: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
+  team_id: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
+}).strict();
+
+export const TeamActivityUpsertWithWhereUniqueWithoutTeamInputSchema: z.ZodType<Prisma.TeamActivityUpsertWithWhereUniqueWithoutTeamInput> = z.object({
+  where: z.lazy(() => TeamActivityWhereUniqueInputSchema),
+  update: z.union([ z.lazy(() => TeamActivityUpdateWithoutTeamInputSchema),z.lazy(() => TeamActivityUncheckedUpdateWithoutTeamInputSchema) ]),
+  create: z.union([ z.lazy(() => TeamActivityCreateWithoutTeamInputSchema),z.lazy(() => TeamActivityUncheckedCreateWithoutTeamInputSchema) ]),
+}).strict();
+
+export const TeamActivityUpdateWithWhereUniqueWithoutTeamInputSchema: z.ZodType<Prisma.TeamActivityUpdateWithWhereUniqueWithoutTeamInput> = z.object({
+  where: z.lazy(() => TeamActivityWhereUniqueInputSchema),
+  data: z.union([ z.lazy(() => TeamActivityUpdateWithoutTeamInputSchema),z.lazy(() => TeamActivityUncheckedUpdateWithoutTeamInputSchema) ]),
+}).strict();
+
+export const TeamActivityUpdateManyWithWhereWithoutTeamInputSchema: z.ZodType<Prisma.TeamActivityUpdateManyWithWhereWithoutTeamInput> = z.object({
+  where: z.lazy(() => TeamActivityScalarWhereInputSchema),
+  data: z.union([ z.lazy(() => TeamActivityUpdateManyMutationInputSchema),z.lazy(() => TeamActivityUncheckedUpdateManyWithoutTeamInputSchema) ]),
+}).strict();
+
+export const TeamActivityScalarWhereInputSchema: z.ZodType<Prisma.TeamActivityScalarWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => TeamActivityScalarWhereInputSchema),z.lazy(() => TeamActivityScalarWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => TeamActivityScalarWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => TeamActivityScalarWhereInputSchema),z.lazy(() => TeamActivityScalarWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  user_id: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
+  team_id: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
+  activity_type: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
 }).strict();
 
 export const TeamCreateWithoutUser_teamInputSchema: z.ZodType<Prisma.TeamCreateWithoutUser_teamInput> = z.object({
@@ -4439,7 +5092,8 @@ export const TeamCreateWithoutUser_teamInputSchema: z.ZodType<Prisma.TeamCreateW
   team_parent_child_parent_team: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_parent_teamInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_child_teamInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutTeamsInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutTeamInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutTeamInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedCreateWithoutUser_teamInputSchema: z.ZodType<Prisma.TeamUncheckedCreateWithoutUser_teamInput> = z.object({
@@ -4456,7 +5110,8 @@ export const TeamUncheckedCreateWithoutUser_teamInputSchema: z.ZodType<Prisma.Te
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_parent_teamInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_child_teamInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutTeamInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamCreateOrConnectWithoutUser_teamInputSchema: z.ZodType<Prisma.TeamCreateOrConnectWithoutUser_teamInput> = z.object({
@@ -4478,7 +5133,8 @@ export const UserCreateWithoutUser_teamInputSchema: z.ZodType<Prisma.UserCreateW
   user_role: z.lazy(() => UserRoleCreateNestedManyWithoutUsersInputSchema).optional(),
   teams: z.lazy(() => TeamCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateWithoutUser_teamInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutUser_teamInput> = z.object({
@@ -4495,7 +5151,8 @@ export const UserUncheckedCreateWithoutUser_teamInputSchema: z.ZodType<Prisma.Us
   user_role: z.lazy(() => UserRoleUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserCreateOrConnectWithoutUser_teamInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutUser_teamInput> = z.object({
@@ -4528,7 +5185,8 @@ export const TeamUpdateWithoutUser_teamInputSchema: z.ZodType<Prisma.TeamUpdateW
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_parent_teamNestedInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_child_teamNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutTeamsNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutTeamNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutTeamNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedUpdateWithoutUser_teamInputSchema: z.ZodType<Prisma.TeamUncheckedUpdateWithoutUser_teamInput> = z.object({
@@ -4545,7 +5203,8 @@ export const TeamUncheckedUpdateWithoutUser_teamInputSchema: z.ZodType<Prisma.Te
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_parent_teamNestedInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_child_teamNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutTeamNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const UserUpsertWithoutUser_teamInputSchema: z.ZodType<Prisma.UserUpsertWithoutUser_teamInput> = z.object({
@@ -4573,7 +5232,8 @@ export const UserUpdateWithoutUser_teamInputSchema: z.ZodType<Prisma.UserUpdateW
   user_role: z.lazy(() => UserRoleUpdateManyWithoutUsersNestedInputSchema).optional(),
   teams: z.lazy(() => TeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateWithoutUser_teamInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutUser_teamInput> = z.object({
@@ -4590,7 +5250,8 @@ export const UserUncheckedUpdateWithoutUser_teamInputSchema: z.ZodType<Prisma.Us
   user_role: z.lazy(() => UserRoleUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   teams: z.lazy(() => TeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const TaskCreateWithoutUsersInputSchema: z.ZodType<Prisma.TaskCreateWithoutUsersInput> = z.object({
@@ -4687,7 +5348,8 @@ export const TeamCreateWithoutUsersInputSchema: z.ZodType<Prisma.TeamCreateWitho
   team_parent_child_parent_team: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_parent_teamInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_child_teamInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutTeamsInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutTeamInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutTeamInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedCreateWithoutUsersInputSchema: z.ZodType<Prisma.TeamUncheckedCreateWithoutUsersInput> = z.object({
@@ -4704,7 +5366,8 @@ export const TeamUncheckedCreateWithoutUsersInputSchema: z.ZodType<Prisma.TeamUn
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_parent_teamInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_child_teamInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutTeamInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamCreateOrConnectWithoutUsersInputSchema: z.ZodType<Prisma.TeamCreateOrConnectWithoutUsersInput> = z.object({
@@ -4745,14 +5408,14 @@ export const VisitedTeamCreateWithoutUserInputSchema: z.ZodType<Prisma.VisitedTe
   id: z.string().optional(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-  team: z.lazy(() => TeamCreateNestedOneWithoutVisited_teamInputSchema)
+  team: z.lazy(() => TeamCreateNestedOneWithoutVisited_teamInputSchema).optional()
 }).strict();
 
 export const VisitedTeamUncheckedCreateWithoutUserInputSchema: z.ZodType<Prisma.VisitedTeamUncheckedCreateWithoutUserInput> = z.object({
   id: z.string().optional(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-  team_id: z.string()
+  team_id: z.string().optional().nullable()
 }).strict();
 
 export const VisitedTeamCreateOrConnectWithoutUserInputSchema: z.ZodType<Prisma.VisitedTeamCreateOrConnectWithoutUserInput> = z.object({
@@ -4762,6 +5425,32 @@ export const VisitedTeamCreateOrConnectWithoutUserInputSchema: z.ZodType<Prisma.
 
 export const VisitedTeamCreateManyUserInputEnvelopeSchema: z.ZodType<Prisma.VisitedTeamCreateManyUserInputEnvelope> = z.object({
   data: z.union([ z.lazy(() => VisitedTeamCreateManyUserInputSchema),z.lazy(() => VisitedTeamCreateManyUserInputSchema).array() ]),
+  skipDuplicates: z.boolean().optional()
+}).strict();
+
+export const TeamActivityCreateWithoutUserInputSchema: z.ZodType<Prisma.TeamActivityCreateWithoutUserInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  team: z.lazy(() => TeamCreateNestedOneWithoutTeam_activityInputSchema).optional(),
+  team_activity_type: z.lazy(() => TeamActivityTypeCreateNestedOneWithoutTeam_activityInputSchema).optional()
+}).strict();
+
+export const TeamActivityUncheckedCreateWithoutUserInputSchema: z.ZodType<Prisma.TeamActivityUncheckedCreateWithoutUserInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  team_id: z.string().optional().nullable(),
+  activity_type: z.string().optional().nullable()
+}).strict();
+
+export const TeamActivityCreateOrConnectWithoutUserInputSchema: z.ZodType<Prisma.TeamActivityCreateOrConnectWithoutUserInput> = z.object({
+  where: z.lazy(() => TeamActivityWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => TeamActivityCreateWithoutUserInputSchema),z.lazy(() => TeamActivityUncheckedCreateWithoutUserInputSchema) ]),
+}).strict();
+
+export const TeamActivityCreateManyUserInputEnvelopeSchema: z.ZodType<Prisma.TeamActivityCreateManyUserInputEnvelope> = z.object({
+  data: z.union([ z.lazy(() => TeamActivityCreateManyUserInputSchema),z.lazy(() => TeamActivityCreateManyUserInputSchema).array() ]),
   skipDuplicates: z.boolean().optional()
 }).strict();
 
@@ -4872,6 +5561,22 @@ export const VisitedTeamUpdateManyWithWhereWithoutUserInputSchema: z.ZodType<Pri
   data: z.union([ z.lazy(() => VisitedTeamUpdateManyMutationInputSchema),z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserInputSchema) ]),
 }).strict();
 
+export const TeamActivityUpsertWithWhereUniqueWithoutUserInputSchema: z.ZodType<Prisma.TeamActivityUpsertWithWhereUniqueWithoutUserInput> = z.object({
+  where: z.lazy(() => TeamActivityWhereUniqueInputSchema),
+  update: z.union([ z.lazy(() => TeamActivityUpdateWithoutUserInputSchema),z.lazy(() => TeamActivityUncheckedUpdateWithoutUserInputSchema) ]),
+  create: z.union([ z.lazy(() => TeamActivityCreateWithoutUserInputSchema),z.lazy(() => TeamActivityUncheckedCreateWithoutUserInputSchema) ]),
+}).strict();
+
+export const TeamActivityUpdateWithWhereUniqueWithoutUserInputSchema: z.ZodType<Prisma.TeamActivityUpdateWithWhereUniqueWithoutUserInput> = z.object({
+  where: z.lazy(() => TeamActivityWhereUniqueInputSchema),
+  data: z.union([ z.lazy(() => TeamActivityUpdateWithoutUserInputSchema),z.lazy(() => TeamActivityUncheckedUpdateWithoutUserInputSchema) ]),
+}).strict();
+
+export const TeamActivityUpdateManyWithWhereWithoutUserInputSchema: z.ZodType<Prisma.TeamActivityUpdateManyWithWhereWithoutUserInput> = z.object({
+  where: z.lazy(() => TeamActivityScalarWhereInputSchema),
+  data: z.union([ z.lazy(() => TeamActivityUpdateManyMutationInputSchema),z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserInputSchema) ]),
+}).strict();
+
 export const RoleCreateWithoutUser_roleInputSchema: z.ZodType<Prisma.RoleCreateWithoutUser_roleInput> = z.object({
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
@@ -4909,7 +5614,8 @@ export const TeamCreateWithoutUser_roleInputSchema: z.ZodType<Prisma.TeamCreateW
   team_parent_child_parent_team: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_parent_teamInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_child_teamInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutTeamsInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutTeamInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutTeamInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedCreateWithoutUser_roleInputSchema: z.ZodType<Prisma.TeamUncheckedCreateWithoutUser_roleInput> = z.object({
@@ -4926,7 +5632,8 @@ export const TeamUncheckedCreateWithoutUser_roleInputSchema: z.ZodType<Prisma.Te
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_parent_teamInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_child_teamInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutTeamInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamCreateOrConnectWithoutUser_roleInputSchema: z.ZodType<Prisma.TeamCreateOrConnectWithoutUser_roleInput> = z.object({
@@ -4948,7 +5655,8 @@ export const UserCreateWithoutUser_roleInputSchema: z.ZodType<Prisma.UserCreateW
   user_team: z.lazy(() => UserTeamCreateNestedManyWithoutUsersInputSchema).optional(),
   teams: z.lazy(() => TeamCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateWithoutUser_roleInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutUser_roleInput> = z.object({
@@ -4965,7 +5673,8 @@ export const UserUncheckedCreateWithoutUser_roleInputSchema: z.ZodType<Prisma.Us
   user_team: z.lazy(() => UserTeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserCreateOrConnectWithoutUser_roleInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutUser_roleInput> = z.object({
@@ -5027,7 +5736,8 @@ export const TeamUpdateWithoutUser_roleInputSchema: z.ZodType<Prisma.TeamUpdateW
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_parent_teamNestedInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_child_teamNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutTeamsNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutTeamNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutTeamNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedUpdateWithoutUser_roleInputSchema: z.ZodType<Prisma.TeamUncheckedUpdateWithoutUser_roleInput> = z.object({
@@ -5044,7 +5754,8 @@ export const TeamUncheckedUpdateWithoutUser_roleInputSchema: z.ZodType<Prisma.Te
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_parent_teamNestedInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_child_teamNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutTeamNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const UserUpsertWithoutUser_roleInputSchema: z.ZodType<Prisma.UserUpsertWithoutUser_roleInput> = z.object({
@@ -5072,7 +5783,8 @@ export const UserUpdateWithoutUser_roleInputSchema: z.ZodType<Prisma.UserUpdateW
   user_team: z.lazy(() => UserTeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   teams: z.lazy(() => TeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateWithoutUser_roleInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutUser_roleInput> = z.object({
@@ -5089,7 +5801,8 @@ export const UserUncheckedUpdateWithoutUser_roleInputSchema: z.ZodType<Prisma.Us
   user_team: z.lazy(() => UserTeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   teams: z.lazy(() => TeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const TeamCreateWithoutTeam_parent_child_team_aInputSchema: z.ZodType<Prisma.TeamCreateWithoutTeam_parent_child_team_aInput> = z.object({
@@ -5106,7 +5819,8 @@ export const TeamCreateWithoutTeam_parent_child_team_aInputSchema: z.ZodType<Pri
   team_parent_child_parent_team: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_parent_teamInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_child_teamInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutTeamsInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutTeamInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutTeamInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedCreateWithoutTeam_parent_child_team_aInputSchema: z.ZodType<Prisma.TeamUncheckedCreateWithoutTeam_parent_child_team_aInput> = z.object({
@@ -5123,7 +5837,8 @@ export const TeamUncheckedCreateWithoutTeam_parent_child_team_aInputSchema: z.Zo
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_parent_teamInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_child_teamInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutTeamInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamCreateOrConnectWithoutTeam_parent_child_team_aInputSchema: z.ZodType<Prisma.TeamCreateOrConnectWithoutTeam_parent_child_team_aInput> = z.object({
@@ -5145,7 +5860,8 @@ export const TeamCreateWithoutTeam_parent_child_team_bInputSchema: z.ZodType<Pri
   team_parent_child_parent_team: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_parent_teamInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_child_teamInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutTeamsInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutTeamInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutTeamInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedCreateWithoutTeam_parent_child_team_bInputSchema: z.ZodType<Prisma.TeamUncheckedCreateWithoutTeam_parent_child_team_bInput> = z.object({
@@ -5162,7 +5878,8 @@ export const TeamUncheckedCreateWithoutTeam_parent_child_team_bInputSchema: z.Zo
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_parent_teamInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_child_teamInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutTeamInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamCreateOrConnectWithoutTeam_parent_child_team_bInputSchema: z.ZodType<Prisma.TeamCreateOrConnectWithoutTeam_parent_child_team_bInput> = z.object({
@@ -5184,7 +5901,8 @@ export const TeamCreateWithoutTeam_parent_child_parent_teamInputSchema: z.ZodTyp
   team_parent_child_team_b: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_team_bInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_child_teamInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutTeamsInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutTeamInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutTeamInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedCreateWithoutTeam_parent_child_parent_teamInputSchema: z.ZodType<Prisma.TeamUncheckedCreateWithoutTeam_parent_child_parent_teamInput> = z.object({
@@ -5201,7 +5919,8 @@ export const TeamUncheckedCreateWithoutTeam_parent_child_parent_teamInputSchema:
   team_parent_child_team_b: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_team_bInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_child_teamInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutTeamInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamCreateOrConnectWithoutTeam_parent_child_parent_teamInputSchema: z.ZodType<Prisma.TeamCreateOrConnectWithoutTeam_parent_child_parent_teamInput> = z.object({
@@ -5223,7 +5942,8 @@ export const TeamCreateWithoutTeam_parent_child_child_teamInputSchema: z.ZodType
   team_parent_child_team_b: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_team_bInputSchema).optional(),
   team_parent_child_parent_team: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_parent_teamInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutTeamsInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutTeamInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutTeamInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedCreateWithoutTeam_parent_child_child_teamInputSchema: z.ZodType<Prisma.TeamUncheckedCreateWithoutTeam_parent_child_child_teamInput> = z.object({
@@ -5240,7 +5960,8 @@ export const TeamUncheckedCreateWithoutTeam_parent_child_child_teamInputSchema: 
   team_parent_child_team_b: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_team_bInputSchema).optional(),
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_parent_teamInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutTeamInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamCreateOrConnectWithoutTeam_parent_child_child_teamInputSchema: z.ZodType<Prisma.TeamCreateOrConnectWithoutTeam_parent_child_child_teamInput> = z.object({
@@ -5273,7 +5994,8 @@ export const TeamUpdateWithoutTeam_parent_child_team_aInputSchema: z.ZodType<Pri
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_parent_teamNestedInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_child_teamNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutTeamsNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutTeamNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutTeamNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedUpdateWithoutTeam_parent_child_team_aInputSchema: z.ZodType<Prisma.TeamUncheckedUpdateWithoutTeam_parent_child_team_aInput> = z.object({
@@ -5290,7 +6012,8 @@ export const TeamUncheckedUpdateWithoutTeam_parent_child_team_aInputSchema: z.Zo
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_parent_teamNestedInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_child_teamNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutTeamNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const TeamUpsertWithoutTeam_parent_child_team_bInputSchema: z.ZodType<Prisma.TeamUpsertWithoutTeam_parent_child_team_bInput> = z.object({
@@ -5318,7 +6041,8 @@ export const TeamUpdateWithoutTeam_parent_child_team_bInputSchema: z.ZodType<Pri
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_parent_teamNestedInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_child_teamNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutTeamsNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutTeamNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutTeamNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedUpdateWithoutTeam_parent_child_team_bInputSchema: z.ZodType<Prisma.TeamUncheckedUpdateWithoutTeam_parent_child_team_bInput> = z.object({
@@ -5335,7 +6059,8 @@ export const TeamUncheckedUpdateWithoutTeam_parent_child_team_bInputSchema: z.Zo
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_parent_teamNestedInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_child_teamNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutTeamNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const TeamUpsertWithoutTeam_parent_child_parent_teamInputSchema: z.ZodType<Prisma.TeamUpsertWithoutTeam_parent_child_parent_teamInput> = z.object({
@@ -5363,7 +6088,8 @@ export const TeamUpdateWithoutTeam_parent_child_parent_teamInputSchema: z.ZodTyp
   team_parent_child_team_b: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_team_bNestedInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_child_teamNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutTeamsNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutTeamNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutTeamNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedUpdateWithoutTeam_parent_child_parent_teamInputSchema: z.ZodType<Prisma.TeamUncheckedUpdateWithoutTeam_parent_child_parent_teamInput> = z.object({
@@ -5380,7 +6106,8 @@ export const TeamUncheckedUpdateWithoutTeam_parent_child_parent_teamInputSchema:
   team_parent_child_team_b: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_team_bNestedInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_child_teamNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutTeamNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const TeamUpsertWithoutTeam_parent_child_child_teamInputSchema: z.ZodType<Prisma.TeamUpsertWithoutTeam_parent_child_child_teamInput> = z.object({
@@ -5408,7 +6135,8 @@ export const TeamUpdateWithoutTeam_parent_child_child_teamInputSchema: z.ZodType
   team_parent_child_team_b: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_team_bNestedInputSchema).optional(),
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_parent_teamNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutTeamsNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutTeamNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutTeamNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedUpdateWithoutTeam_parent_child_child_teamInputSchema: z.ZodType<Prisma.TeamUncheckedUpdateWithoutTeam_parent_child_child_teamInput> = z.object({
@@ -5425,7 +6153,8 @@ export const TeamUncheckedUpdateWithoutTeam_parent_child_child_teamInputSchema: 
   team_parent_child_team_b: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_team_bNestedInputSchema).optional(),
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_parent_teamNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutTeamNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const UserCreateWithoutTeam_invitesInputSchema: z.ZodType<Prisma.UserCreateWithoutTeam_invitesInput> = z.object({
@@ -5442,7 +6171,8 @@ export const UserCreateWithoutTeam_invitesInputSchema: z.ZodType<Prisma.UserCrea
   user_role: z.lazy(() => UserRoleCreateNestedManyWithoutUsersInputSchema).optional(),
   user_team: z.lazy(() => UserTeamCreateNestedManyWithoutUsersInputSchema).optional(),
   teams: z.lazy(() => TeamCreateNestedManyWithoutUsersInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateWithoutTeam_invitesInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutTeam_invitesInput> = z.object({
@@ -5459,7 +6189,8 @@ export const UserUncheckedCreateWithoutTeam_invitesInputSchema: z.ZodType<Prisma
   user_role: z.lazy(() => UserRoleUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   user_team: z.lazy(() => UserTeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserCreateOrConnectWithoutTeam_invitesInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutTeam_invitesInput> = z.object({
@@ -5481,7 +6212,8 @@ export const TeamCreateWithoutTeam_invitesInputSchema: z.ZodType<Prisma.TeamCrea
   team_parent_child_team_b: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_team_bInputSchema).optional(),
   team_parent_child_parent_team: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_parent_teamInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_child_teamInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutTeamInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutTeamInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedCreateWithoutTeam_invitesInputSchema: z.ZodType<Prisma.TeamUncheckedCreateWithoutTeam_invitesInput> = z.object({
@@ -5498,7 +6230,8 @@ export const TeamUncheckedCreateWithoutTeam_invitesInputSchema: z.ZodType<Prisma
   team_parent_child_team_b: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_team_bInputSchema).optional(),
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_parent_teamInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_child_teamInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutTeamInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamCreateOrConnectWithoutTeam_invitesInputSchema: z.ZodType<Prisma.TeamCreateOrConnectWithoutTeam_invitesInput> = z.object({
@@ -5531,7 +6264,8 @@ export const UserUpdateWithoutTeam_invitesInputSchema: z.ZodType<Prisma.UserUpda
   user_role: z.lazy(() => UserRoleUpdateManyWithoutUsersNestedInputSchema).optional(),
   user_team: z.lazy(() => UserTeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   teams: z.lazy(() => TeamUpdateManyWithoutUsersNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateWithoutTeam_invitesInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutTeam_invitesInput> = z.object({
@@ -5548,7 +6282,8 @@ export const UserUncheckedUpdateWithoutTeam_invitesInputSchema: z.ZodType<Prisma
   user_role: z.lazy(() => UserRoleUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   user_team: z.lazy(() => UserTeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   teams: z.lazy(() => TeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const TeamUpsertWithoutTeam_invitesInputSchema: z.ZodType<Prisma.TeamUpsertWithoutTeam_invitesInput> = z.object({
@@ -5576,7 +6311,8 @@ export const TeamUpdateWithoutTeam_invitesInputSchema: z.ZodType<Prisma.TeamUpda
   team_parent_child_team_b: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_team_bNestedInputSchema).optional(),
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_parent_teamNestedInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_child_teamNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutTeamNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutTeamNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedUpdateWithoutTeam_invitesInputSchema: z.ZodType<Prisma.TeamUncheckedUpdateWithoutTeam_invitesInput> = z.object({
@@ -5593,7 +6329,8 @@ export const TeamUncheckedUpdateWithoutTeam_invitesInputSchema: z.ZodType<Prisma
   team_parent_child_team_b: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_team_bNestedInputSchema).optional(),
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_parent_teamNestedInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_child_teamNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutTeamNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const UserCreateWithoutVisited_teamInputSchema: z.ZodType<Prisma.UserCreateWithoutVisited_teamInput> = z.object({
@@ -5610,7 +6347,8 @@ export const UserCreateWithoutVisited_teamInputSchema: z.ZodType<Prisma.UserCrea
   user_role: z.lazy(() => UserRoleCreateNestedManyWithoutUsersInputSchema).optional(),
   user_team: z.lazy(() => UserTeamCreateNestedManyWithoutUsersInputSchema).optional(),
   teams: z.lazy(() => TeamCreateNestedManyWithoutUsersInputSchema).optional(),
-  team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional()
+  team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateWithoutVisited_teamInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutVisited_teamInput> = z.object({
@@ -5627,7 +6365,8 @@ export const UserUncheckedCreateWithoutVisited_teamInputSchema: z.ZodType<Prisma
   user_role: z.lazy(() => UserRoleUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   user_team: z.lazy(() => UserTeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
-  team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional()
+  team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserCreateOrConnectWithoutVisited_teamInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutVisited_teamInput> = z.object({
@@ -5649,7 +6388,8 @@ export const TeamCreateWithoutVisited_teamInputSchema: z.ZodType<Prisma.TeamCrea
   team_parent_child_team_b: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_team_bInputSchema).optional(),
   team_parent_child_parent_team: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_parent_teamInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_child_teamInputSchema).optional(),
-  team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutTeamsInputSchema).optional()
+  team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutTeamsInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedCreateWithoutVisited_teamInputSchema: z.ZodType<Prisma.TeamUncheckedCreateWithoutVisited_teamInput> = z.object({
@@ -5666,7 +6406,8 @@ export const TeamUncheckedCreateWithoutVisited_teamInputSchema: z.ZodType<Prisma
   team_parent_child_team_b: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_team_bInputSchema).optional(),
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_parent_teamInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_child_teamInputSchema).optional(),
-  team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutTeamsInputSchema).optional()
+  team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
 }).strict();
 
 export const TeamCreateOrConnectWithoutVisited_teamInputSchema: z.ZodType<Prisma.TeamCreateOrConnectWithoutVisited_teamInput> = z.object({
@@ -5699,7 +6440,8 @@ export const UserUpdateWithoutVisited_teamInputSchema: z.ZodType<Prisma.UserUpda
   user_role: z.lazy(() => UserRoleUpdateManyWithoutUsersNestedInputSchema).optional(),
   user_team: z.lazy(() => UserTeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   teams: z.lazy(() => TeamUpdateManyWithoutUsersNestedInputSchema).optional(),
-  team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional()
+  team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateWithoutVisited_teamInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutVisited_teamInput> = z.object({
@@ -5716,7 +6458,8 @@ export const UserUncheckedUpdateWithoutVisited_teamInputSchema: z.ZodType<Prisma
   user_role: z.lazy(() => UserRoleUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   user_team: z.lazy(() => UserTeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   teams: z.lazy(() => TeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
-  team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional()
+  team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const TeamUpsertWithoutVisited_teamInputSchema: z.ZodType<Prisma.TeamUpsertWithoutVisited_teamInput> = z.object({
@@ -5744,7 +6487,8 @@ export const TeamUpdateWithoutVisited_teamInputSchema: z.ZodType<Prisma.TeamUpda
   team_parent_child_team_b: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_team_bNestedInputSchema).optional(),
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_parent_teamNestedInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_child_teamNestedInputSchema).optional(),
-  team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutTeamsNestedInputSchema).optional()
+  team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutTeamsNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedUpdateWithoutVisited_teamInputSchema: z.ZodType<Prisma.TeamUncheckedUpdateWithoutVisited_teamInput> = z.object({
@@ -5761,7 +6505,270 @@ export const TeamUncheckedUpdateWithoutVisited_teamInputSchema: z.ZodType<Prisma
   team_parent_child_team_b: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_team_bNestedInputSchema).optional(),
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_parent_teamNestedInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_child_teamNestedInputSchema).optional(),
-  team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional()
+  team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
+}).strict();
+
+export const TeamActivityCreateWithoutTeam_activity_typeInputSchema: z.ZodType<Prisma.TeamActivityCreateWithoutTeam_activity_typeInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  user: z.lazy(() => UserCreateNestedOneWithoutTeam_activityInputSchema).optional(),
+  team: z.lazy(() => TeamCreateNestedOneWithoutTeam_activityInputSchema).optional()
+}).strict();
+
+export const TeamActivityUncheckedCreateWithoutTeam_activity_typeInputSchema: z.ZodType<Prisma.TeamActivityUncheckedCreateWithoutTeam_activity_typeInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  user_id: z.string().optional().nullable(),
+  team_id: z.string().optional().nullable()
+}).strict();
+
+export const TeamActivityCreateOrConnectWithoutTeam_activity_typeInputSchema: z.ZodType<Prisma.TeamActivityCreateOrConnectWithoutTeam_activity_typeInput> = z.object({
+  where: z.lazy(() => TeamActivityWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => TeamActivityCreateWithoutTeam_activity_typeInputSchema),z.lazy(() => TeamActivityUncheckedCreateWithoutTeam_activity_typeInputSchema) ]),
+}).strict();
+
+export const TeamActivityCreateManyTeam_activity_typeInputEnvelopeSchema: z.ZodType<Prisma.TeamActivityCreateManyTeam_activity_typeInputEnvelope> = z.object({
+  data: z.union([ z.lazy(() => TeamActivityCreateManyTeam_activity_typeInputSchema),z.lazy(() => TeamActivityCreateManyTeam_activity_typeInputSchema).array() ]),
+  skipDuplicates: z.boolean().optional()
+}).strict();
+
+export const TeamActivityUpsertWithWhereUniqueWithoutTeam_activity_typeInputSchema: z.ZodType<Prisma.TeamActivityUpsertWithWhereUniqueWithoutTeam_activity_typeInput> = z.object({
+  where: z.lazy(() => TeamActivityWhereUniqueInputSchema),
+  update: z.union([ z.lazy(() => TeamActivityUpdateWithoutTeam_activity_typeInputSchema),z.lazy(() => TeamActivityUncheckedUpdateWithoutTeam_activity_typeInputSchema) ]),
+  create: z.union([ z.lazy(() => TeamActivityCreateWithoutTeam_activity_typeInputSchema),z.lazy(() => TeamActivityUncheckedCreateWithoutTeam_activity_typeInputSchema) ]),
+}).strict();
+
+export const TeamActivityUpdateWithWhereUniqueWithoutTeam_activity_typeInputSchema: z.ZodType<Prisma.TeamActivityUpdateWithWhereUniqueWithoutTeam_activity_typeInput> = z.object({
+  where: z.lazy(() => TeamActivityWhereUniqueInputSchema),
+  data: z.union([ z.lazy(() => TeamActivityUpdateWithoutTeam_activity_typeInputSchema),z.lazy(() => TeamActivityUncheckedUpdateWithoutTeam_activity_typeInputSchema) ]),
+}).strict();
+
+export const TeamActivityUpdateManyWithWhereWithoutTeam_activity_typeInputSchema: z.ZodType<Prisma.TeamActivityUpdateManyWithWhereWithoutTeam_activity_typeInput> = z.object({
+  where: z.lazy(() => TeamActivityScalarWhereInputSchema),
+  data: z.union([ z.lazy(() => TeamActivityUpdateManyMutationInputSchema),z.lazy(() => TeamActivityUncheckedUpdateManyWithoutTeam_activity_typeInputSchema) ]),
+}).strict();
+
+export const UserCreateWithoutTeam_activityInputSchema: z.ZodType<Prisma.UserCreateWithoutTeam_activityInput> = z.object({
+  id: z.string().optional(),
+  created_at: z.coerce.date().optional(),
+  updated_at: z.coerce.date().optional(),
+  user_id: z.string(),
+  username: z.string().optional().nullable(),
+  first_name: z.string().optional().nullable(),
+  last_name: z.string().optional().nullable(),
+  email_address: z.string(),
+  image_url: z.string(),
+  tasks: z.lazy(() => TaskCreateNestedManyWithoutUsersInputSchema).optional(),
+  user_role: z.lazy(() => UserRoleCreateNestedManyWithoutUsersInputSchema).optional(),
+  user_team: z.lazy(() => UserTeamCreateNestedManyWithoutUsersInputSchema).optional(),
+  teams: z.lazy(() => TeamCreateNestedManyWithoutUsersInputSchema).optional(),
+  team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional(),
+  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional()
+}).strict();
+
+export const UserUncheckedCreateWithoutTeam_activityInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutTeam_activityInput> = z.object({
+  id: z.string().optional(),
+  created_at: z.coerce.date().optional(),
+  updated_at: z.coerce.date().optional(),
+  user_id: z.string(),
+  username: z.string().optional().nullable(),
+  first_name: z.string().optional().nullable(),
+  last_name: z.string().optional().nullable(),
+  email_address: z.string(),
+  image_url: z.string(),
+  tasks: z.lazy(() => TaskUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
+  user_role: z.lazy(() => UserRoleUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
+  user_team: z.lazy(() => UserTeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
+  teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
+  team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
+  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+}).strict();
+
+export const UserCreateOrConnectWithoutTeam_activityInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutTeam_activityInput> = z.object({
+  where: z.lazy(() => UserWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => UserCreateWithoutTeam_activityInputSchema),z.lazy(() => UserUncheckedCreateWithoutTeam_activityInputSchema) ]),
+}).strict();
+
+export const TeamCreateWithoutTeam_activityInputSchema: z.ZodType<Prisma.TeamCreateWithoutTeam_activityInput> = z.object({
+  id: z.string().optional(),
+  created_at: z.coerce.date().optional(),
+  updated_at: z.coerce.date().optional(),
+  team_name: z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),
+  users: z.lazy(() => UserCreateNestedOneWithoutTeamsInputSchema).optional(),
+  roles: z.lazy(() => RoleCreateNestedManyWithoutTeamsInputSchema).optional(),
+  tasks: z.lazy(() => TaskCreateNestedManyWithoutTeamsInputSchema).optional(),
+  user_role: z.lazy(() => UserRoleCreateNestedManyWithoutTeamsInputSchema).optional(),
+  user_team: z.lazy(() => UserTeamCreateNestedManyWithoutTeamsInputSchema).optional(),
+  team_parent_child_team_a: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_team_aInputSchema).optional(),
+  team_parent_child_team_b: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_team_bInputSchema).optional(),
+  team_parent_child_parent_team: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_parent_teamInputSchema).optional(),
+  team_parent_child_child_team: z.lazy(() => TeamParentChildCreateNestedManyWithoutTeam_parent_child_child_teamInputSchema).optional(),
+  team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutTeamsInputSchema).optional(),
+  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutTeamInputSchema).optional()
+}).strict();
+
+export const TeamUncheckedCreateWithoutTeam_activityInputSchema: z.ZodType<Prisma.TeamUncheckedCreateWithoutTeam_activityInput> = z.object({
+  id: z.string().optional(),
+  created_at: z.coerce.date().optional(),
+  updated_at: z.coerce.date().optional(),
+  team_name: z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),
+  creator: z.string().optional().nullable(),
+  roles: z.lazy(() => RoleUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
+  tasks: z.lazy(() => TaskUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
+  user_role: z.lazy(() => UserRoleUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
+  user_team: z.lazy(() => UserTeamUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
+  team_parent_child_team_a: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_team_aInputSchema).optional(),
+  team_parent_child_team_b: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_team_bInputSchema).optional(),
+  team_parent_child_parent_team: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_parent_teamInputSchema).optional(),
+  team_parent_child_child_team: z.lazy(() => TeamParentChildUncheckedCreateNestedManyWithoutTeam_parent_child_child_teamInputSchema).optional(),
+  team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutTeamsInputSchema).optional(),
+  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutTeamInputSchema).optional()
+}).strict();
+
+export const TeamCreateOrConnectWithoutTeam_activityInputSchema: z.ZodType<Prisma.TeamCreateOrConnectWithoutTeam_activityInput> = z.object({
+  where: z.lazy(() => TeamWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => TeamCreateWithoutTeam_activityInputSchema),z.lazy(() => TeamUncheckedCreateWithoutTeam_activityInputSchema) ]),
+}).strict();
+
+export const TeamActivityTypeCreateWithoutTeam_activityInputSchema: z.ZodType<Prisma.TeamActivityTypeCreateWithoutTeam_activityInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  activity_type: z.string()
+}).strict();
+
+export const TeamActivityTypeUncheckedCreateWithoutTeam_activityInputSchema: z.ZodType<Prisma.TeamActivityTypeUncheckedCreateWithoutTeam_activityInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  activity_type: z.string()
+}).strict();
+
+export const TeamActivityTypeCreateOrConnectWithoutTeam_activityInputSchema: z.ZodType<Prisma.TeamActivityTypeCreateOrConnectWithoutTeam_activityInput> = z.object({
+  where: z.lazy(() => TeamActivityTypeWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => TeamActivityTypeCreateWithoutTeam_activityInputSchema),z.lazy(() => TeamActivityTypeUncheckedCreateWithoutTeam_activityInputSchema) ]),
+}).strict();
+
+export const UserUpsertWithoutTeam_activityInputSchema: z.ZodType<Prisma.UserUpsertWithoutTeam_activityInput> = z.object({
+  update: z.union([ z.lazy(() => UserUpdateWithoutTeam_activityInputSchema),z.lazy(() => UserUncheckedUpdateWithoutTeam_activityInputSchema) ]),
+  create: z.union([ z.lazy(() => UserCreateWithoutTeam_activityInputSchema),z.lazy(() => UserUncheckedCreateWithoutTeam_activityInputSchema) ]),
+  where: z.lazy(() => UserWhereInputSchema).optional()
+}).strict();
+
+export const UserUpdateToOneWithWhereWithoutTeam_activityInputSchema: z.ZodType<Prisma.UserUpdateToOneWithWhereWithoutTeam_activityInput> = z.object({
+  where: z.lazy(() => UserWhereInputSchema).optional(),
+  data: z.union([ z.lazy(() => UserUpdateWithoutTeam_activityInputSchema),z.lazy(() => UserUncheckedUpdateWithoutTeam_activityInputSchema) ]),
+}).strict();
+
+export const UserUpdateWithoutTeam_activityInputSchema: z.ZodType<Prisma.UserUpdateWithoutTeam_activityInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  user_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  username: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  first_name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  last_name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  email_address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image_url: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  tasks: z.lazy(() => TaskUpdateManyWithoutUsersNestedInputSchema).optional(),
+  user_role: z.lazy(() => UserRoleUpdateManyWithoutUsersNestedInputSchema).optional(),
+  user_team: z.lazy(() => UserTeamUpdateManyWithoutUsersNestedInputSchema).optional(),
+  teams: z.lazy(() => TeamUpdateManyWithoutUsersNestedInputSchema).optional(),
+  team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional(),
+  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional()
+}).strict();
+
+export const UserUncheckedUpdateWithoutTeam_activityInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutTeam_activityInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  user_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  username: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  first_name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  last_name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  email_address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image_url: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  tasks: z.lazy(() => TaskUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
+  user_role: z.lazy(() => UserRoleUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
+  user_team: z.lazy(() => UserTeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
+  teams: z.lazy(() => TeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
+  team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
+  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+}).strict();
+
+export const TeamUpsertWithoutTeam_activityInputSchema: z.ZodType<Prisma.TeamUpsertWithoutTeam_activityInput> = z.object({
+  update: z.union([ z.lazy(() => TeamUpdateWithoutTeam_activityInputSchema),z.lazy(() => TeamUncheckedUpdateWithoutTeam_activityInputSchema) ]),
+  create: z.union([ z.lazy(() => TeamCreateWithoutTeam_activityInputSchema),z.lazy(() => TeamUncheckedCreateWithoutTeam_activityInputSchema) ]),
+  where: z.lazy(() => TeamWhereInputSchema).optional()
+}).strict();
+
+export const TeamUpdateToOneWithWhereWithoutTeam_activityInputSchema: z.ZodType<Prisma.TeamUpdateToOneWithWhereWithoutTeam_activityInput> = z.object({
+  where: z.lazy(() => TeamWhereInputSchema).optional(),
+  data: z.union([ z.lazy(() => TeamUpdateWithoutTeam_activityInputSchema),z.lazy(() => TeamUncheckedUpdateWithoutTeam_activityInputSchema) ]),
+}).strict();
+
+export const TeamUpdateWithoutTeam_activityInputSchema: z.ZodType<Prisma.TeamUpdateWithoutTeam_activityInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  team_name: z.union([ z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  users: z.lazy(() => UserUpdateOneWithoutTeamsNestedInputSchema).optional(),
+  roles: z.lazy(() => RoleUpdateManyWithoutTeamsNestedInputSchema).optional(),
+  tasks: z.lazy(() => TaskUpdateManyWithoutTeamsNestedInputSchema).optional(),
+  user_role: z.lazy(() => UserRoleUpdateManyWithoutTeamsNestedInputSchema).optional(),
+  user_team: z.lazy(() => UserTeamUpdateManyWithoutTeamsNestedInputSchema).optional(),
+  team_parent_child_team_a: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_team_aNestedInputSchema).optional(),
+  team_parent_child_team_b: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_team_bNestedInputSchema).optional(),
+  team_parent_child_parent_team: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_parent_teamNestedInputSchema).optional(),
+  team_parent_child_child_team: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_child_teamNestedInputSchema).optional(),
+  team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutTeamsNestedInputSchema).optional(),
+  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutTeamNestedInputSchema).optional()
+}).strict();
+
+export const TeamUncheckedUpdateWithoutTeam_activityInputSchema: z.ZodType<Prisma.TeamUncheckedUpdateWithoutTeam_activityInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  team_name: z.union([ z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  creator: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  roles: z.lazy(() => RoleUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
+  tasks: z.lazy(() => TaskUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
+  user_role: z.lazy(() => UserRoleUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
+  user_team: z.lazy(() => UserTeamUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
+  team_parent_child_team_a: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_team_aNestedInputSchema).optional(),
+  team_parent_child_team_b: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_team_bNestedInputSchema).optional(),
+  team_parent_child_parent_team: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_parent_teamNestedInputSchema).optional(),
+  team_parent_child_child_team: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_child_teamNestedInputSchema).optional(),
+  team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
+  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
+}).strict();
+
+export const TeamActivityTypeUpsertWithoutTeam_activityInputSchema: z.ZodType<Prisma.TeamActivityTypeUpsertWithoutTeam_activityInput> = z.object({
+  update: z.union([ z.lazy(() => TeamActivityTypeUpdateWithoutTeam_activityInputSchema),z.lazy(() => TeamActivityTypeUncheckedUpdateWithoutTeam_activityInputSchema) ]),
+  create: z.union([ z.lazy(() => TeamActivityTypeCreateWithoutTeam_activityInputSchema),z.lazy(() => TeamActivityTypeUncheckedCreateWithoutTeam_activityInputSchema) ]),
+  where: z.lazy(() => TeamActivityTypeWhereInputSchema).optional()
+}).strict();
+
+export const TeamActivityTypeUpdateToOneWithWhereWithoutTeam_activityInputSchema: z.ZodType<Prisma.TeamActivityTypeUpdateToOneWithWhereWithoutTeam_activityInput> = z.object({
+  where: z.lazy(() => TeamActivityTypeWhereInputSchema).optional(),
+  data: z.union([ z.lazy(() => TeamActivityTypeUpdateWithoutTeam_activityInputSchema),z.lazy(() => TeamActivityTypeUncheckedUpdateWithoutTeam_activityInputSchema) ]),
+}).strict();
+
+export const TeamActivityTypeUpdateWithoutTeam_activityInputSchema: z.ZodType<Prisma.TeamActivityTypeUpdateWithoutTeam_activityInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  activity_type: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const TeamActivityTypeUncheckedUpdateWithoutTeam_activityInputSchema: z.ZodType<Prisma.TeamActivityTypeUncheckedUpdateWithoutTeam_activityInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  activity_type: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const UserRoleCreateManyRolesInputSchema: z.ZodType<Prisma.UserRoleCreateManyRolesInput> = z.object({
@@ -5876,7 +6883,15 @@ export const VisitedTeamCreateManyTeamInputSchema: z.ZodType<Prisma.VisitedTeamC
   id: z.string().optional(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-  user_id: z.string()
+  user_id: z.string().optional().nullable()
+}).strict();
+
+export const TeamActivityCreateManyTeamInputSchema: z.ZodType<Prisma.TeamActivityCreateManyTeamInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  user_id: z.string().optional().nullable(),
+  activity_type: z.string().optional().nullable()
 }).strict();
 
 export const RoleUpdateWithoutTeamsInputSchema: z.ZodType<Prisma.RoleUpdateWithoutTeamsInput> = z.object({
@@ -6113,21 +7128,45 @@ export const VisitedTeamUpdateWithoutTeamInputSchema: z.ZodType<Prisma.VisitedTe
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  user: z.lazy(() => UserUpdateOneRequiredWithoutVisited_teamNestedInputSchema).optional()
+  user: z.lazy(() => UserUpdateOneWithoutVisited_teamNestedInputSchema).optional()
 }).strict();
 
 export const VisitedTeamUncheckedUpdateWithoutTeamInputSchema: z.ZodType<Prisma.VisitedTeamUncheckedUpdateWithoutTeamInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  user_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  user_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const VisitedTeamUncheckedUpdateManyWithoutTeamInputSchema: z.ZodType<Prisma.VisitedTeamUncheckedUpdateManyWithoutTeamInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  user_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  user_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const TeamActivityUpdateWithoutTeamInputSchema: z.ZodType<Prisma.TeamActivityUpdateWithoutTeamInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  user: z.lazy(() => UserUpdateOneWithoutTeam_activityNestedInputSchema).optional(),
+  team_activity_type: z.lazy(() => TeamActivityTypeUpdateOneWithoutTeam_activityNestedInputSchema).optional()
+}).strict();
+
+export const TeamActivityUncheckedUpdateWithoutTeamInputSchema: z.ZodType<Prisma.TeamActivityUncheckedUpdateWithoutTeamInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  user_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  activity_type: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const TeamActivityUncheckedUpdateManyWithoutTeamInputSchema: z.ZodType<Prisma.TeamActivityUncheckedUpdateManyWithoutTeamInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  user_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  activity_type: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const TaskCreateManyUsersInputSchema: z.ZodType<Prisma.TaskCreateManyUsersInput> = z.object({
@@ -6173,7 +7212,15 @@ export const VisitedTeamCreateManyUserInputSchema: z.ZodType<Prisma.VisitedTeamC
   id: z.string().optional(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-  team_id: z.string()
+  team_id: z.string().optional().nullable()
+}).strict();
+
+export const TeamActivityCreateManyUserInputSchema: z.ZodType<Prisma.TeamActivityCreateManyUserInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  team_id: z.string().optional().nullable(),
+  activity_type: z.string().optional().nullable()
 }).strict();
 
 export const TaskUpdateWithoutUsersInputSchema: z.ZodType<Prisma.TaskUpdateWithoutUsersInput> = z.object({
@@ -6265,7 +7312,8 @@ export const TeamUpdateWithoutUsersInputSchema: z.ZodType<Prisma.TeamUpdateWitho
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_parent_teamNestedInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUpdateManyWithoutTeam_parent_child_child_teamNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutTeamsNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutTeamNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutTeamNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedUpdateWithoutUsersInputSchema: z.ZodType<Prisma.TeamUncheckedUpdateWithoutUsersInput> = z.object({
@@ -6282,7 +7330,8 @@ export const TeamUncheckedUpdateWithoutUsersInputSchema: z.ZodType<Prisma.TeamUn
   team_parent_child_parent_team: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_parent_teamNestedInputSchema).optional(),
   team_parent_child_child_team: z.lazy(() => TeamParentChildUncheckedUpdateManyWithoutTeam_parent_child_child_teamNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutTeamsNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutTeamNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutTeamNestedInputSchema).optional()
 }).strict();
 
 export const TeamUncheckedUpdateManyWithoutUsersInputSchema: z.ZodType<Prisma.TeamUncheckedUpdateManyWithoutUsersInput> = z.object({
@@ -6317,21 +7366,77 @@ export const VisitedTeamUpdateWithoutUserInputSchema: z.ZodType<Prisma.VisitedTe
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  team: z.lazy(() => TeamUpdateOneRequiredWithoutVisited_teamNestedInputSchema).optional()
+  team: z.lazy(() => TeamUpdateOneWithoutVisited_teamNestedInputSchema).optional()
 }).strict();
 
 export const VisitedTeamUncheckedUpdateWithoutUserInputSchema: z.ZodType<Prisma.VisitedTeamUncheckedUpdateWithoutUserInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  team_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const VisitedTeamUncheckedUpdateManyWithoutUserInputSchema: z.ZodType<Prisma.VisitedTeamUncheckedUpdateManyWithoutUserInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  team_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const TeamActivityUpdateWithoutUserInputSchema: z.ZodType<Prisma.TeamActivityUpdateWithoutUserInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  team: z.lazy(() => TeamUpdateOneWithoutTeam_activityNestedInputSchema).optional(),
+  team_activity_type: z.lazy(() => TeamActivityTypeUpdateOneWithoutTeam_activityNestedInputSchema).optional()
+}).strict();
+
+export const TeamActivityUncheckedUpdateWithoutUserInputSchema: z.ZodType<Prisma.TeamActivityUncheckedUpdateWithoutUserInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  activity_type: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const TeamActivityUncheckedUpdateManyWithoutUserInputSchema: z.ZodType<Prisma.TeamActivityUncheckedUpdateManyWithoutUserInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  activity_type: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const TeamActivityCreateManyTeam_activity_typeInputSchema: z.ZodType<Prisma.TeamActivityCreateManyTeam_activity_typeInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  user_id: z.string().optional().nullable(),
+  team_id: z.string().optional().nullable()
+}).strict();
+
+export const TeamActivityUpdateWithoutTeam_activity_typeInputSchema: z.ZodType<Prisma.TeamActivityUpdateWithoutTeam_activity_typeInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  user: z.lazy(() => UserUpdateOneWithoutTeam_activityNestedInputSchema).optional(),
+  team: z.lazy(() => TeamUpdateOneWithoutTeam_activityNestedInputSchema).optional()
+}).strict();
+
+export const TeamActivityUncheckedUpdateWithoutTeam_activity_typeInputSchema: z.ZodType<Prisma.TeamActivityUncheckedUpdateWithoutTeam_activity_typeInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  user_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const TeamActivityUncheckedUpdateManyWithoutTeam_activity_typeInputSchema: z.ZodType<Prisma.TeamActivityUncheckedUpdateManyWithoutTeam_activity_typeInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  user_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 /////////////////////////////////////////
@@ -6896,6 +8001,130 @@ export const VisitedTeamFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.VisitedTea
   where: VisitedTeamWhereUniqueInputSchema,
 }).strict() ;
 
+export const TeamActivityTypeFindFirstArgsSchema: z.ZodType<Prisma.TeamActivityTypeFindFirstArgs> = z.object({
+  select: TeamActivityTypeSelectSchema.optional(),
+  include: TeamActivityTypeIncludeSchema.optional(),
+  where: TeamActivityTypeWhereInputSchema.optional(),
+  orderBy: z.union([ TeamActivityTypeOrderByWithRelationInputSchema.array(),TeamActivityTypeOrderByWithRelationInputSchema ]).optional(),
+  cursor: TeamActivityTypeWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ TeamActivityTypeScalarFieldEnumSchema,TeamActivityTypeScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const TeamActivityTypeFindFirstOrThrowArgsSchema: z.ZodType<Prisma.TeamActivityTypeFindFirstOrThrowArgs> = z.object({
+  select: TeamActivityTypeSelectSchema.optional(),
+  include: TeamActivityTypeIncludeSchema.optional(),
+  where: TeamActivityTypeWhereInputSchema.optional(),
+  orderBy: z.union([ TeamActivityTypeOrderByWithRelationInputSchema.array(),TeamActivityTypeOrderByWithRelationInputSchema ]).optional(),
+  cursor: TeamActivityTypeWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ TeamActivityTypeScalarFieldEnumSchema,TeamActivityTypeScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const TeamActivityTypeFindManyArgsSchema: z.ZodType<Prisma.TeamActivityTypeFindManyArgs> = z.object({
+  select: TeamActivityTypeSelectSchema.optional(),
+  include: TeamActivityTypeIncludeSchema.optional(),
+  where: TeamActivityTypeWhereInputSchema.optional(),
+  orderBy: z.union([ TeamActivityTypeOrderByWithRelationInputSchema.array(),TeamActivityTypeOrderByWithRelationInputSchema ]).optional(),
+  cursor: TeamActivityTypeWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ TeamActivityTypeScalarFieldEnumSchema,TeamActivityTypeScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const TeamActivityTypeAggregateArgsSchema: z.ZodType<Prisma.TeamActivityTypeAggregateArgs> = z.object({
+  where: TeamActivityTypeWhereInputSchema.optional(),
+  orderBy: z.union([ TeamActivityTypeOrderByWithRelationInputSchema.array(),TeamActivityTypeOrderByWithRelationInputSchema ]).optional(),
+  cursor: TeamActivityTypeWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const TeamActivityTypeGroupByArgsSchema: z.ZodType<Prisma.TeamActivityTypeGroupByArgs> = z.object({
+  where: TeamActivityTypeWhereInputSchema.optional(),
+  orderBy: z.union([ TeamActivityTypeOrderByWithAggregationInputSchema.array(),TeamActivityTypeOrderByWithAggregationInputSchema ]).optional(),
+  by: TeamActivityTypeScalarFieldEnumSchema.array(),
+  having: TeamActivityTypeScalarWhereWithAggregatesInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const TeamActivityTypeFindUniqueArgsSchema: z.ZodType<Prisma.TeamActivityTypeFindUniqueArgs> = z.object({
+  select: TeamActivityTypeSelectSchema.optional(),
+  include: TeamActivityTypeIncludeSchema.optional(),
+  where: TeamActivityTypeWhereUniqueInputSchema,
+}).strict() ;
+
+export const TeamActivityTypeFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.TeamActivityTypeFindUniqueOrThrowArgs> = z.object({
+  select: TeamActivityTypeSelectSchema.optional(),
+  include: TeamActivityTypeIncludeSchema.optional(),
+  where: TeamActivityTypeWhereUniqueInputSchema,
+}).strict() ;
+
+export const TeamActivityFindFirstArgsSchema: z.ZodType<Prisma.TeamActivityFindFirstArgs> = z.object({
+  select: TeamActivitySelectSchema.optional(),
+  include: TeamActivityIncludeSchema.optional(),
+  where: TeamActivityWhereInputSchema.optional(),
+  orderBy: z.union([ TeamActivityOrderByWithRelationInputSchema.array(),TeamActivityOrderByWithRelationInputSchema ]).optional(),
+  cursor: TeamActivityWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ TeamActivityScalarFieldEnumSchema,TeamActivityScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const TeamActivityFindFirstOrThrowArgsSchema: z.ZodType<Prisma.TeamActivityFindFirstOrThrowArgs> = z.object({
+  select: TeamActivitySelectSchema.optional(),
+  include: TeamActivityIncludeSchema.optional(),
+  where: TeamActivityWhereInputSchema.optional(),
+  orderBy: z.union([ TeamActivityOrderByWithRelationInputSchema.array(),TeamActivityOrderByWithRelationInputSchema ]).optional(),
+  cursor: TeamActivityWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ TeamActivityScalarFieldEnumSchema,TeamActivityScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const TeamActivityFindManyArgsSchema: z.ZodType<Prisma.TeamActivityFindManyArgs> = z.object({
+  select: TeamActivitySelectSchema.optional(),
+  include: TeamActivityIncludeSchema.optional(),
+  where: TeamActivityWhereInputSchema.optional(),
+  orderBy: z.union([ TeamActivityOrderByWithRelationInputSchema.array(),TeamActivityOrderByWithRelationInputSchema ]).optional(),
+  cursor: TeamActivityWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ TeamActivityScalarFieldEnumSchema,TeamActivityScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const TeamActivityAggregateArgsSchema: z.ZodType<Prisma.TeamActivityAggregateArgs> = z.object({
+  where: TeamActivityWhereInputSchema.optional(),
+  orderBy: z.union([ TeamActivityOrderByWithRelationInputSchema.array(),TeamActivityOrderByWithRelationInputSchema ]).optional(),
+  cursor: TeamActivityWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const TeamActivityGroupByArgsSchema: z.ZodType<Prisma.TeamActivityGroupByArgs> = z.object({
+  where: TeamActivityWhereInputSchema.optional(),
+  orderBy: z.union([ TeamActivityOrderByWithAggregationInputSchema.array(),TeamActivityOrderByWithAggregationInputSchema ]).optional(),
+  by: TeamActivityScalarFieldEnumSchema.array(),
+  having: TeamActivityScalarWhereWithAggregatesInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const TeamActivityFindUniqueArgsSchema: z.ZodType<Prisma.TeamActivityFindUniqueArgs> = z.object({
+  select: TeamActivitySelectSchema.optional(),
+  include: TeamActivityIncludeSchema.optional(),
+  where: TeamActivityWhereUniqueInputSchema,
+}).strict() ;
+
+export const TeamActivityFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.TeamActivityFindUniqueOrThrowArgs> = z.object({
+  select: TeamActivitySelectSchema.optional(),
+  include: TeamActivityIncludeSchema.optional(),
+  where: TeamActivityWhereUniqueInputSchema,
+}).strict() ;
+
 export const RoleCreateArgsSchema: z.ZodType<Prisma.RoleCreateArgs> = z.object({
   select: RoleSelectSchema.optional(),
   include: RoleIncludeSchema.optional(),
@@ -7227,7 +8456,7 @@ export const TeamInvitesDeleteManyArgsSchema: z.ZodType<Prisma.TeamInvitesDelete
 export const VisitedTeamCreateArgsSchema: z.ZodType<Prisma.VisitedTeamCreateArgs> = z.object({
   select: VisitedTeamSelectSchema.optional(),
   include: VisitedTeamIncludeSchema.optional(),
-  data: z.union([ VisitedTeamCreateInputSchema,VisitedTeamUncheckedCreateInputSchema ]),
+  data: z.union([ VisitedTeamCreateInputSchema,VisitedTeamUncheckedCreateInputSchema ]).optional(),
 }).strict() ;
 
 export const VisitedTeamUpsertArgsSchema: z.ZodType<Prisma.VisitedTeamUpsertArgs> = z.object({
@@ -7263,4 +8492,86 @@ export const VisitedTeamUpdateManyArgsSchema: z.ZodType<Prisma.VisitedTeamUpdate
 
 export const VisitedTeamDeleteManyArgsSchema: z.ZodType<Prisma.VisitedTeamDeleteManyArgs> = z.object({
   where: VisitedTeamWhereInputSchema.optional(),
+}).strict() ;
+
+export const TeamActivityTypeCreateArgsSchema: z.ZodType<Prisma.TeamActivityTypeCreateArgs> = z.object({
+  select: TeamActivityTypeSelectSchema.optional(),
+  include: TeamActivityTypeIncludeSchema.optional(),
+  data: z.union([ TeamActivityTypeCreateInputSchema,TeamActivityTypeUncheckedCreateInputSchema ]),
+}).strict() ;
+
+export const TeamActivityTypeUpsertArgsSchema: z.ZodType<Prisma.TeamActivityTypeUpsertArgs> = z.object({
+  select: TeamActivityTypeSelectSchema.optional(),
+  include: TeamActivityTypeIncludeSchema.optional(),
+  where: TeamActivityTypeWhereUniqueInputSchema,
+  create: z.union([ TeamActivityTypeCreateInputSchema,TeamActivityTypeUncheckedCreateInputSchema ]),
+  update: z.union([ TeamActivityTypeUpdateInputSchema,TeamActivityTypeUncheckedUpdateInputSchema ]),
+}).strict() ;
+
+export const TeamActivityTypeCreateManyArgsSchema: z.ZodType<Prisma.TeamActivityTypeCreateManyArgs> = z.object({
+  data: z.union([ TeamActivityTypeCreateManyInputSchema,TeamActivityTypeCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const TeamActivityTypeDeleteArgsSchema: z.ZodType<Prisma.TeamActivityTypeDeleteArgs> = z.object({
+  select: TeamActivityTypeSelectSchema.optional(),
+  include: TeamActivityTypeIncludeSchema.optional(),
+  where: TeamActivityTypeWhereUniqueInputSchema,
+}).strict() ;
+
+export const TeamActivityTypeUpdateArgsSchema: z.ZodType<Prisma.TeamActivityTypeUpdateArgs> = z.object({
+  select: TeamActivityTypeSelectSchema.optional(),
+  include: TeamActivityTypeIncludeSchema.optional(),
+  data: z.union([ TeamActivityTypeUpdateInputSchema,TeamActivityTypeUncheckedUpdateInputSchema ]),
+  where: TeamActivityTypeWhereUniqueInputSchema,
+}).strict() ;
+
+export const TeamActivityTypeUpdateManyArgsSchema: z.ZodType<Prisma.TeamActivityTypeUpdateManyArgs> = z.object({
+  data: z.union([ TeamActivityTypeUpdateManyMutationInputSchema,TeamActivityTypeUncheckedUpdateManyInputSchema ]),
+  where: TeamActivityTypeWhereInputSchema.optional(),
+}).strict() ;
+
+export const TeamActivityTypeDeleteManyArgsSchema: z.ZodType<Prisma.TeamActivityTypeDeleteManyArgs> = z.object({
+  where: TeamActivityTypeWhereInputSchema.optional(),
+}).strict() ;
+
+export const TeamActivityCreateArgsSchema: z.ZodType<Prisma.TeamActivityCreateArgs> = z.object({
+  select: TeamActivitySelectSchema.optional(),
+  include: TeamActivityIncludeSchema.optional(),
+  data: z.union([ TeamActivityCreateInputSchema,TeamActivityUncheckedCreateInputSchema ]).optional(),
+}).strict() ;
+
+export const TeamActivityUpsertArgsSchema: z.ZodType<Prisma.TeamActivityUpsertArgs> = z.object({
+  select: TeamActivitySelectSchema.optional(),
+  include: TeamActivityIncludeSchema.optional(),
+  where: TeamActivityWhereUniqueInputSchema,
+  create: z.union([ TeamActivityCreateInputSchema,TeamActivityUncheckedCreateInputSchema ]),
+  update: z.union([ TeamActivityUpdateInputSchema,TeamActivityUncheckedUpdateInputSchema ]),
+}).strict() ;
+
+export const TeamActivityCreateManyArgsSchema: z.ZodType<Prisma.TeamActivityCreateManyArgs> = z.object({
+  data: z.union([ TeamActivityCreateManyInputSchema,TeamActivityCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const TeamActivityDeleteArgsSchema: z.ZodType<Prisma.TeamActivityDeleteArgs> = z.object({
+  select: TeamActivitySelectSchema.optional(),
+  include: TeamActivityIncludeSchema.optional(),
+  where: TeamActivityWhereUniqueInputSchema,
+}).strict() ;
+
+export const TeamActivityUpdateArgsSchema: z.ZodType<Prisma.TeamActivityUpdateArgs> = z.object({
+  select: TeamActivitySelectSchema.optional(),
+  include: TeamActivityIncludeSchema.optional(),
+  data: z.union([ TeamActivityUpdateInputSchema,TeamActivityUncheckedUpdateInputSchema ]),
+  where: TeamActivityWhereUniqueInputSchema,
+}).strict() ;
+
+export const TeamActivityUpdateManyArgsSchema: z.ZodType<Prisma.TeamActivityUpdateManyArgs> = z.object({
+  data: z.union([ TeamActivityUpdateManyMutationInputSchema,TeamActivityUncheckedUpdateManyInputSchema ]),
+  where: TeamActivityWhereInputSchema.optional(),
+}).strict() ;
+
+export const TeamActivityDeleteManyArgsSchema: z.ZodType<Prisma.TeamActivityDeleteManyArgs> = z.object({
+  where: TeamActivityWhereInputSchema.optional(),
 }).strict() ;

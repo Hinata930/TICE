@@ -6,32 +6,11 @@ import { Fragment, useState } from 'react';
 import TaskDatailModal from '@/app/components/team/task/task-details-modal';
 import Modal from '@/app/components/team/task/modal';
 import { User } from '@prisma/client';
+import { TaskAndUser } from '@/app/lib/difinitions';
 
-
-interface Task {
-  id: string;
-  created_at: Date;
-  updated_at: Date;
-  task_creator: string | null;
-  team_id: string | null;
-  due_date: Date;
-  task_title: string;
-  task_description: string | null;
-  users: {
-    id: string;
-    created_at: Date;
-    updated_at: Date;
-    user_id: string;
-    username: string | null;
-    first_name: string | null;
-    last_name: string | null;
-    email_address: string;
-    image_url: string;
-  } | null;
-}
 
 interface props {
-  tasks: Task[];
+  tasks: TaskAndUser[];
   user: User;
 };
 
@@ -52,7 +31,7 @@ export default function TaskList({ tasks, user }: props) {
   return (
     <div className='mt-6 flow-root'>
       <div className='inline-block min-w-full align-middle'>
-        <div className='rounded-lg bg-gray-50 p-2'>
+        <div className='rounded-lg bg-[var(--color-base-gray)] p-2'>
           {tasks.map((task) => (
             <Fragment key={task.id}>
               <button 
@@ -62,7 +41,7 @@ export default function TaskList({ tasks, user }: props) {
                 <div className='flex flex-col items-center'>
                   {/* 提出期限 */}
                   <div className='flex w-full pb-1'>
-                    <p className='text-gray-500'>
+                    <p className='text-[var(--color-gray)]'>
                       提出期限：{convertDateToJapaneseFormatDate(task.due_date)}
                     </p>
                   </div>
@@ -74,7 +53,7 @@ export default function TaskList({ tasks, user }: props) {
                   </div>
                   {/* 内容 */}
                   <div className='flex justify-self-start w-full'>
-                    <p className='line-clamp-1 text-gray-500'>
+                    <p className='line-clamp-1 text-[var(--color-gray)]'>
                       {task.task_description ? task.task_description : ' '}
                     </p>
                   </div>
@@ -89,12 +68,12 @@ export default function TaskList({ tasks, user }: props) {
                     height={16}
                     alt={`${task.users ? task.users.username : '作成者'}のプロフィール写真`}
                   />
-                  <p className='line-clamp-1 text-base text-gray-500'>
+                  <p className='line-clamp-1 text-base text-[var(--color-gray)]'>
                     {task.users ? task.users.username : '作成者'}
                   </p>
                   <div className='flex-grow'></div>
                   {/* 作成日時 */}
-                  <p className='flex-grow-0 text-sm text-gray-500 min-w-64'>
+                  <p className='flex-grow-0 text-sm text-[var(--color-gray)] min-w-64'>
                     {`課題の作成日時：${convertTimeToJapaneseFormatTime(task.created_at)}`}
                   </p>
                 </div>

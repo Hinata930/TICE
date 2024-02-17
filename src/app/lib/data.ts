@@ -3,10 +3,13 @@
 import { PrismaClient, Task, Team } from '@prisma/client';
 import { unstable_noStore as noStore } from 'next/cache'; 
 import { addDays, startOfWeek, endOfWeek, format } from 'date-fns';
-import { WeeklyTask } from './difinitions';
+import { WeeklyTask, WeeklyTaskByTeam } from './difinitions';
 import { fetchCurrentDate } from './utils';
 
 const prisma = new PrismaClient();
+
+
+
 
 // clerkの方のuserのidからデータベースのuserのデータを見つける
 export async function fetchCurrentUser(user_id: string) {
@@ -28,6 +31,8 @@ export async function fetchCurrentUser(user_id: string) {
   }
 }
 
+
+
 // teamのidでteamを取得したいときに使う
 export async function fetchTeam(team_id: string) {
   noStore();
@@ -45,6 +50,8 @@ export async function fetchTeam(team_id: string) {
     return null;
   }
 }
+
+
 
 // teamが存在するかどうかを調べる関数
 export async function teamExists(team_id: string) {
@@ -64,6 +71,8 @@ export async function teamExists(team_id: string) {
     return false;
   }
 }
+
+
 
 // あるユーザーが所属しているチームの配列を取得する
 export async function fetchTeams(user_id: string) {
@@ -105,6 +114,8 @@ export async function fetchTeams(user_id: string) {
     throw new Error('Failed to fetch team list');
   }
 }
+
+
 
 // taskのsearchに使う
 const tasksItemsPerPage = 6;
@@ -165,6 +176,8 @@ export async function fetchFilteredTasks(
     throw new Error('Failed to fetch filtered tasks.');
   }
 }
+
+
 
 // queryが入ってるデータの数でページ数を算出(上のfetchFilteredTasksがsearchに使う関数)
 export async function fetchTasksPages(
@@ -239,6 +252,8 @@ export async function fetchTasksPages(
   }
 }
 
+
+
 // taskのidでtaskを取得したいときに使う
 export async function fetchTask(taskId: string) {
   noStore();
@@ -258,6 +273,8 @@ export async function fetchTask(taskId: string) {
     throw new Error('Failed to fetch task.');
   }
 }
+
+
 
 // task_idでcreatorのuserのデータを取得したいときに使う
 export async function fetchTaskCreator(taskId: string) {
@@ -288,6 +305,8 @@ export async function fetchTaskCreator(taskId: string) {
   }
 }
 
+
+
 // userの役職を割り出す(一人)
 export async function findUserTeamRole(
   teamId: string,
@@ -312,6 +331,8 @@ export async function findUserTeamRole(
   }
 }
 
+
+
 // 特定のチームのtaskのリストを返す
 export async function fetchTasksByTeamId(teamId: string) {
   noStore();
@@ -327,6 +348,8 @@ export async function fetchTasksByTeamId(teamId: string) {
   }
 }
 
+
+
 // teamの配列を入れて{ チームオブジェクト, タスクの配列 }
 export async function fetchTasksByTeams(teams: Team[]) {
   noStore();
@@ -337,6 +360,8 @@ export async function fetchTasksByTeams(teams: Team[]) {
     })
   );
 }
+
+
 
 // 一週間分のタスクをチームごとに取得する関数
 export async function fetchWeeklyTasks( teams: Team[] ) {
@@ -391,6 +416,8 @@ export async function fetchWeeklyTasks( teams: Team[] ) {
   return weeklyTeamTasks;
 }
 
+
+
 export async function fetchTeamsByTeamIds(teamIds: string[]) {
   noStore();
   try {
@@ -407,6 +434,8 @@ export async function fetchTeamsByTeamIds(teamIds: string[]) {
   }
 }
 
+
+
 // userのidでuserが訪問したチームのArrayを取得
 export async function fetchVisitedTeamIdsByUserId( userId: string ) {
   noStore();
@@ -415,9 +444,12 @@ export async function fetchVisitedTeamIdsByUserId( userId: string ) {
       where: {user_id: userId},
     });
     const teams = visitedTeams.map(async (visitedTeam) => {
-      return await prisma.team.findUnique({
-        where: { id: visitedTeam.team_id }
-      });
+      if (visitedTeam.team_id) {
+        return await prisma.team.findUnique({
+          where: { id: visitedTeam.team_id }
+        });
+      }
+      return null;
     });
 
     return Promise.all(teams);
@@ -426,6 +458,8 @@ export async function fetchVisitedTeamIdsByUserId( userId: string ) {
     throw new Error('Failed to fetch visited teams.');
   }
 }
+
+
 
 // あるチームの特定期間内のタスクを取得する。
 export async function fetchTasksByTeamAndPeriod(teamId: string, startDate: Date, endDate: Date) {
@@ -448,6 +482,8 @@ export async function fetchTasksByTeamAndPeriod(teamId: string, startDate: Date,
   }
 }
 
+
+
 // あるチームの今週のタスクを取得する。期限が過ぎたタスクは取得しない。
 export async function fetchValidTasksForCurrentWeekByTeam(teamId: string) {
   noStore();
@@ -458,6 +494,8 @@ export async function fetchValidTasksForCurrentWeekByTeam(teamId: string) {
   return fetchTasksByTeamAndPeriod(teamId, startOfWeek, endOfWeek);
 }
 
+
+
 // あるチームの今日のタスクを取得する。期限が過ぎたタスクは取得しない。
 export async function fetchValidTasksForTodayByTeam(teamId: string) {
   noStore();
@@ -466,4 +504,141 @@ export async function fetchValidTasksForTodayByTeam(teamId: string) {
   const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
 
   return fetchTasksByTeamAndPeriod(teamId, startOfDay, endOfDay);
+}
+
+
+
+// あるチームの今週のタスクを日付ごとに分けて取得する。
+export async function fetchTasksByDateForCurrentWeekByTeam( teamId: string ) {
+  noStore();
+  const japaneseDate = fetchCurrentDate(); // yyyy-mm-ddのみ
+  
+  const startDate = startOfWeek(new Date(japaneseDate), { weekStartsOn: 0 }); // 今週の日曜日
+  const endDate = addDays(startDate, 6); // 今週の土曜日
+
+  // 一週間の日付を生成(日曜から土曜まで入れる)
+  const weekDates: Date[] = [];
+  let currentDate = startDate;
+  while (currentDate <= endDate) {
+    weekDates.push(currentDate);
+    currentDate = addDays(currentDate, 1);
+  }
+
+  // チームのタスクを取得
+  const tasksByTeam = await fetchTasksByTeamId(teamId);
+
+  // 一週間分のタスクを入れるオブジェクトの配列 
+  const weeklyTeamTasks: WeeklyTaskByTeam[] = weekDates.map(date => ({
+    date: format(date, 'yyyy-MM-dd'),
+    dayOfWeek: -1,
+    tasks: [],
+  }));
+
+  weekDates.forEach((date, weekIndex) => {
+    weeklyTeamTasks[weekIndex].dayOfWeek = weekIndex;
+    tasksByTeam.forEach((task) => {
+      const taskDueDate = new Date(task.due_date);
+      if (taskDueDate.toDateString() === date.toDateString()) {
+        weeklyTeamTasks[weekIndex].tasks.push(task);
+      }
+    })
+  });
+
+  return weeklyTeamTasks;
+}
+
+
+
+// あるチームの今週のタスクを日付ごとに分けて取得する。期限が過ぎたタスクは取得しない。
+export async function fetchValidTasksByDateForCurrentWeekByTeam( teamId: string ) {
+  noStore();
+  const japaneseDate = fetchCurrentDate(); // yyyy-mm-ddのみ
+  
+  const startDate = startOfWeek(new Date(japaneseDate), { weekStartsOn: 0 }); // 今週の日曜日
+  const endDate = addDays(startDate, 6); // 今週の土曜日
+
+  // 一週間の日付を生成(日曜から土曜まで入れる)
+  const weekDates: Date[] = [];
+  let currentDate = startDate;
+  while (currentDate <= endDate) {
+    weekDates.push(currentDate);
+    currentDate = addDays(currentDate, 1);
+  }
+
+  // チームのタスクを取得(期限が過ぎたタスクは取得しない。)
+  const tasksByTeam = await fetchValidTasksForCurrentWeekByTeam(teamId);
+
+  // 一週間分のタスクを入れるオブジェクトの配列 
+  const weeklyTeamTasks: WeeklyTaskByTeam[] = weekDates.map(date => ({
+    date: format(date, 'yyyy-MM-dd'),
+    dayOfWeek: -1,
+    tasks: [],
+  }));
+
+  weekDates.forEach((date, weekIndex) => {
+    weeklyTeamTasks[weekIndex].dayOfWeek = weekIndex;
+    tasksByTeam.forEach((task) => {
+      const taskDueDate = new Date(task.due_date);
+      if (taskDueDate.toDateString() === date.toDateString()) {
+        weeklyTeamTasks[weekIndex].tasks.push(task);
+      }
+    })
+  });
+
+  return weeklyTeamTasks;
+}
+
+
+
+// 特定の数だけチーム内のアクティビティを取得する。
+export async function fetchRecentTeamActivity(
+  teamId: string,
+  count: number,
+  ) {
+  try {
+    const latestTeamActivity = await prisma.teamActivity.findMany({
+      where: {
+        team_id: teamId,
+      },
+      take: count,
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return latestTeamActivity;
+  } catch(error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch recent team activity.');
+  }
+}
+
+
+
+// team_activity_typeのidからteam_activity_typeを取得する関数
+export async function findActivityType(teamActivityTypeId: string) {
+  try {
+    return await prisma.teamActivityType.findUnique({
+      where: {
+        id: teamActivityTypeId,
+      },
+    });
+  } catch(error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to find team activity type.')
+  }
+}
+
+
+
+// userのidからuserを取得する関数
+export async function getUserById(userId: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {id: userId},
+    });
+
+    return user;
+  } catch(error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch user.');
+  }
 }
