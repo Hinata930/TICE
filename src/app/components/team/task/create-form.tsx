@@ -110,7 +110,7 @@ export function CreateForm({ currentUserId, teamId }: Props) {
           {/* 内容 */}
           <div className='mb-4'>
             <label htmlFor='task_description' className='mb-2 block text-sm text-[var(--color-black)] font-medium'>
-              タイトル
+              内容
             </label>
             <div className='relative'>
               <textarea 
