@@ -3,6 +3,7 @@
 import { PrismaClient } from '@prisma/client'; 
 import { z } from 'zod';
 import { fetchTeamUsers, getUserByUsername } from '../data';
+import { AddTeamMember } from './user-team-actions';
 
 const prisma = new PrismaClient();
 
@@ -105,17 +106,16 @@ export async function handleAcceptedTeamInvite(
     }
 
     // 招待してきたチームに入る
-    await prisma.userTeam.create({
-      data: {
-        user_id: teamInvite.user_id,
-        team_id: teamInvite.team_id,
-      }
-    });
+    if (teamInvite.user_id && teamInvite.team_id) {
+      await AddTeamMember(teamInvite.user_id, teamInvite.team_id);
+    }
     
     // 招待のレコードを削除
     await prisma.teamInvites.delete({
       where: {id: teamInviteId}
     });
+    console.log('Accepted team invite successfully!');
+
   } catch(error) {
     console.error('Database Error:', error);
     throw new Error('Failed to accepted team invite');
@@ -148,6 +148,8 @@ export async function rejectTeamInvite(currentUserId: string, teamInviteId: stri
         id: teamInviteId,
       },
     });
+
+    console.log('Reject team invite successfully!');
   } catch(error) {
     console.error('Databbase Error:', error);
     throw new Error('Failed to reject team invite.');

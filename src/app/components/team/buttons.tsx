@@ -38,3 +38,4 @@ export function DeleteTeamButton({ id }: { id: string }) {
     </form>
   );
 }
+

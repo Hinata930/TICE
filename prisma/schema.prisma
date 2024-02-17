@@ -64,7 +64,7 @@ model Task {
   /// @zod.string.max(2048, { message: "please keep it  under 2048 characters." })
   task_description String?   @db.VarChar(2048)
   teams            Team?    @relation(fields: [team_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_task_team")
-  users            User?    @relation(fields: [task_creator], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users            User?    @relation(fields: [task_creator], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@map("tasks")
 }
@@ -78,7 +78,7 @@ model Team {
   /// @zod.string.min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." })
   team_name  String      @db.VarChar(32)
   creator    String?     @db.Uuid 
-  users                         User?             @relation(fields: [creator], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users                         User?             @relation(fields: [creator], references: [id], onDelete: Cascade, onUpdate: NoAction)
   roles                         Role[]
   tasks                         Task[]
   user_role                     UserRole[]
@@ -224,7 +224,7 @@ model TeamActivity {
   team_id            String?           @db.Uuid
   activity_type      String?           @db.Uuid
 
-  user               User?             @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user               User?             @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   team               Team?             @relation(fields: [team_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   team_activity_type TeamActivityType? @relation(fields: [activity_type], references: [id], onDelete: Cascade, onUpdate: Cascade)
 

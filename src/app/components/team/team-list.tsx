@@ -11,13 +11,16 @@ export default async function TeamList({ user_id }: { user_id: string }) {
   return (
     <>
       {teamArray.map((team) => (
-        <Link
-          key={team.id}
-          href={`/team/${team.id}`}
-          className='block h-16 w-auto mt-1 p-1 line-clamp-1 text-[var(--color-gray)] text-xl rounded-md border-2 border-[var(--color-light-gray)] hover:translate-y-[-1px] hover:shadow'
-        >
-          <p>{team.team_name}</p>
-        </Link>
+        <Fragment key={team.id}>
+          <Link
+            key={team.id}
+            href={`/team/${team.id}`}
+            className='block h-16 w-auto mt-1 p-1 line-clamp-1 text-[var(--color-gray)] text-xl rounded-md border-2 border-[var(--color-light-gray)] hover:translate-y-[-1px] hover:shadow'
+          >
+            <p>{team.team_name}</p>
+          </Link>
+        </Fragment>
+        
       ))
       }
       {teamInviteArray.map(async (teamInvite) => {
