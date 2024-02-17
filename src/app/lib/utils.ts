@@ -40,7 +40,7 @@ export function fetchCurrentDate() {
   console.log(dateObject)
 
   // yyyy年mm月dd日の形式に変換
-  const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: '2-digit', day: '2-digit' };
+  const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'Asia/Tokyo' };
   const jstDate = new Intl.DateTimeFormat('ja-jp', options).format(dateObject);
   console.log(jstDate);
 
