@@ -709,3 +709,21 @@ export async function fetchTeamUsers(teamId: string) {
     throw new Error('Failed to fetch team users.');
   }
 }
+
+
+
+// 特定のユーザーが受けているチームからの招待の配列を取得する関数
+export async function fetchTeamInviteArrayByUserId(userId: string) {
+  try {
+    const teamInvites = await prisma.teamInvites.findMany({
+      where: {
+        user_id: userId,
+      },
+    });
+
+    return teamInvites;
+  } catch(error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch team invite.')
+  }
+}

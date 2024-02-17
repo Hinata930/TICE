@@ -3,6 +3,7 @@
 import { PrismaClient } from '@prisma/client'; 
 import { z } from 'zod';
 import { fetchTeamUsers, getUserByUsername } from '../data';
+import { redirect } from 'next/navigation';
 
 const prisma = new PrismaClient();
 
@@ -72,6 +73,7 @@ export async function createTeamInvites(
           team_id, 
         }, 
       });
+      redirect(`/revalidate?path=/team`);
     } else {
       throw new Error('Failed to inserting team invites.');
     }
@@ -116,6 +118,8 @@ export async function handleAcceptedTeamInvite(
     await prisma.teamInvites.delete({
       where: {id: teamInviteId}
     });
+
+    redirect(`/revalidate?path=/team`);
   } catch(error) {
     console.error('Database Error:', error);
     throw new Error('Failed to accepted team invite');
@@ -125,11 +129,31 @@ export async function handleAcceptedTeamInvite(
 
 
 // 招待を拒否
-export async function rejectTeamInvite(id: string) {
+export async function rejectTeamInvite(currentUserId: string, teamInviteId: string) {
   try {
-    await prisma.teamInvites.delete({
-      where: {id},
+    // 招待のidからレコードを取得
+    const teamInvite = await prisma.teamInvites.findUnique({
+      where: { 
+        id: teamInviteId, 
+      },
     });
+    if (!teamInvite) {
+      throw new Error('Failed to fetch team invite');
+    }
+    // 招待されたuserかどうか確認
+    const validateUserId = (currentUserId === teamInvite.user_id);
+    if (!validateUserId) {
+      throw new Error('Different from invited user')
+    }
+
+    // teamInvitesを削除
+    await prisma.teamInvites.delete({
+      where: {
+        id: teamInviteId,
+      },
+    });
+
+    redirect(`/revalidate?path=/team`);
   } catch(error) {
     console.error('Databbase Error:', error);
     throw new Error('Failed to reject team invite.');

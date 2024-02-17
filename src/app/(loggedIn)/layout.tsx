@@ -1,4 +1,4 @@
-import Header from '@/app/components/header';
+import Header from '@/app/lib/actions/header';
 import Sidebar from '@/app/components/sidebar';
 
 export default async function LoggedInLayout({

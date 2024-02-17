@@ -2,6 +2,7 @@ import { TeamActivity } from "@prisma/client";
 import { Fragment } from "react";
 import Image from "next/image";
 import { findActivityType, getUserById } from "@/app/lib/data";
+import { convertTimeToJapaneseFormatTime } from "@/app/lib/utils";
 
 
 interface props {
@@ -34,18 +35,16 @@ export default async function RecentActivity({ TeamActivity }: props) {
                       </span>
                       {
                       activityType?.activity_type === 'NewTaskCreated' && 
-                      <span>
-                        が新しい課題を作成しました。
-                      </span> ||
+                        'が新しい課題を作成しました。' ||
                       activityType?.activity_type === 'TaskUpdated' &&
-                      <span>
-                        が課題を更新しました。
-                      </span> ||
+                        'が課題を更新しました。' ||
                       activityType?.activity_type === 'TaskDeleted' &&
-                      <span>
-                        が課題を削除しました。
-                      </span>
+                        'が課題を削除しました。'
                       }
+                      <span className='mx-2'>
+                        -
+                      </span>
+                      {convertTimeToJapaneseFormatTime(activity.createdAt)}
                     </p>
                   </div> 
               </Fragment>
