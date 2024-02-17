@@ -40,10 +40,10 @@ export function CreateForm({ currentUserId }: Props) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <label htmlFor="team_name">チーム名</label>
+      <label htmlFor='team_name'>チーム名</label>
       <input 
-        type="text" 
-        id="team_name" 
+        type='text' 
+        id='team_name' 
         placeholder='チーム名'
         autoComplete='off'
         {...register('team_name', { 
@@ -53,7 +53,7 @@ export function CreateForm({ currentUserId }: Props) {
         })} />
       {errors.team_name && <p>{errors.team_name.message}</p>}
       
-      <button type="submit" className='bg-sky-400 text-neutral-50 w-10 h-7 rounded' aria-disabled={false}>
+      <button type='submit' className='bg-sky-400 text-neutral-50 w-10 h-7 rounded' aria-disabled={false}>
         作成
       </button>
     </form>

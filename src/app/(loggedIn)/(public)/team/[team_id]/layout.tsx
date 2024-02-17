@@ -1,7 +1,7 @@
-import NavBar from "@/app/components/team/nav-bar";
-import { addVisitedTeam } from "@/app/lib/actions/visited-team";
-import { fetchCurrentUser } from "@/app/lib/data";
-import { currentUser } from "@clerk/nextjs";
+import NavBar from '@/app/components/team/nav-bar';
+import { addVisitedTeam } from '@/app/lib/actions/visited-team';
+import { fetchCurrentUser } from '@/app/lib/data';
+import { currentUser } from '@clerk/nextjs';
 
 export default async function TeamLayout({
   children,
@@ -19,9 +19,9 @@ export default async function TeamLayout({
   addVisitedTeam(user.id, params.team_id);
 
   return (
-    <div className="w-full h-full">
+    <div className='w-full h-full'>
       <NavBar teamId={params.team_id}/>
-      <div className="relative top-12">
+      <div className='relative top-12'>
         {children}
       </div>
     </div>

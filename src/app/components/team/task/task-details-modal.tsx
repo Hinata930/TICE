@@ -60,7 +60,7 @@ export default function TaskDetailModal({ taskId, user }: props) {
             <div className='flex flex-row items-center w-auto'>
               <Image
                 src={taskCreator? taskCreator.image_url: '/preview.png'}
-                className="mr-2 rounded-full"
+                className='mr-2 rounded-full'
                 width={16}
                 height={16}
                 alt={`${taskCreator? taskCreator.username: '読み込み中'}のプロフィール写真`}

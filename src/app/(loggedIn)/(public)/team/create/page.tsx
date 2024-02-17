@@ -1,6 +1,6 @@
-import { CreateForm } from "@/app/components/team/create-form"; 
-import { currentUser } from "@clerk/nextjs"; 
-import { fetchCurrentUser } from "@/app/lib/data"; 
+import { CreateForm } from '@/app/components/team/create-form'; 
+import { currentUser } from '@clerk/nextjs'; 
+import { fetchCurrentUser } from '@/app/lib/data'; 
 
 
 export default async function Page() {

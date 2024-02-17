@@ -2,10 +2,10 @@
 
 'use server';
 
-import { RoleSchema } from "@/prisma-types";
-import { PrismaClient } from "@prisma/client"; 
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { RoleSchema } from '@/prisma-types';
+import { PrismaClient } from '@prisma/client'; 
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 const prisma = new PrismaClient();
 

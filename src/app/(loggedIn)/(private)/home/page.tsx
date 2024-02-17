@@ -1,7 +1,7 @@
-import RecentTeamList from "@/app/components/home/recent-team-list";
-import { fetchCurrentUser, fetchVisitedTeamIdsByUserId } from "@/app/lib/data";
-import { currentUser } from "@clerk/nextjs";
-import { Suspense } from "react";
+import RecentTeamList from '@/app/components/home/recent-team-list';
+import { fetchCurrentUser, fetchVisitedTeamIdsByUserId } from '@/app/lib/data';
+import { currentUser } from '@clerk/nextjs';
+import { Suspense } from 'react';
 
 
 export default async function Page() {

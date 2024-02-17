@@ -18,9 +18,9 @@ export function UpdateTeamButton({ teamId }: { teamId: string }) {
   return (
     <Link
       href={`/team/${teamId}/edit`}
-      className="rounded-md border p-2 hover:bg-gray-100"
+      className='rounded-md border p-2 hover:bg-gray-100'
     >
-      <PencilIcon className="w-5" />
+      <PencilIcon className='w-5' />
     </Link>
   );
 }
@@ -30,9 +30,9 @@ export function DeleteTeamButton({ id }: { id: string }) {
 
   return (
     <form action={deleteTeamWithId}>
-      <button className="rounded-md border p-2 hover:bg-gray-100">
-        <span className="sr-only">チームの削除</span>
-        <TrashIcon className="w-5" />
+      <button className='rounded-md border p-2 hover:bg-gray-100'>
+        <span className='sr-only'>チームの削除</span>
+        <TrashIcon className='w-5' />
       </button>
     </form>
   );

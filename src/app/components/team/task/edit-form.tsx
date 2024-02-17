@@ -52,10 +52,10 @@ export function EditForm({ team_id, task_id, taskTitle, taskDescription, taskDat
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* text */}
-        <label htmlFor="task_title">タイトル</label>
+        <label htmlFor='task_title'>タイトル</label>
         <input 
-          type="text" 
-          id="task_title" 
+          type='text' 
+          id='task_title' 
           defaultValue={taskTitle}
           autoComplete='off'
           {...register('task_title', { 
@@ -67,7 +67,7 @@ export function EditForm({ team_id, task_id, taskTitle, taskDescription, taskDat
 
 
         {/* date */}
-        <label htmlFor="due_date">提出締め切り</label>
+        <label htmlFor='due_date'>提出締め切り</label>
         <input 
           type='date'
           id='due_date'
@@ -90,7 +90,7 @@ export function EditForm({ team_id, task_id, taskTitle, taskDescription, taskDat
           })} />
         {errors.task_description && <p>{errors.task_description.message}</p>}
 
-        <button type="submit" className='bg-sky-400 text-neutral-50 w-10 h-7 rounded' aria-disabled={false}>
+        <button type='submit' className='bg-sky-400 text-neutral-50 w-10 h-7 rounded' aria-disabled={false}>
           課題を編集
         </button>
       </form>

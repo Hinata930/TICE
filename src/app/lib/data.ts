@@ -1,10 +1,10 @@
 'use server'
 
-import { PrismaClient, Task, Team } from "@prisma/client";
-import { unstable_noStore as noStore } from "next/cache"; 
+import { PrismaClient, Task, Team } from '@prisma/client';
+import { unstable_noStore as noStore } from 'next/cache'; 
 import { addDays, startOfWeek, endOfWeek, format } from 'date-fns';
-import { WeeklyTask } from "./difinitions";
-import { fetchCurrentDate } from "./utils";
+import { WeeklyTask } from './difinitions';
+import { fetchCurrentDate } from './utils';
 
 const prisma = new PrismaClient();
 

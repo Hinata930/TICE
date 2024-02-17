@@ -24,9 +24,9 @@ export function UpdateTaskButton({
   return (
     <Link
       href={`/team/${teamId}/task/${taskId}/edit`}
-      className="rounded-md border p-2 hover:bg-gray-100"
+      className='rounded-md border p-2 hover:bg-gray-100'
     >
-      <PencilIcon className="w-5" />
+      <PencilIcon className='w-5' />
     </Link>
   );
 }
@@ -36,9 +36,9 @@ export function DeleteTaskButton({ taskId }: { taskId: string }) {
 
   return (
     <form action={deleteTaskWithId}>
-      <button className="rounded-md border p-2 hover:bg-gray-100">
-        <span className="sr-only">課題の削除</span>
-        <TrashIcon className="w-5" />
+      <button className='rounded-md border p-2 hover:bg-gray-100'>
+        <span className='sr-only'>課題の削除</span>
+        <TrashIcon className='w-5' />
       </button>
     </form>
   );

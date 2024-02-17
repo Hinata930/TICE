@@ -1,6 +1,6 @@
-import { fetchTeamsByTeamIds, fetchValidTasksForCurrentWeekByTeam } from "@/app/lib/data"; 
-import Link from "next/link";
-import { Fragment } from "react";
+import { fetchTeamsByTeamIds, fetchValidTasksForCurrentWeekByTeam } from '@/app/lib/data'; 
+import Link from 'next/link';
+import { Fragment } from 'react';
 
 interface props{
   recentTeamIds: string[],

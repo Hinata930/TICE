@@ -1,6 +1,6 @@
-import { EditForm } from "@/app/components/team/task/edit-form"; 
-import { fetchTask, fetchTeam } from "@/app/lib/data";
-import { notFound } from "next/navigation";
+import { EditForm } from '@/app/components/team/task/edit-form'; 
+import { fetchTask, fetchTeam } from '@/app/lib/data';
+import { notFound } from 'next/navigation';
 
 export default async function Page({ 
   params 

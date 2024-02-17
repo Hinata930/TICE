@@ -1,4 +1,4 @@
-import { Task, Team } from "@prisma/client";
+import { Task, Team } from '@prisma/client';
 
 export type TeamTask = {
   team: Team;

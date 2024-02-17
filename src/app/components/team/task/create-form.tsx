@@ -49,21 +49,21 @@ export function CreateForm({ currentUserId, team_id }: Props) {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="rounded-md bg-[var(--color-base-gray)] p-4 md:p-6">
+        <div className='rounded-md bg-[var(--color-base-gray)] p-4 md:p-6'>
           <h2 className='text-2xl text-[var(--color-black)] mb-4'>課題の作成</h2> 
           {/* タイトル */}
           <div className='mb-4'>
-            <label htmlFor="task_title" className='mb-2 block text-sm text-[var(--color-black)] font-medium'>
+            <label htmlFor='task_title' className='mb-2 block text-sm text-[var(--color-black)] font-medium'>
               タイトル
             </label>
             <div className='relative'>
               <input 
-                type="text" 
-                id="task_title" 
+                type='text' 
+                id='task_title' 
                 placeholder='タイトル'
                 autoComplete='off'
                 className='block w-full rounded-md border border-gray-200 p-2 text-sm outline-2 placeholder:text-gray-500'
-                aria-describedby="task_title-error"
+                aria-describedby='task_title-error'
                 {...register('task_title', { 
                   required: 'タイトルは必須です',
                   maxLength: { value: 64, message: 'タイトルは64文字以下で入力してください'} 
@@ -80,11 +80,11 @@ export function CreateForm({ currentUserId, team_id }: Props) {
 
           {/* 提出締め切り */}
           <div className='mb-4'>
-            <label htmlFor="due_date" className='mb-2 block text-sm font-medium'>
+            <label htmlFor='due_date' className='mb-2 block text-sm font-medium'>
               提出締め切り
             </label>
-            <div className="relative mt-2 rounded-md">
-              <div className="relative">
+            <div className='relative mt-2 rounded-md'>
+              <div className='relative'>
                 <input 
                   type='date'
                   id='due_date'
@@ -109,15 +109,15 @@ export function CreateForm({ currentUserId, team_id }: Props) {
 
           {/* 内容 */}
           <div className='mb-4'>
-            <label htmlFor="task_description" className='mb-2 block text-sm text-[var(--color-black)] font-medium'>
+            <label htmlFor='task_description' className='mb-2 block text-sm text-[var(--color-black)] font-medium'>
               タイトル
             </label>
             <div className='relative'>
               <textarea 
-                id="task_description" 
+                id='task_description' 
                 placeholder='課題の内容'
                 className='block w-full rounded-md border border-gray-200 p-2 text-sm outline-2 placeholder:text-gray-500'
-                aria-describedby="task_description-error"
+                aria-describedby='task_description-error'
                 {...register('task_description', {
                   maxLength: { value: 2048, message: '課題の内容は2048文字以下で入力してください' },
                 })} />
@@ -138,7 +138,7 @@ export function CreateForm({ currentUserId, team_id }: Props) {
           >
             キャンセル
           </Link>
-          <button type="submit" className='flex h-10 items-center rounded-lg bg-[var(--color-seccondary)] px-4 text-sm font-medium text-[var(--color-seccondary-contrast)] transition-colors hover:bg-blue-400'>
+          <button type='submit' className='flex h-10 items-center rounded-lg bg-[var(--color-seccondary)] px-4 text-sm font-medium text-[var(--color-seccondary-contrast)] transition-colors hover:bg-blue-400'>
             課題を作成
           </button>
         </div>

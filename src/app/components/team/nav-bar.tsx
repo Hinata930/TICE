@@ -1,8 +1,8 @@
 'use client'
 
-import Link from "next/link";
-import { usePathname } from "next/navigation"; 
-import { clsx } from "clsx"; 
+import Link from 'next/link';
+import { usePathname } from 'next/navigation'; 
+import { clsx } from 'clsx'; 
 
 interface Props {
   teamId: string
@@ -17,8 +17,8 @@ export default function NavBar({ teamId }: Props) {
   ];
 
   return (
-    <div className="fixed h-12 w-full bg-white border-b-[1px] border-[var(--color-light-gray)] z-20">
-      <div className="flex items-center h-full w-full pl-4">
+    <div className='fixed h-12 w-full bg-white border-b-[1px] border-[var(--color-light-gray)] z-20'>
+      <div className='flex items-center h-full w-full pl-4'>
         {links.map((link) => {
           return (
             <div

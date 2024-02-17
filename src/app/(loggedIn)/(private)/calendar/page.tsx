@@ -1,8 +1,8 @@
-import { Calendar } from "@/app/components/calendar/calendar";
-import { CalendarSkeleton } from "@/app/components/calendar/skeleton";
-import { fetchCurrentUser } from "@/app/lib/data";
-import { currentUser } from "@clerk/nextjs";
-import { Suspense } from "react";
+import { Calendar } from '@/app/components/calendar/calendar';
+import { CalendarSkeleton } from '@/app/components/calendar/skeleton';
+import { fetchCurrentUser } from '@/app/lib/data';
+import { currentUser } from '@clerk/nextjs';
+import { Suspense } from 'react';
 
 
 export default async function Page() {

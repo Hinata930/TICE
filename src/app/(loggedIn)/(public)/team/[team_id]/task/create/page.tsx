@@ -1,7 +1,7 @@
-import { CreateForm } from "@/app/components/team/task/create-form";
-import { fetchCurrentUser, teamExists } from "@/app/lib/data";
-import { currentUser } from "@clerk/nextjs";
-import { notFound } from "next/navigation";
+import { CreateForm } from '@/app/components/team/task/create-form';
+import { fetchCurrentUser, teamExists } from '@/app/lib/data';
+import { currentUser } from '@clerk/nextjs';
+import { notFound } from 'next/navigation';
 
 export default async function Page({ params }: { params: { team_id: string } }) {
   const userFromClerk = await currentUser();

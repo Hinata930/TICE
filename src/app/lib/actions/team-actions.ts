@@ -1,12 +1,12 @@
 'use server';
 
-import { PrismaClient } from "@prisma/client"; 
-import { z } from "zod";
+import { PrismaClient } from '@prisma/client'; 
+import { z } from 'zod';
 
 const prisma = new PrismaClient();
 
 const teamSchema = z.object({
-  team_name: z.string().min(2, { message: "please use at least 2 characters." }).max(32, { message: "please keep it under 32 characters." }),
+  team_name: z.string().min(2, { message: 'please use at least 2 characters.' }).max(32, { message: 'please keep it under 32 characters.' }),
 });
 
 

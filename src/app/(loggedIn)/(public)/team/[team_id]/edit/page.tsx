@@ -1,6 +1,6 @@
-import { EditForm } from "@/app/components/team/edit-form"; 
-import { fetchTeam } from "@/app/lib/data";
-import { notFound } from "next/navigation";
+import { EditForm } from '@/app/components/team/edit-form'; 
+import { fetchTeam } from '@/app/lib/data';
+import { notFound } from 'next/navigation';
 
 
 export default async function Page({ params }: { params: { team_id: string } }) {
