@@ -36,17 +36,15 @@ export function generatePagination(
 
 // ISOStringの日本の日付 (yyyy-mm-dd)
 export function fetchCurrentDate() {
-  // ローカル現在時刻の取得
-  const nowLocal = new Date();
+  const dateObject = new Date();
 
-  // UTCとローカルタイムゾーンとの差を取得し、分からミリ秒に変換
-  const diff = nowLocal.getTimezoneOffset() * 60 * 1000;
+  // yyyy年mm月dd日の形式に変換
+  const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: '2-digit', day: '2-digit' };
+  const jstDate = new Intl.DateTimeFormat('ja-jp', options).format(dateObject);
 
-  // toISOString()で、UTC時間になってしまうので、ローカルタイムとの差を無くす
-  const plusLocal = new Date(nowLocal.getTime() - diff);    
-
-  // ISO形式に変換後、日付のみ取得。タイムゾーンは考慮しない
-  return plusLocal.toISOString().split('T')[0];
+  const formattedDate = jstDate.replace(/\//g, "-");
+  console.log(formattedDate)
+  return formattedDate;
 }
 
 // yyyy年mm月dd日にする(日本の日時にする)
