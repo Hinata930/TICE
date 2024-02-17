@@ -9,7 +9,7 @@ export function CalendarSkeleton() {
       <h2 className='flex justify-center pt-4 mx-auto font-semibold text-3xl'>
         カレンダー
       </h2>
-      <div className='flex flex-row h-[60vh] max-w-[62.5rem] mx-auto mt-8 rounded-md border-y border-l border-[var(--color-light-gray)]'>
+      <div className='flex flex-col h-auto max-w-[62.5rem] mx-auto mt-8 rounded-md border-r border-t border-l border-[var(--color-light-gray)] lg:flex-row lg:h-[60vh] lg:border-r-0'>
         <CalendarRowSkeleton />
         <CalendarRowSkeleton />
         <CalendarRowSkeleton />
@@ -25,28 +25,21 @@ export function CalendarSkeleton() {
 export function CalendarRowSkeleton() {
   return(
     <>
-      <div className='calendar-date-width h-full w-full px-1 border-r rounded-md'>
+      <div className='calendar-date-width h-full w-full px-1 border-b rounded-md lg:border-r'>
         <div className='flex flex-col h-full w-full'>
-          <div className='flex flex-col justify-center items-center w-full mb-2'>
-            <div className='h-[28px] w-5 bg-gray-100'>
-            </div>
-            <div className='h-[28px] w-[22.2px] bg-gray-100'>
-            </div>
+          {/* 日付 */}
+          <div className='flex flex-row-reverse justify-end items-center w-full mb-2 lg:flex-col lg:justify-center'>
+            <div className='h-[28px] w-5 bg-gray-100' />
+            <div className='h-[28px] w-[22.2px] bg-gray-100' />
           </div>
-          <div className='flex flex-col overflow-y-auto'>
-            <div className='flex flex-row mb-[2px]'>
-              <div className='flex items-center w-2 mr-[2px]' />
-              <div>
-                <p className='h-5 bg-gray-100'>
-                </p> 
-              </div>
-            </div> 
-            <div className='pl-[10px] bg-gray-100'>
-              <p 
-                className='h-4 mb-[2px]'
-              >
-              </p>
-            </div> 
+          
+          <div className='flex-col min-h-8 overflow-y-auto lg:h-auto'>
+            <div className='flex flex-col overflow-y-auto'>
+              {/* stopIconとチーム名 */}
+              <div className='h-5 w-full bg-gray-100 mb-[2px]' />
+              {/* タイトル */}
+              <div className='h-4 w-full mb-[2px] bg-gray-100' />
+            </div>
           </div>
         </div>
       </div>

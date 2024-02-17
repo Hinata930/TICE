@@ -642,3 +642,31 @@ export async function getUserById(userId: string) {
     throw new Error('Failed to fetch user.');
   }
 }
+
+
+
+// teamのidからuserの配列を取得する関数
+export async function fetchUserArrayByTeamId(teamId: string) {
+  try {
+    // チームに所属しているユーザーのidを取得
+    const userTeams = await prisma.userTeam.findMany({
+      where: {
+        team_id: teamId,
+      },
+    });
+    // ユーザーのidからユーザーを取得
+    const users = userTeams.map(async (userTeam) => {
+      if (userTeam.user_id) {
+        return await getUserById(userTeam.user_id);
+      }
+    });
+
+    return Promise.all(users);
+  } catch(error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch user array.');
+  }
+}
+
+
+

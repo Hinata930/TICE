@@ -29,13 +29,10 @@ export default async function Page({
   if (!userFromClerk) {
     throw new Error('Failed to fetch current user');
   }
-
-  const user = await fetchCurrentUser(userFromClerk.id);
+  const user = await fetchCurrentUser(userFromClerk.id); // ログインしてるユーザー
 
   const query = searchParams?.query || ''; // 検索してる文字列
   const currentPage = Number(searchParams?.page) || 1; // 今のページ
-
-  const totalPages = await fetchTasksPages(query, params.team_id); // ページ数
 
   return (
     <div className='pt-2 max-w-[62.5rem] mx-auto'>
@@ -47,7 +44,7 @@ export default async function Page({
         <TasksTable query={query} currentPage={currentPage} teamId={params.team_id} user={user} />
       </Suspense>
       <div className='mt-5 pb-5 flex w-full justify-center'>
-        <Pagination totalPages={totalPages} />
+        <Pagination query={query} teamId={params.team_id} />
       </div>
     </div>
   );

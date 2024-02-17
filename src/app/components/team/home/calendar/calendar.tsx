@@ -12,15 +12,15 @@ interface props {
 export async function Calendar({ weeklyTasks, teamId }: props) {
   return (
     <>
-      <div className='flex flex-row h-56 rounded-md border-y border-l border-[var(--color-light-gray)]'>
+      <div className='flex flex-col min-h-8 border-r border-t border-l border-[var(--color-light-gray)] rounded-md lg:flex-row lg:h-56 lg:border-r-0'>
         {weeklyTasks.map((dailyTasks) => {
           const date = getLastTwoCharacters(dailyTasks.date);
           const dayOfWeek = convertIndexToJapaneseDayOfWeek(dailyTasks.dayOfWeek);
           return (
             <Fragment key={dailyTasks.date}>
-              <div className='calendar-date-width h-full w-full px-1 border-r rounded-md'>
+              <div className='calendar-date-width h-full w-full px-1 border-b rounded-md lg:border-r'>
                 <div className='flex flex-col h-full w-full'>
-                  <div className='flex flex-col justify-center items-center w-full text-xl mb-2'>
+                  <div className='flex flex-row-reverse justify-end items-center w-full text-xl mb-2 lg:flex-col lg:justify-center'>
                     <p>
                       {dayOfWeek}
                     </p>

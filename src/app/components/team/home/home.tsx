@@ -17,7 +17,7 @@ export default async function Home({ teamId }: props) {
   if (team) {
     return (
       <>
-        <div className='px-4 pt-4'>
+        <div className='px-4 pt-4 mb-32 lg:mb-none'>
           {/* チーム名 */}
           <div className='pb-4 mb-4 border-b'>
             <div className='pr-8 pl-2'>
@@ -49,15 +49,13 @@ export default async function Home({ teamId }: props) {
                 </div>
               </div>
             </div>
-            {/* カレンダー(今週の課題) */}
+            {/* カレンダー(今週の課題分) */}
             <div className='mb-4'>
               <div className='pl-2'>
                 <h2 className='text-lg font-medium pb-4'>
                   カレンダー
                 </h2>
-                <div>
-                  <Calendar weeklyTasks={weeklyTasks} teamId={teamId}  />
-                </div>
+                <Calendar weeklyTasks={weeklyTasks} teamId={teamId} />
               </div>
             </div>
           </div>

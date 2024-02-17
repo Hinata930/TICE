@@ -62,7 +62,7 @@
 }
 
 .calendar-date-width {
-  min-height: calc(100% / 7);
+  min-width: calc(100% / 7);
 }
 
 .calendar-height {

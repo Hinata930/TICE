@@ -12,7 +12,7 @@ export default async function RecentActivity({ TeamActivity }: props) {
 
   return (
     <>
-      <div className='flex flex-col h-full w-full'>
+      <div className='flex flex-col h-full w-full py-1'>
         {TeamActivity.map(async (activity) => {
           if (activity.user_id && activity.activity_type) {
             const user = await getUserById(activity.user_id)
