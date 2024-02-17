@@ -683,3 +683,29 @@ export async function getUserByUsername(username: string) {
     throw new Error('Failed to get user.');
   }
 }
+
+
+
+// 特定のチームにいるユーザーの配列を取得する関数
+export async function fetchTeamUsers(teamId: string) {
+  try {
+    const userTeamArray = await prisma.userTeam.findMany({
+      where: {
+        team_id: teamId,
+      },
+    });
+
+    const userArray = userTeamArray.map(async (userTeam) => {
+      return await prisma.user.findUnique({
+        where: {
+          id: userTeam.id,
+        },
+      })
+    });
+
+    return Promise.all(userArray);
+  } catch(error) {
+    console.error('Database Error', error);
+    throw new Error('Failed to fetch team users.');
+  }
+}

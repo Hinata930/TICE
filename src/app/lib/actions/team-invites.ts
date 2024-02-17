@@ -2,13 +2,19 @@
 
 import { PrismaClient } from '@prisma/client'; 
 import { z } from 'zod';
-import { getUserByUsername } from '../data';
+import { fetchTeamUsers, getUserByUsername } from '../data';
 
 const prisma = new PrismaClient();
 
-const teamInvitesSchema = z.object({
-  username: z.string(),
-});
+
+// バリデーターを定義
+const notInArray = (array: any[]) => (value: any) => {
+  if (array.includes(value)) {
+    throw new Error(`Value ${value} is not allowed.`);
+  }
+  return true;
+};
+
 
 // https://ja.react.dev/reference/react-dom/hooks/useFormState
 export type State = {
@@ -29,6 +35,17 @@ export async function createTeamInvites(
   prevstate: State,
   formData: FormData,
 ) {
+  // 既にチームにいるユーザーに招待できないようにする。
+  const userArray = await fetchTeamUsers(team_id);
+  const usernameArray = userArray.map((user) => {
+    return user?.username;
+  });
+  const teamInvitesSchema = z.object({
+    username: z
+      .string()
+      .refine(notInArray(usernameArray), { message: 'The value must not be the username of a user already on the team.' }),
+  });
+
   // Validate form using Zod
   const validatedFields = teamInvitesSchema.safeParse({
     username: formData.username,
@@ -43,21 +60,28 @@ export async function createTeamInvites(
 
   const { username } = validatedFields.data;
 
+  // usernameからuserを取得
   const user = await getUserByUsername(username);
 
   // Insert data into the database
   try {
-    const newInvite = await prisma.teamInvites.create({
-      data: {
-        user_id: user?.id,
-        team_id,
-      }, 
-    });
+    if (user) {
+      await prisma.teamInvites.create({ 
+        data: { 
+          user_id: user.id, 
+          team_id, 
+        }, 
+      });
+    } else {
+      throw new Error('Failed to inserting team invites.');
+    }
   } catch(error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to inserting team invites.')
+    throw new Error('Failed to inserting team invites.');
   }
 }
+
+
 
 // 招待受理とそれに関する処理
 export async function handleAcceptedTeamInvite(
@@ -67,13 +91,15 @@ export async function handleAcceptedTeamInvite(
   try {
     // 招待のidからレコードを取得
     const teamInvite = await prisma.teamInvites.findUnique({
-      where: { id: teamInviteId }
+      where: { 
+        id: teamInviteId, 
+      },
     });
     if (!teamInvite) {
       throw new Error('Failed to fetch team invite');
     }
     // 招待されたuserかどうか確認
-    const validateUserId = (currentUserId === teamInvite.user_id)
+    const validateUserId = (currentUserId === teamInvite.user_id);
     if (!validateUserId) {
       throw new Error('Different from invited user')
     }
@@ -84,7 +110,7 @@ export async function handleAcceptedTeamInvite(
         user_id: teamInvite.user_id,
         team_id: teamInvite.team_id,
       }
-    })
+    });
     
     // 招待のレコードを削除
     await prisma.teamInvites.delete({
@@ -95,6 +121,8 @@ export async function handleAcceptedTeamInvite(
     throw new Error('Failed to accepted team invite');
   }
 }
+
+
 
 // 招待を拒否
 export async function rejectTeamInvite(id: string) {

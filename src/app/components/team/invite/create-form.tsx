@@ -1,7 +1,7 @@
 'use client'
 
 import { createTeamInvites } from "@/app/lib/actions/team-invites";
-import { fetchCurrentDate } from "@/app/lib/utils";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 
@@ -23,7 +23,6 @@ export default function CreateInvite({ teamId }: Props) {
     reset 
   } = useForm<FormData>();
   const router = useRouter();
-  const currentDate = fetchCurrentDate();
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
@@ -75,6 +74,17 @@ export default function CreateInvite({ teamId }: Props) {
               }
             </div>
           </div>
+        </div>
+        <div className='mt-6 flex justify-end gap-4'>
+          <Link
+            href={`/team/${teamId}/member`}
+            className='flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200'
+          >
+            キャンセル
+          </Link>
+          <button type='submit' className='flex h-10 items-center rounded-lg bg-[var(--color-seccondary)] px-4 text-sm font-medium text-[var(--color-seccondary-contrast)] transition-colors hover:bg-blue-400'>
+            招待を作成
+          </button>
         </div>
       </form>
     </>

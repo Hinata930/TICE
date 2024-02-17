@@ -17,7 +17,7 @@ export default async function Page({ params }: { params: { team_id: string } }) 
   
   return (
     <main className='max-w-[62.5rem] mx-auto'>
-      <CreateForm currentUserId={user.id} team_id={params.team_id} />
+      <CreateForm currentUserId={user.id} teamId={params.team_id} />
     </main>
   );
 }

@@ -1,10 +1,11 @@
+import CreateForm from "@/app/components/team/invite/create-form";
 
 
 
-export default async function Page() {
+export default async function Page({ params }: { params: { team_id: string } }) {
   return (
     <>
-      <p>制作中</p>
+      <CreateForm teamId={params.team_id} />
     </>
   );
 }
