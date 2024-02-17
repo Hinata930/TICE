@@ -40,7 +40,7 @@ export default async function RecentTeamList({ recentTeamIds }: props) {
                         </p>
                         {tasksForCurrentWeek.map((task) => (
                           <Fragment key={task.id}>
-                            <p>
+                            <p className='text-xs'>
                               {task.task_title}
                             </p>
                           </Fragment>

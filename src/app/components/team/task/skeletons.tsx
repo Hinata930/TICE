@@ -22,7 +22,6 @@ export function NavLinkRowSkeleton() {
 export function TeamListSkeleton() {
   return (
     <>
-      <div className='h-6 bg-gray-100 w-32'></div>
       <TeamListRowSkeleton />
       <TeamListRowSkeleton />
       <TeamListRowSkeleton />

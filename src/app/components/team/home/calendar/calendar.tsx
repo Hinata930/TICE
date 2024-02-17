@@ -16,7 +16,7 @@ export async function Calendar({ weeklyTasks, teamId }: props) {
         {weeklyTasks.map((dailyTasks) => {
           const date = getLastTwoCharacters(dailyTasks.date);
           const dayOfWeek = convertIndexToJapaneseDayOfWeek(dailyTasks.dayOfWeek);
-          return(
+          return (
             <Fragment key={dailyTasks.date}>
               <div className='calendar-date-width h-full w-full px-1 border-r rounded-md'>
                 <div className='flex flex-col h-full w-full'>

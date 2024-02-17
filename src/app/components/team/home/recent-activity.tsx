@@ -23,7 +23,7 @@ export default async function RecentActivity({ TeamActivity }: props) {
                     {/* タスク作った人の image と username */}
                     <Image
                       src={`${user? user.image_url : '/preview.png'}`}
-                      className='mr-2 rounded-full'
+                      className='mr-1 rounded-full'
                       width={12}
                       height={12}
                       alt={`${user? user.username : '削除済みのアカウント'}のプロフィール写真`}

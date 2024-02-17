@@ -16,7 +16,6 @@ export default async function Page() {
 
   return (
     <>
-      <Suspense fallback={<TeamListSkeleton />}>
         <div className='px-2 w-full'>
           <div className='flex px-2 w-full mt-4 pb-1 mb-4 border-b border-[var(--color-light-gray)]'>
             <div className='flex-grow'></div>
@@ -31,10 +30,10 @@ export default async function Page() {
             </Link> 
           </div>
           
-          <TeamList user_id={user.id} />
+          <Suspense fallback={<TeamListSkeleton />}>
+            <TeamList user_id={user.id} />
+          </Suspense>
         </div>
-        
-      </Suspense>
     </>
   );
 }

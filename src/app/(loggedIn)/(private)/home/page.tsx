@@ -1,4 +1,5 @@
 import RecentTeamList from '@/app/components/home/recent-team-list';
+import { RecentTeamListSkeleton } from '@/app/components/home/skeleton';
 import { fetchCurrentUser, fetchVisitedTeamIdsByUserId } from '@/app/lib/data';
 import { currentUser } from '@clerk/nextjs';
 import { Suspense } from 'react';
@@ -18,10 +19,9 @@ export default async function Page() {
 
   return (
     <>
-      <Suspense fallback={<div></div>}>
+      <Suspense fallback={<RecentTeamListSkeleton />}>
         <RecentTeamList recentTeamIds={recentTeamIds} />
       </Suspense>
-      
     </>
   );
 }
