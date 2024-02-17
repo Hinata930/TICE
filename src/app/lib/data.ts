@@ -370,15 +370,15 @@ export async function fetchWeeklyTasks( teams: Team[] ) {
   }));
 
 
-  // チームごとのタスクを日付ごとに振り分ける
+  // チームごとのタスクを日付ごとに振り分ける(要対処)
   weekDates.forEach((date, weekIndex) => { // 日付でわける
     weeklyTeamTasks[weekIndex].dayOfWeek = weekIndex; // 曜日
     weeklyTeamTasks[weekIndex].teamTasks.forEach((dailyTaskTeam, index) => { // チームで分ける
       tasksByTeams.forEach((taskTeam, taskIndex) => { // tasksByTeamsとweeklyTeamTasks.teamTasks同じ
-        if (index === taskIndex) {
-          taskTeam.tasks.forEach((task) => {
+        if (index === taskIndex) { // tasksByTeamsの今処理してるものと同一か
+          taskTeam.tasks.forEach((task) => { 
             const taskDueDate = new Date(task.due_date); 
-            if (taskDueDate.toDateString() === date.toDateString()) {
+            if (taskDueDate.toDateString() === date.toDateString()) { 
               weeklyTeamTasks[weekIndex].teamTasks[index].tasks.push(task);
               weeklyTeamTasks[weekIndex].teamTasks[index].team = taskTeam.team;
             }
@@ -392,6 +392,7 @@ export async function fetchWeeklyTasks( teams: Team[] ) {
 }
 
 export async function fetchTeamsByTeamIds(teamIds: string[]) {
+  noStore();
   try {
     const teams = teamIds.map(async (teamId) => {
       return await prisma.team.findUnique({
@@ -408,6 +409,7 @@ export async function fetchTeamsByTeamIds(teamIds: string[]) {
 
 // userのidでuserが訪問したチームのArrayを取得
 export async function fetchVisitedTeamIdsByUserId( userId: string ) {
+  noStore();
   try {
     const visitedTeams = await prisma.visitedTeam.findMany({
       where: {user_id: userId},
@@ -423,4 +425,45 @@ export async function fetchVisitedTeamIdsByUserId( userId: string ) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch visited teams.');
   }
+}
+
+// あるチームの特定期間内のタスクを取得する。
+export async function fetchTasksByTeamAndPeriod(teamId: string, startDate: Date, endDate: Date) {
+  noStore();
+  try {
+    const tasks = await prisma.task.findMany({
+      where: {
+        team_id: teamId,
+        due_date: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+    });
+
+    return tasks;
+  } catch(error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch tasks for the specified period.');
+  }
+}
+
+// あるチームの今週のタスクを取得する。期限が過ぎたタスクは取得しない。
+export async function fetchValidTasksForCurrentWeekByTeam(teamId: string) {
+  noStore();
+  const today = new Date(fetchCurrentDate());
+  const startOfWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - (today.getDay() - 1));
+  const endOfWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (7 - today.getDay()));
+
+  return fetchTasksByTeamAndPeriod(teamId, startOfWeek, endOfWeek);
+}
+
+// あるチームの今日のタスクを取得する。期限が過ぎたタスクは取得しない。
+export async function fetchValidTasksForTodayByTeam(teamId: string) {
+  noStore();
+  const today = new Date(fetchCurrentDate());
+  const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+
+  return fetchTasksByTeamAndPeriod(teamId, startOfDay, endOfDay);
 }

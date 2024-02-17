@@ -1,5 +1,5 @@
-import { fetchTeams } from "@/app/lib/data";
-import Link from "next/link";
+import { fetchTeams } from '@/app/lib/data';
+import Link from 'next/link';
 
 
 export default async function TeamList({ user_id }: { user_id: string }) {
@@ -11,7 +11,7 @@ export default async function TeamList({ user_id }: { user_id: string }) {
           <Link
             key={team.id}
             href={`/team/${team.id}`}
-            className="block h-16 w-auto bg-gray-50 rounded-lg my-2 text-neutral-900 text-xl"
+            className='block h-16 w-auto mt-1 p-1 line-clamp-1 text-[var(--color-gray)] text-xl rounded-md border-2 border-[var(--color-light-gray)] hover:translate-y-[-1px] hover:shadow'
           >
             <p>{team.team_name}</p>
           </Link>

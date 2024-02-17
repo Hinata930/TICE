@@ -1,9 +1,10 @@
-import { fetchCurrentUser } from "@/app/lib/data";
-import { currentUser } from "@clerk/nextjs";
-import TeamList from "@/app/components/team/team-list"; 
-import Link from "next/link";
-import { Suspense } from "react";
-import { TeamListSkeleton } from "@/app/components/team/task/skeletons";
+import { fetchCurrentUser } from '@/app/lib/data';
+import { currentUser } from '@clerk/nextjs';
+import TeamList from '@/app/components/team/team-list'; 
+import Link from 'next/link';
+import { Suspense } from 'react';
+import { TeamListSkeleton } from '@/app/components/team/task/skeletons';
+import { PlusIcon } from '@heroicons/react/24/outline';
 
 
 export default async function Page() {
@@ -16,8 +17,23 @@ export default async function Page() {
   return (
     <>
       <Suspense fallback={<TeamListSkeleton />}>
-        <Link href="/team/create" className="h-6">チームを作成する</Link> 
-        <TeamList user_id={user.id} />
+        <div className='px-2 w-full'>
+          <div className='flex px-2 w-full mt-4 pb-1 mb-4 border-b border-[var(--color-light-gray)]'>
+            <div className='flex-grow'></div>
+            <Link 
+              href='/team/create' 
+              className='flex justify-end h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600'
+            >
+              <span className='hidden md:block'>
+                チームを作成する
+              </span>
+              <PlusIcon className='h-5 md:ml-4' />
+            </Link> 
+          </div>
+          
+          <TeamList user_id={user.id} />
+        </div>
+        
       </Suspense>
     </>
   );

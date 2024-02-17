@@ -13,7 +13,7 @@ export default async function Page() {
 
   const recentTeams = await fetchVisitedTeamIdsByUserId(user.id);
   const recentTeamIds = recentTeams.map((recentTeam) => {
-    return recentTeam?.id || ''
+    return recentTeam?.id || '';
   })
 
   return (

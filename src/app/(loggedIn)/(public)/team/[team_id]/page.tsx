@@ -1,6 +1,6 @@
-import { fetchTeam } from "@/app/lib/data";
-import { notFound } from "next/navigation";
-import { Suspense } from "react";
+import { fetchTeam } from '@/app/lib/data';
+import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
 
 export default async function Page({ params }: { params: { team_id: string } }) {
