@@ -3,7 +3,6 @@
 import { PrismaClient } from '@prisma/client'; 
 import { z } from 'zod';
 import { fetchTeamUsers, getUserByUsername } from '../data';
-import { redirect } from 'next/navigation';
 
 const prisma = new PrismaClient();
 
@@ -73,7 +72,6 @@ export async function createTeamInvites(
           team_id, 
         }, 
       });
-      redirect(`/revalidate?path=/team`);
     } else {
       throw new Error('Failed to inserting team invites.');
     }
@@ -118,8 +116,6 @@ export async function handleAcceptedTeamInvite(
     await prisma.teamInvites.delete({
       where: {id: teamInviteId}
     });
-
-    redirect(`/revalidate?path=/team`);
   } catch(error) {
     console.error('Database Error:', error);
     throw new Error('Failed to accepted team invite');
@@ -152,8 +148,6 @@ export async function rejectTeamInvite(currentUserId: string, teamInviteId: stri
         id: teamInviteId,
       },
     });
-
-    redirect(`/revalidate?path=/team`);
   } catch(error) {
     console.error('Databbase Error:', error);
     throw new Error('Failed to reject team invite.');
