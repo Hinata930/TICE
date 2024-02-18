@@ -46,14 +46,14 @@ export default function TaskList({ tasks, user }: props) {
                     </p>
                   </div>
                   {/* タイトル */}
-                  <div className='flex flex-row items-center w-full pb-[2px]'>
-                    <p className='flex justify-start text-2xl text-[var(--color-black)] font-medium line-clamp-1'>
+                  <div className='flex justify-self-start items-center w-full pb-[2px]'>
+                    <p className='text-2xl text-[var(--color-black)] font-medium line-clamp-1'>
                       {task.task_title}
                     </p>
                   </div>
                   {/* 内容 */}
                   <div className='flex justify-self-start w-full'>
-                    <p className='line-clamp-1 text-[var(--color-gray)]'>
+                    <p className='line-clamp-1 text-[var(--color-gray)] h-6'>
                       {task.task_description ? task.task_description : ' '}
                     </p>
                   </div>

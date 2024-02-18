@@ -1,6 +1,6 @@
 import NavBar from '@/app/components/team/nav-bar';
 import { addVisitedTeam } from '@/app/lib/actions/visited-team';
-import { fetchCurrentUser, fetchTeamUsers, fetchTeams } from '@/app/lib/data';
+import { fetchCurrentUser, fetchTeams } from '@/app/lib/data';
 import { currentUser } from '@clerk/nextjs';
 import { notFound } from 'next/navigation';
 
