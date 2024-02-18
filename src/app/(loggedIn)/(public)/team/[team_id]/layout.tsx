@@ -1,7 +1,8 @@
 import NavBar from '@/app/components/team/nav-bar';
 import { addVisitedTeam } from '@/app/lib/actions/visited-team';
-import { fetchCurrentUser } from '@/app/lib/data';
+import { fetchCurrentUser, fetchTeamUsers, fetchTeams } from '@/app/lib/data';
 import { currentUser } from '@clerk/nextjs';
+import { notFound } from 'next/navigation';
 
 export default async function TeamLayout({
   children,
@@ -14,16 +15,26 @@ export default async function TeamLayout({
   if (!userFromClerk) {
     throw new Error('Failed to fetch current user');
   }
-
   const user = await fetchCurrentUser(userFromClerk.id);
-  addVisitedTeam(user.id, params.team_id);
+  const teams = await fetchTeams(user.id);
+  let status = false;
+  teams.forEach((team) => {
+    if (team.id === params.team_id) {
+      status = true;
+    }
+  });
 
-  return (
-    <div className='w-full h-full'>
-      <NavBar teamId={params.team_id}/>
-      <div className='relative top-12'>
-        {children}
+  if (status) {
+    return (
+      <div className='w-full h-full'>
+        <NavBar teamId={params.team_id}/>
+        <div className='relative top-12'>
+          {children}
+        </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    notFound();
+  }
+  
 }

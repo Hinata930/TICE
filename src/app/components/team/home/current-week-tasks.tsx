@@ -32,7 +32,6 @@ export default async function CurrentWeekTasks({ validWeeklyTasks, teamId }: pro
                     {task.task_title}
                   </Link>
                 </div> 
-
             </Fragment>
             ))
             }
