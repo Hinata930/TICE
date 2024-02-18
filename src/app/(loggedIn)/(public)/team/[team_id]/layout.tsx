@@ -25,6 +25,7 @@ export default async function TeamLayout({
   });
 
   if (status) {
+    addVisitedTeam(user.id, params.team_id);
     return (
       <div className='w-full h-full'>
         <NavBar teamId={params.team_id}/>
