@@ -23,21 +23,21 @@ export default async function RecentTeamList({ recentTeamIds }: props) {
                 <Fragment key={team.id}>
                   <Link
                     href={`/team/${team.id}`}
-                    className='h-64 w-48 border-2 border-[var(--color-light-gray)] rounded-md m-2 p-2 hover:translate-y-[-1px] hover:shadow'
+                    className='block h-64 w-48 border-2 border-[var(--color-light-gray)] rounded-md m-2 p-2 hover:translate-y-[-1px] hover:shadow'
                   >
                     <p className='text-base font-bold border-b border-[var(--color-light-gray)] p-1'>
                       {team.team_name}
                     </p>
-                    <div className='text-sm text-[var(--color-gray)] p-1'>
+                    <div className='recent-team-list-contents-height text-sm text-[var(--color-gray)] p-1'>
                       {/* 概要 */}
                       <p>概要</p>
-                      <p className='text-xs'>
+                      <p className='text-xs line-clamp-1'>
                         実装中 
                       </p>
-                      <div className='mt-2'>
-                        <p>
-                          今週が提出期限の課題
-                        </p>
+                      <p className='mt-2'>
+                        今週が提出期限の課題
+                      </p>
+                      <div className='recent-team-tasks-content-height overflow-y-auto'>
                         {tasksForCurrentWeek.map((task) => (
                           <Fragment key={task.id}>
                             <p className='text-xs'>
@@ -45,7 +45,7 @@ export default async function RecentTeamList({ recentTeamIds }: props) {
                             </p>
                           </Fragment>
                         ))
-                        }
+                        }                          
                       </div>
                     </div>
                   </Link>
