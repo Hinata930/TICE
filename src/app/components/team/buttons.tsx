@@ -39,3 +39,4 @@ export function DeleteTeamButton({ id }: { id: string }) {
   );
 }
 
+// チームから抜けるボタン（確認用のボタン。呼び出す用も必要）

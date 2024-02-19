@@ -33,7 +33,7 @@ export default async function Home({ teamId }: props) {
                 <h2 className='text-lg font-medium pb-1'>
                   今週の課題
                 </h2>
-                <div className='border border-[var(--color-light-gray)] rounded-md'>
+                <div className='max-h-60 border border-[var(--color-light-gray)] rounded-md overflow-y-auto'>
                   <CurrentWeekTasks validWeeklyTasks={validWeeklyTasks} teamId={teamId} />
                 </div>
               </div>
