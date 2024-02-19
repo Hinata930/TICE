@@ -16,7 +16,7 @@ export default async function TeamTaskList({ dailyTasks }: props) {
           if (team.team) {
             return (
               <Fragment key={team.team.id}>
-                <div className='flex flex-col overflow-y-auto'>
+                <div className='flex flex-col'>
                   <div className='flex flex-row mb-[2px]'>
                     <StopIcon className='flex items-center w-2 mr-[2px]' />
                     <Link href={`/team/${team.team.id}`}>
