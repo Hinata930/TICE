@@ -58,11 +58,11 @@
 }
 
 .recent-team-list-contents-height {
-  height: calc(100% - (24px + 8px + 1px) - (16px + 4px + 16px));
+  height: calc(100% - (24px + 8px + 1px));
 }
 
-.recent-team-tasks-content-height {
-  height: calc(100% - 8px - 20px - 16px - 8px)
+.recent-team-list-tasks-content-height {
+  height: calc(100% - 8px - 20px - 16px - 12px)
 }
 
 .team-task-title-width {

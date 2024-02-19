@@ -34,10 +34,10 @@ export default async function RecentTeamList({ recentTeamIds }: props) {
                       <p className='text-xs line-clamp-1'>
                         実装中 
                       </p>
-                      <p className='mt-2'>
+                      <p className='mt-2 mb-1'>
                         今週が提出期限の課題
                       </p>
-                      <div className='recent-team-tasks-content-height overflow-y-auto'>
+                      <div className='recent-team-list-tasks-content-height overflow-y-auto'>
                         {tasksForCurrentWeek.map((task) => (
                           <Fragment key={task.id}>
                             <p className='text-xs'>
