@@ -14,20 +14,30 @@ const prisma = new PrismaClient();
 // clerkの方のuserのidからデータベースのuserのデータを見つける
 export async function fetchCurrentUser(user_id: string) {
   noStore();
-  try {
-    // user_idはclerkのuserのid
-    const user = await prisma.user.findUnique({ 
-      where: {
-        user_id,
+  let retries = 0;
+  const maxRetries = 5;
+  // user作成後、少々のタイムラグが生じるため
+  while(true) {
+    try {
+      // user_idはclerkのuserのid
+      const user = await prisma.user.findUnique({ 
+        where: {
+          user_id,
+        }
+      });
+      if (user) {
+        return user;
       }
-    });
-    if (!user) {
+      // userが見つからない場合、一秒待って再試行
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      retries++;
+    } catch(error) {
+      console.error('Database Error:', error);
       throw new Error('Failed to fetch current user.');
     }
-    return user;
-  } catch(error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch current user.');
+    if (retries >= maxRetries) {
+      throw new Error('Failed to fetch current user after multiple retries.');
+    }
   }
 }
 
