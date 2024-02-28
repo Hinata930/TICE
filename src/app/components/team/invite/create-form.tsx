@@ -58,7 +58,6 @@ export default function CreateInvite({ teamId }: Props) {
                 type='text' 
                 id='username' 
                 placeholder='ユーザー名'
-                autoComplete='off'
                 className='block w-full rounded-md border border-gray-200 p-2 text-sm outline-2 placeholder:text-gray-500'
                 aria-describedby='username-error'
                 {...register('username', { 
@@ -78,11 +77,11 @@ export default function CreateInvite({ teamId }: Props) {
         <div className='mt-6 flex justify-end gap-4'>
           <Link
             href={`/team/${teamId}/member`}
-            className='flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200'
+            className='flex items-center h-10 rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200'
           >
             キャンセル
           </Link>
-          <button type='submit' className='flex h-10 items-center rounded-lg bg-[var(--color-seccondary)] px-4 text-sm font-medium text-[var(--color-seccondary-contrast)] transition-colors hover:bg-blue-400'>
+          <button type='submit' className='flex items-center h-10 rounded-lg bg-[var(--color-seccondary)] px-4 text-sm font-medium text-[var(--color-seccondary-contrast)] transition-colors hover:bg-blue-400'>
             招待を作成
           </button>
         </div>

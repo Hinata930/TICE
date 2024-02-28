@@ -1,8 +1,10 @@
+import { LeaveTeamButton } from '@/app/components/team/buttons';
 import NavBar from '@/app/components/team/nav-bar';
 import { addVisitedTeam } from '@/app/lib/actions/visited-team';
 import { fetchCurrentUser, fetchTeams } from '@/app/lib/data';
 import { currentUser } from '@clerk/nextjs';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
 export default async function TeamLayout({
   children,
@@ -28,7 +30,9 @@ export default async function TeamLayout({
     addVisitedTeam(user.id, params.team_id);
     return (
       <div className='w-full h-full'>
-        <NavBar teamId={params.team_id}/>
+        <Suspense fallback={<></>}>
+          <NavBar teamId={params.team_id} userId={user.id}/>
+        </Suspense>
         <div className='relative top-12'>
           {children}
         </div>

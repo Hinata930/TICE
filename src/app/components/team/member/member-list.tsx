@@ -2,6 +2,7 @@ import { fetchUserArrayByTeamId } from '@/app/lib/data';
 import { Fragment } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { UserPlusIcon } from '@heroicons/react/24/outline';
 
 
 interface props {
@@ -22,7 +23,8 @@ export default async function MemberList({ teamId }: props) {
               href={`/team/${teamId}/invite`}
               className='flex flex-grow-0 items-end'
             >
-              メンバーを追加
+              <span className='sr-only'>メンバーを追加</span>
+              <UserPlusIcon className='w-6 h-6 text-[var(--color-seccondary)]' />
             </Link>
           </div>
           

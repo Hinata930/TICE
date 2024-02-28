@@ -41,22 +41,62 @@ export async function AddTeamMember(
       },
     });
   } catch(error) {
+    console.error('Database Error:', error);
     return {
-      message: 'Database Error: Failed to add new team member.',
+      message: 'Failed to add new team member.',
     }
   }
 }
 
 
-//teamからmemberを削除
-export async function RemoveTeamMember( id: string ) {
+// teamからmemberを削除
+export async function RemoveTeamMember( 
+  userId: string,
+  teamId: string,
+) {
   try {
-    await prisma.userTeam.delete({
-      where: { id },
+    const teamMember = await prisma.userTeam.findFirst({
+      where: {
+        AND: {
+          user_id: userId,
+          team_id: teamId,
+        }
+      }
     });
+    if (!teamMember) {
+      return { message: 'Failed to remove team member.' }
+    }
+
+    await prisma.userTeam.delete({
+      where: {
+        id: teamMember.id,
+      }
+    });
+
+    const memberRole = await prisma.userRole.findMany({
+      where: {
+        AND: {
+          user_id: userId,
+          team_id: teamId,
+        }
+      }
+    });
+    if (!memberRole) {
+      return { message: 'Failed to remove team member.' }
+    }
+
+    await memberRole.map(async (role) => {
+      await prisma.userRole.delete({
+        where: {
+          id: role.id,
+        }
+      });
+    })
+
   } catch(error) {
+    console.error('Database Error:', error);
     return { 
-      message: 'Database Error: Failed to remove team member.',
+      message: 'Failed to remove team member.',
     }
   }
 }
