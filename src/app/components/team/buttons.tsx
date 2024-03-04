@@ -46,7 +46,13 @@ export function DeleteTeamButton({ id }: { id: string }) {
 }
 
 // チームから抜けるボタン（確認用のボタン。呼び出す用も必要）
-export function LeaveTeamButton({ userId, teamId }: { userId: string, teamId: string }) {
+export function LeaveTeamButton({ 
+  userId, 
+  teamId 
+}: { 
+  userId: string, 
+  teamId: string 
+}) {
   const router = useRouter();
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -107,7 +113,7 @@ export function LeaveTeamButton({ userId, teamId }: { userId: string, teamId: st
             </button>
             <button 
               onClick={removeTeamMemberWithIds}
-              className='flex items-center h-10 rounded-lg bg-[var(--color-seccondary)] px-4 text-sm font-medium text-[var(--color-seccondary-contrast)] transition-colors hover:bg-blue-400'
+              className='flex items-center h-10 rounded-lg bg-[var(--color-attention)] px-4 text-sm font-medium text-[var(--color-attention-contrast)] transition-colors hover:bg-rose-300'
             >
               抜ける
             </button>
