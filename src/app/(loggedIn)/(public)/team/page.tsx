@@ -18,6 +18,9 @@ export default async function Page() {
     <>
         <div className='px-2 w-full'>
           <div className='flex px-2 w-full mt-4 pb-1 mb-4 border-b border-[var(--color-light-gray)]'>
+            <h2 className='flex justify-start h-10 items-center text-lg font-semibold text-[var(--color-black)]'>
+              チーム一覧
+            </h2>
             <div className='flex-grow'></div>
             <Link 
               href='/team/create' 
