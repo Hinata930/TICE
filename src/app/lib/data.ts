@@ -1,6 +1,6 @@
 'use server'
 
-import { PrismaClient, Task, Team } from '@prisma/client';
+import { PrismaClient,  Task, Team } from '@prisma/client';
 import { unstable_noStore as noStore } from 'next/cache'; 
 import { addDays, startOfWeek, endOfWeek, format } from 'date-fns';
 import { WeeklyTask, WeeklyTaskByTeam } from './difinitions';
@@ -133,9 +133,30 @@ export async function fetchFilteredTasks(
   query: string,
   currentPage: number,
   teamId: string,
+  sortType: string
 ) {
   noStore();
   const offset = (currentPage - 1) * tasksItemsPerPage;
+
+  type SortOrder = 'asc' | 'desc';
+  let orderBy: { [key: string]: SortOrder };
+  switch (sortType) {
+    case 'dueDateAsc':
+      orderBy = { due_date: 'asc' };
+      break;
+    case 'dueDateDesc':
+      orderBy = { due_date: 'desc' };
+      break;
+    case 'createdAtAsc':
+      orderBy = { created_at: 'asc' };
+      break;
+    case 'createdAtDesc':
+      orderBy = { created_at: 'desc' };
+      break;
+    default:
+      orderBy = { created_at: 'desc' };
+      break;
+  }
 
   try {
     if (query) {
@@ -158,9 +179,7 @@ export async function fetchFilteredTasks(
             },
           ],
         },
-        orderBy: {
-          created_at: 'desc',
-        },
+        orderBy: [orderBy], // 配列で渡す
         take: tasksItemsPerPage,
         skip: offset,
       });
@@ -173,20 +192,17 @@ export async function fetchFilteredTasks(
         where: {
           team_id: teamId,
         },
-        orderBy: {
-          created_at: 'desc',
-        },
+        orderBy: [orderBy], // 配列で渡す
         take: tasksItemsPerPage,
         skip: offset,
       });
       return tasks;
     }
-  } catch(error) {
+  } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch filtered tasks.');
   }
 }
-
 
 
 // queryが入ってるデータの数でページ数を算出(上のfetchFilteredTasksがsearchに使う関数)
