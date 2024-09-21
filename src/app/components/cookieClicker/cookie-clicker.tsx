@@ -136,7 +136,7 @@ export default function CookieClicker(cookie: Cookie) {
                 onClick={() => upgradeEmployee(index)}
                 className='ml-4 px-4 py-2 bg-blue-500 hover:bg-blue-400 active:bg-blue-300 text-white rounded-lg shadow-md'
               >
-                Upgrade (Cost: {getUpgradeCost(level, index).toString()})
+                Upgrade +{(index + 1) * (level + 1)} (Cost: {getUpgradeCost(level, index).toString()})
               </button>
             </div>
           ))}
