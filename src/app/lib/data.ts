@@ -5,6 +5,7 @@ import { unstable_noStore as noStore } from 'next/cache';
 import { addDays, startOfWeek, endOfWeek, format } from 'date-fns';
 import { WeeklyTask, WeeklyTaskByTeam } from './difinitions';
 import { fetchCurrentDate } from './utils';
+import { CreateCookieClicker } from './actions/cookie-clicker-actions';
 
 const prisma = new PrismaClient();
 
@@ -734,6 +735,37 @@ export async function fetchTeamInviteArrayByUserId(userId: string) {
     return teamInvites;
   } catch(error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch team invite.')
+    throw new Error('Failed to fetch team invite.');
+  }
+}
+
+
+
+// userのクッキークリッカーのセーブデータを取得
+export async function fetchCookieClickerByUserId(userId: string) {
+  try {
+    const cookieClicker = await prisma.cookieClicker.findUnique({
+      where: {
+        user_id: userId,
+      },
+    });
+
+    if (cookieClicker) {
+      return cookieClicker;
+    } else {
+      console.log("hello world!");
+      await CreateCookieClicker(userId);
+
+      const newCookieClicker = await prisma.cookieClicker.findUnique({
+        where: {
+          user_id: userId,
+        },
+      });
+
+      return newCookieClicker;
+    }
+  } catch(error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to create cookie clicker.');
   }
 }

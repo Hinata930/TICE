@@ -128,6 +128,7 @@ model User {
   team_invites  TeamInvites[]
   visited_team  VisitedTeam[]
   team_activity TeamActivity[]
+  cookie_clicker CookieClicker[]
 
   @@map("users")
 }
@@ -229,4 +230,24 @@ model TeamActivity {
   team_activity_type TeamActivityType? @relation(fields: [activity_type], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("team_activity")
+}
+
+// クッキーの数と従業員のレベルを保存するためのモデル
+
+model CookieClicker {
+  id                 String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt          DateTime          @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
+  updatedAt          DateTime          @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
+  user_id            String            @unique @db.Uuid
+  cookie_count       BigInt            @default(0) // クッキーの数を保存するフィールド
+
+  employee_level_1   Int               @default(0) // 従業員1のレベル
+  employee_level_2   Int               @default(0) // 従業員2のレベル
+  employee_level_3   Int               @default(0) // 従業員3のレベル
+  employee_level_4   Int               @default(0) // 従業員4のレベル
+  employee_level_5   Int               @default(0) // 従業員5のレベル
+  employee_level_6   Int               @default(0) // 従業員6のレベル
+
+  user               User?             @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  @@map("cookie_clicker")
 }

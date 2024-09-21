@@ -34,6 +34,8 @@ export const TeamActivityTypeScalarFieldEnumSchema = z.enum(['id','createdAt','u
 
 export const TeamActivityScalarFieldEnumSchema = z.enum(['id','createdAt','updatedAt','user_id','team_id','activity_type']);
 
+export const CookieClickerScalarFieldEnumSchema = z.enum(['id','createdAt','updatedAt','user_id','cookie_count','employee_level_1','employee_level_2','employee_level_3','employee_level_4','employee_level_5','employee_level_6']);
+
 export const SortOrderSchema = z.enum(['asc','desc']);
 
 export const QueryModeSchema = z.enum(['default','insensitive']);
@@ -209,6 +211,26 @@ export const TeamActivitySchema = z.object({
 export type TeamActivity = z.infer<typeof TeamActivitySchema>
 
 /////////////////////////////////////////
+// COOKIE CLICKER SCHEMA
+/////////////////////////////////////////
+
+export const CookieClickerSchema = z.object({
+  id: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  user_id: z.string(),
+  cookie_count: z.bigint(),
+  employee_level_1: z.number().int(),
+  employee_level_2: z.number().int(),
+  employee_level_3: z.number().int(),
+  employee_level_4: z.number().int(),
+  employee_level_5: z.number().int(),
+  employee_level_6: z.number().int(),
+})
+
+export type CookieClicker = z.infer<typeof CookieClickerSchema>
+
+/////////////////////////////////////////
 // SELECT & INCLUDE
 /////////////////////////////////////////
 
@@ -369,6 +391,7 @@ export const UserIncludeSchema: z.ZodType<Prisma.UserInclude> = z.object({
   team_invites: z.union([z.boolean(),z.lazy(() => TeamInvitesFindManyArgsSchema)]).optional(),
   visited_team: z.union([z.boolean(),z.lazy(() => VisitedTeamFindManyArgsSchema)]).optional(),
   team_activity: z.union([z.boolean(),z.lazy(() => TeamActivityFindManyArgsSchema)]).optional(),
+  cookie_clicker: z.union([z.boolean(),z.lazy(() => CookieClickerFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => UserCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -389,6 +412,7 @@ export const UserCountOutputTypeSelectSchema: z.ZodType<Prisma.UserCountOutputTy
   team_invites: z.boolean().optional(),
   visited_team: z.boolean().optional(),
   team_activity: z.boolean().optional(),
+  cookie_clicker: z.boolean().optional(),
 }).strict();
 
 export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z.object({
@@ -408,6 +432,7 @@ export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z.object({
   team_invites: z.union([z.boolean(),z.lazy(() => TeamInvitesFindManyArgsSchema)]).optional(),
   visited_team: z.union([z.boolean(),z.lazy(() => VisitedTeamFindManyArgsSchema)]).optional(),
   team_activity: z.union([z.boolean(),z.lazy(() => TeamActivityFindManyArgsSchema)]).optional(),
+  cookie_clicker: z.union([z.boolean(),z.lazy(() => CookieClickerFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => UserCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -566,6 +591,33 @@ export const TeamActivitySelectSchema: z.ZodType<Prisma.TeamActivitySelect> = z.
   user: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
   team: z.union([z.boolean(),z.lazy(() => TeamArgsSchema)]).optional(),
   team_activity_type: z.union([z.boolean(),z.lazy(() => TeamActivityTypeArgsSchema)]).optional(),
+}).strict()
+
+// COOKIE CLICKER
+//------------------------------------------------------
+
+export const CookieClickerIncludeSchema: z.ZodType<Prisma.CookieClickerInclude> = z.object({
+  user: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
+}).strict()
+
+export const CookieClickerArgsSchema: z.ZodType<Prisma.CookieClickerDefaultArgs> = z.object({
+  select: z.lazy(() => CookieClickerSelectSchema).optional(),
+  include: z.lazy(() => CookieClickerIncludeSchema).optional(),
+}).strict();
+
+export const CookieClickerSelectSchema: z.ZodType<Prisma.CookieClickerSelect> = z.object({
+  id: z.boolean().optional(),
+  createdAt: z.boolean().optional(),
+  updatedAt: z.boolean().optional(),
+  user_id: z.boolean().optional(),
+  cookie_count: z.boolean().optional(),
+  employee_level_1: z.boolean().optional(),
+  employee_level_2: z.boolean().optional(),
+  employee_level_3: z.boolean().optional(),
+  employee_level_4: z.boolean().optional(),
+  employee_level_5: z.boolean().optional(),
+  employee_level_6: z.boolean().optional(),
+  user: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
 }).strict()
 
 
@@ -906,7 +958,8 @@ export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z.object({
   teams: z.lazy(() => TeamListRelationFilterSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesListRelationFilterSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamListRelationFilterSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityListRelationFilterSchema).optional()
+  team_activity: z.lazy(() => TeamActivityListRelationFilterSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerListRelationFilterSchema).optional()
 }).strict();
 
 export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWithRelationInput> = z.object({
@@ -925,7 +978,8 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
   teams: z.lazy(() => TeamOrderByRelationAggregateInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesOrderByRelationAggregateInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamOrderByRelationAggregateInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityOrderByRelationAggregateInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityOrderByRelationAggregateInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerOrderByRelationAggregateInputSchema).optional()
 }).strict();
 
 export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> = z.union([
@@ -975,7 +1029,8 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
   teams: z.lazy(() => TeamListRelationFilterSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesListRelationFilterSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamListRelationFilterSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityListRelationFilterSchema).optional()
+  team_activity: z.lazy(() => TeamActivityListRelationFilterSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerListRelationFilterSchema).optional()
 }).strict());
 
 export const UserOrderByWithAggregationInputSchema: z.ZodType<Prisma.UserOrderByWithAggregationInput> = z.object({
@@ -1447,6 +1502,105 @@ export const TeamActivityScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.
   activity_type: z.union([ z.lazy(() => UuidNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
 }).strict();
 
+export const CookieClickerWhereInputSchema: z.ZodType<Prisma.CookieClickerWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => CookieClickerWhereInputSchema),z.lazy(() => CookieClickerWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => CookieClickerWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => CookieClickerWhereInputSchema),z.lazy(() => CookieClickerWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  user_id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  cookie_count: z.union([ z.lazy(() => BigIntFilterSchema),z.bigint() ]).optional(),
+  employee_level_1: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  employee_level_2: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  employee_level_3: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  employee_level_4: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  employee_level_5: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  employee_level_6: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  user: z.union([ z.lazy(() => UserNullableRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const CookieClickerOrderByWithRelationInputSchema: z.ZodType<Prisma.CookieClickerOrderByWithRelationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  user_id: z.lazy(() => SortOrderSchema).optional(),
+  cookie_count: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_1: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_2: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_3: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_4: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_5: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_6: z.lazy(() => SortOrderSchema).optional(),
+  user: z.lazy(() => UserOrderByWithRelationInputSchema).optional()
+}).strict();
+
+export const CookieClickerWhereUniqueInputSchema: z.ZodType<Prisma.CookieClickerWhereUniqueInput> = z.union([
+  z.object({
+    id: z.string(),
+    user_id: z.string()
+  }),
+  z.object({
+    id: z.string(),
+  }),
+  z.object({
+    user_id: z.string(),
+  }),
+])
+.and(z.object({
+  id: z.string().optional(),
+  user_id: z.string().optional(),
+  AND: z.union([ z.lazy(() => CookieClickerWhereInputSchema),z.lazy(() => CookieClickerWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => CookieClickerWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => CookieClickerWhereInputSchema),z.lazy(() => CookieClickerWhereInputSchema).array() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  cookie_count: z.union([ z.lazy(() => BigIntFilterSchema),z.bigint() ]).optional(),
+  employee_level_1: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  employee_level_2: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  employee_level_3: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  employee_level_4: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  employee_level_5: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  employee_level_6: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  user: z.union([ z.lazy(() => UserNullableRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
+}).strict());
+
+export const CookieClickerOrderByWithAggregationInputSchema: z.ZodType<Prisma.CookieClickerOrderByWithAggregationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  user_id: z.lazy(() => SortOrderSchema).optional(),
+  cookie_count: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_1: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_2: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_3: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_4: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_5: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_6: z.lazy(() => SortOrderSchema).optional(),
+  _count: z.lazy(() => CookieClickerCountOrderByAggregateInputSchema).optional(),
+  _avg: z.lazy(() => CookieClickerAvgOrderByAggregateInputSchema).optional(),
+  _max: z.lazy(() => CookieClickerMaxOrderByAggregateInputSchema).optional(),
+  _min: z.lazy(() => CookieClickerMinOrderByAggregateInputSchema).optional(),
+  _sum: z.lazy(() => CookieClickerSumOrderByAggregateInputSchema).optional()
+}).strict();
+
+export const CookieClickerScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.CookieClickerScalarWhereWithAggregatesInput> = z.object({
+  AND: z.union([ z.lazy(() => CookieClickerScalarWhereWithAggregatesInputSchema),z.lazy(() => CookieClickerScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  OR: z.lazy(() => CookieClickerScalarWhereWithAggregatesInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => CookieClickerScalarWhereWithAggregatesInputSchema),z.lazy(() => CookieClickerScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidWithAggregatesFilterSchema),z.string() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
+  user_id: z.union([ z.lazy(() => UuidWithAggregatesFilterSchema),z.string() ]).optional(),
+  cookie_count: z.union([ z.lazy(() => BigIntWithAggregatesFilterSchema),z.bigint() ]).optional(),
+  employee_level_1: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  employee_level_2: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  employee_level_3: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  employee_level_4: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  employee_level_5: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  employee_level_6: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+}).strict();
+
 export const RoleCreateInputSchema: z.ZodType<Prisma.RoleCreateInput> = z.object({
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
@@ -1757,7 +1911,8 @@ export const UserCreateInputSchema: z.ZodType<Prisma.UserCreateInput> = z.object
   teams: z.lazy(() => TeamCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreateInput> = z.object({
@@ -1776,7 +1931,8 @@ export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreat
   teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z.object({
@@ -1795,7 +1951,8 @@ export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z.object
   teams: z.lazy(() => TeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdateInput> = z.object({
@@ -1814,7 +1971,8 @@ export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdat
   teams: z.lazy(() => TeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserCreateManyInputSchema: z.ZodType<Prisma.UserCreateManyInput> = z.object({
@@ -2200,6 +2358,103 @@ export const TeamActivityUncheckedUpdateManyInputSchema: z.ZodType<Prisma.TeamAc
   activity_type: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
+export const CookieClickerCreateInputSchema: z.ZodType<Prisma.CookieClickerCreateInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  cookie_count: z.bigint().optional(),
+  employee_level_1: z.number().int().optional(),
+  employee_level_2: z.number().int().optional(),
+  employee_level_3: z.number().int().optional(),
+  employee_level_4: z.number().int().optional(),
+  employee_level_5: z.number().int().optional(),
+  employee_level_6: z.number().int().optional(),
+  user: z.lazy(() => UserCreateNestedOneWithoutCookie_clickerInputSchema).optional()
+}).strict();
+
+export const CookieClickerUncheckedCreateInputSchema: z.ZodType<Prisma.CookieClickerUncheckedCreateInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  user_id: z.string(),
+  cookie_count: z.bigint().optional(),
+  employee_level_1: z.number().int().optional(),
+  employee_level_2: z.number().int().optional(),
+  employee_level_3: z.number().int().optional(),
+  employee_level_4: z.number().int().optional(),
+  employee_level_5: z.number().int().optional(),
+  employee_level_6: z.number().int().optional()
+}).strict();
+
+export const CookieClickerUpdateInputSchema: z.ZodType<Prisma.CookieClickerUpdateInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  cookie_count: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_1: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_2: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_3: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_4: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_5: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_6: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  user: z.lazy(() => UserUpdateOneWithoutCookie_clickerNestedInputSchema).optional()
+}).strict();
+
+export const CookieClickerUncheckedUpdateInputSchema: z.ZodType<Prisma.CookieClickerUncheckedUpdateInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  user_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  cookie_count: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_1: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_2: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_3: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_4: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_5: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_6: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const CookieClickerCreateManyInputSchema: z.ZodType<Prisma.CookieClickerCreateManyInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  user_id: z.string(),
+  cookie_count: z.bigint().optional(),
+  employee_level_1: z.number().int().optional(),
+  employee_level_2: z.number().int().optional(),
+  employee_level_3: z.number().int().optional(),
+  employee_level_4: z.number().int().optional(),
+  employee_level_5: z.number().int().optional(),
+  employee_level_6: z.number().int().optional()
+}).strict();
+
+export const CookieClickerUpdateManyMutationInputSchema: z.ZodType<Prisma.CookieClickerUpdateManyMutationInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  cookie_count: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_1: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_2: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_3: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_4: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_5: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_6: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const CookieClickerUncheckedUpdateManyInputSchema: z.ZodType<Prisma.CookieClickerUncheckedUpdateManyInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  user_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  cookie_count: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_1: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_2: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_3: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_4: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_5: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_6: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
 export const UuidFilterSchema: z.ZodType<Prisma.UuidFilter> = z.object({
   equals: z.string().optional(),
   in: z.string().array().optional(),
@@ -2564,7 +2819,17 @@ export const TeamListRelationFilterSchema: z.ZodType<Prisma.TeamListRelationFilt
   none: z.lazy(() => TeamWhereInputSchema).optional()
 }).strict();
 
+export const CookieClickerListRelationFilterSchema: z.ZodType<Prisma.CookieClickerListRelationFilter> = z.object({
+  every: z.lazy(() => CookieClickerWhereInputSchema).optional(),
+  some: z.lazy(() => CookieClickerWhereInputSchema).optional(),
+  none: z.lazy(() => CookieClickerWhereInputSchema).optional()
+}).strict();
+
 export const TeamOrderByRelationAggregateInputSchema: z.ZodType<Prisma.TeamOrderByRelationAggregateInput> = z.object({
+  _count: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const CookieClickerOrderByRelationAggregateInputSchema: z.ZodType<Prisma.CookieClickerOrderByRelationAggregateInput> = z.object({
   _count: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
@@ -2785,6 +3050,122 @@ export const TeamActivityMinOrderByAggregateInputSchema: z.ZodType<Prisma.TeamAc
   user_id: z.lazy(() => SortOrderSchema).optional(),
   team_id: z.lazy(() => SortOrderSchema).optional(),
   activity_type: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const BigIntFilterSchema: z.ZodType<Prisma.BigIntFilter> = z.object({
+  equals: z.bigint().optional(),
+  in: z.bigint().array().optional(),
+  notIn: z.bigint().array().optional(),
+  lt: z.bigint().optional(),
+  lte: z.bigint().optional(),
+  gt: z.bigint().optional(),
+  gte: z.bigint().optional(),
+  not: z.union([ z.bigint(),z.lazy(() => NestedBigIntFilterSchema) ]).optional(),
+}).strict();
+
+export const IntFilterSchema: z.ZodType<Prisma.IntFilter> = z.object({
+  equals: z.number().optional(),
+  in: z.number().array().optional(),
+  notIn: z.number().array().optional(),
+  lt: z.number().optional(),
+  lte: z.number().optional(),
+  gt: z.number().optional(),
+  gte: z.number().optional(),
+  not: z.union([ z.number(),z.lazy(() => NestedIntFilterSchema) ]).optional(),
+}).strict();
+
+export const CookieClickerCountOrderByAggregateInputSchema: z.ZodType<Prisma.CookieClickerCountOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  user_id: z.lazy(() => SortOrderSchema).optional(),
+  cookie_count: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_1: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_2: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_3: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_4: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_5: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_6: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const CookieClickerAvgOrderByAggregateInputSchema: z.ZodType<Prisma.CookieClickerAvgOrderByAggregateInput> = z.object({
+  cookie_count: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_1: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_2: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_3: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_4: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_5: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_6: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const CookieClickerMaxOrderByAggregateInputSchema: z.ZodType<Prisma.CookieClickerMaxOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  user_id: z.lazy(() => SortOrderSchema).optional(),
+  cookie_count: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_1: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_2: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_3: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_4: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_5: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_6: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const CookieClickerMinOrderByAggregateInputSchema: z.ZodType<Prisma.CookieClickerMinOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  user_id: z.lazy(() => SortOrderSchema).optional(),
+  cookie_count: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_1: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_2: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_3: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_4: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_5: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_6: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const CookieClickerSumOrderByAggregateInputSchema: z.ZodType<Prisma.CookieClickerSumOrderByAggregateInput> = z.object({
+  cookie_count: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_1: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_2: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_3: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_4: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_5: z.lazy(() => SortOrderSchema).optional(),
+  employee_level_6: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const BigIntWithAggregatesFilterSchema: z.ZodType<Prisma.BigIntWithAggregatesFilter> = z.object({
+  equals: z.bigint().optional(),
+  in: z.bigint().array().optional(),
+  notIn: z.bigint().array().optional(),
+  lt: z.bigint().optional(),
+  lte: z.bigint().optional(),
+  gt: z.bigint().optional(),
+  gte: z.bigint().optional(),
+  not: z.union([ z.bigint(),z.lazy(() => NestedBigIntWithAggregatesFilterSchema) ]).optional(),
+  _count: z.lazy(() => NestedIntFilterSchema).optional(),
+  _avg: z.lazy(() => NestedFloatFilterSchema).optional(),
+  _sum: z.lazy(() => NestedBigIntFilterSchema).optional(),
+  _min: z.lazy(() => NestedBigIntFilterSchema).optional(),
+  _max: z.lazy(() => NestedBigIntFilterSchema).optional()
+}).strict();
+
+export const IntWithAggregatesFilterSchema: z.ZodType<Prisma.IntWithAggregatesFilter> = z.object({
+  equals: z.number().optional(),
+  in: z.number().array().optional(),
+  notIn: z.number().array().optional(),
+  lt: z.number().optional(),
+  lte: z.number().optional(),
+  gt: z.number().optional(),
+  gte: z.number().optional(),
+  not: z.union([ z.number(),z.lazy(() => NestedIntWithAggregatesFilterSchema) ]).optional(),
+  _count: z.lazy(() => NestedIntFilterSchema).optional(),
+  _avg: z.lazy(() => NestedFloatFilterSchema).optional(),
+  _sum: z.lazy(() => NestedIntFilterSchema).optional(),
+  _min: z.lazy(() => NestedIntFilterSchema).optional(),
+  _max: z.lazy(() => NestedIntFilterSchema).optional()
 }).strict();
 
 export const TeamCreateNestedOneWithoutRolesInputSchema: z.ZodType<Prisma.TeamCreateNestedOneWithoutRolesInput> = z.object({
@@ -3448,6 +3829,13 @@ export const TeamActivityCreateNestedManyWithoutUserInputSchema: z.ZodType<Prism
   connect: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
+export const CookieClickerCreateNestedManyWithoutUserInputSchema: z.ZodType<Prisma.CookieClickerCreateNestedManyWithoutUserInput> = z.object({
+  create: z.union([ z.lazy(() => CookieClickerCreateWithoutUserInputSchema),z.lazy(() => CookieClickerCreateWithoutUserInputSchema).array(),z.lazy(() => CookieClickerUncheckedCreateWithoutUserInputSchema),z.lazy(() => CookieClickerUncheckedCreateWithoutUserInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => CookieClickerCreateOrConnectWithoutUserInputSchema),z.lazy(() => CookieClickerCreateOrConnectWithoutUserInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => CookieClickerCreateManyUserInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => CookieClickerWhereUniqueInputSchema),z.lazy(() => CookieClickerWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
 export const TaskUncheckedCreateNestedManyWithoutUsersInputSchema: z.ZodType<Prisma.TaskUncheckedCreateNestedManyWithoutUsersInput> = z.object({
   create: z.union([ z.lazy(() => TaskCreateWithoutUsersInputSchema),z.lazy(() => TaskCreateWithoutUsersInputSchema).array(),z.lazy(() => TaskUncheckedCreateWithoutUsersInputSchema),z.lazy(() => TaskUncheckedCreateWithoutUsersInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TaskCreateOrConnectWithoutUsersInputSchema),z.lazy(() => TaskCreateOrConnectWithoutUsersInputSchema).array() ]).optional(),
@@ -3495,6 +3883,13 @@ export const TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema: z.ZodT
   connectOrCreate: z.union([ z.lazy(() => TeamActivityCreateOrConnectWithoutUserInputSchema),z.lazy(() => TeamActivityCreateOrConnectWithoutUserInputSchema).array() ]).optional(),
   createMany: z.lazy(() => TeamActivityCreateManyUserInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => TeamActivityWhereUniqueInputSchema),z.lazy(() => TeamActivityWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema: z.ZodType<Prisma.CookieClickerUncheckedCreateNestedManyWithoutUserInput> = z.object({
+  create: z.union([ z.lazy(() => CookieClickerCreateWithoutUserInputSchema),z.lazy(() => CookieClickerCreateWithoutUserInputSchema).array(),z.lazy(() => CookieClickerUncheckedCreateWithoutUserInputSchema),z.lazy(() => CookieClickerUncheckedCreateWithoutUserInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => CookieClickerCreateOrConnectWithoutUserInputSchema),z.lazy(() => CookieClickerCreateOrConnectWithoutUserInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => CookieClickerCreateManyUserInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => CookieClickerWhereUniqueInputSchema),z.lazy(() => CookieClickerWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
 export const TaskUpdateManyWithoutUsersNestedInputSchema: z.ZodType<Prisma.TaskUpdateManyWithoutUsersNestedInput> = z.object({
@@ -3595,6 +3990,20 @@ export const TeamActivityUpdateManyWithoutUserNestedInputSchema: z.ZodType<Prism
   deleteMany: z.union([ z.lazy(() => TeamActivityScalarWhereInputSchema),z.lazy(() => TeamActivityScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
+export const CookieClickerUpdateManyWithoutUserNestedInputSchema: z.ZodType<Prisma.CookieClickerUpdateManyWithoutUserNestedInput> = z.object({
+  create: z.union([ z.lazy(() => CookieClickerCreateWithoutUserInputSchema),z.lazy(() => CookieClickerCreateWithoutUserInputSchema).array(),z.lazy(() => CookieClickerUncheckedCreateWithoutUserInputSchema),z.lazy(() => CookieClickerUncheckedCreateWithoutUserInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => CookieClickerCreateOrConnectWithoutUserInputSchema),z.lazy(() => CookieClickerCreateOrConnectWithoutUserInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => CookieClickerUpsertWithWhereUniqueWithoutUserInputSchema),z.lazy(() => CookieClickerUpsertWithWhereUniqueWithoutUserInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => CookieClickerCreateManyUserInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => CookieClickerWhereUniqueInputSchema),z.lazy(() => CookieClickerWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => CookieClickerWhereUniqueInputSchema),z.lazy(() => CookieClickerWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => CookieClickerWhereUniqueInputSchema),z.lazy(() => CookieClickerWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => CookieClickerWhereUniqueInputSchema),z.lazy(() => CookieClickerWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => CookieClickerUpdateWithWhereUniqueWithoutUserInputSchema),z.lazy(() => CookieClickerUpdateWithWhereUniqueWithoutUserInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => CookieClickerUpdateManyWithWhereWithoutUserInputSchema),z.lazy(() => CookieClickerUpdateManyWithWhereWithoutUserInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => CookieClickerScalarWhereInputSchema),z.lazy(() => CookieClickerScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
 export const TaskUncheckedUpdateManyWithoutUsersNestedInputSchema: z.ZodType<Prisma.TaskUncheckedUpdateManyWithoutUsersNestedInput> = z.object({
   create: z.union([ z.lazy(() => TaskCreateWithoutUsersInputSchema),z.lazy(() => TaskCreateWithoutUsersInputSchema).array(),z.lazy(() => TaskUncheckedCreateWithoutUsersInputSchema),z.lazy(() => TaskUncheckedCreateWithoutUsersInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TaskCreateOrConnectWithoutUsersInputSchema),z.lazy(() => TaskCreateOrConnectWithoutUsersInputSchema).array() ]).optional(),
@@ -3691,6 +4100,20 @@ export const TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema: z.ZodT
   update: z.union([ z.lazy(() => TeamActivityUpdateWithWhereUniqueWithoutUserInputSchema),z.lazy(() => TeamActivityUpdateWithWhereUniqueWithoutUserInputSchema).array() ]).optional(),
   updateMany: z.union([ z.lazy(() => TeamActivityUpdateManyWithWhereWithoutUserInputSchema),z.lazy(() => TeamActivityUpdateManyWithWhereWithoutUserInputSchema).array() ]).optional(),
   deleteMany: z.union([ z.lazy(() => TeamActivityScalarWhereInputSchema),z.lazy(() => TeamActivityScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema: z.ZodType<Prisma.CookieClickerUncheckedUpdateManyWithoutUserNestedInput> = z.object({
+  create: z.union([ z.lazy(() => CookieClickerCreateWithoutUserInputSchema),z.lazy(() => CookieClickerCreateWithoutUserInputSchema).array(),z.lazy(() => CookieClickerUncheckedCreateWithoutUserInputSchema),z.lazy(() => CookieClickerUncheckedCreateWithoutUserInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => CookieClickerCreateOrConnectWithoutUserInputSchema),z.lazy(() => CookieClickerCreateOrConnectWithoutUserInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => CookieClickerUpsertWithWhereUniqueWithoutUserInputSchema),z.lazy(() => CookieClickerUpsertWithWhereUniqueWithoutUserInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => CookieClickerCreateManyUserInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => CookieClickerWhereUniqueInputSchema),z.lazy(() => CookieClickerWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => CookieClickerWhereUniqueInputSchema),z.lazy(() => CookieClickerWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => CookieClickerWhereUniqueInputSchema),z.lazy(() => CookieClickerWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => CookieClickerWhereUniqueInputSchema),z.lazy(() => CookieClickerWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => CookieClickerUpdateWithWhereUniqueWithoutUserInputSchema),z.lazy(() => CookieClickerUpdateWithWhereUniqueWithoutUserInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => CookieClickerUpdateManyWithWhereWithoutUserInputSchema),z.lazy(() => CookieClickerUpdateManyWithWhereWithoutUserInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => CookieClickerScalarWhereInputSchema),z.lazy(() => CookieClickerScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
 export const RoleCreateNestedOneWithoutUser_roleInputSchema: z.ZodType<Prisma.RoleCreateNestedOneWithoutUser_roleInput> = z.object({
@@ -3959,6 +4382,38 @@ export const TeamActivityTypeUpdateOneWithoutTeam_activityNestedInputSchema: z.Z
   update: z.union([ z.lazy(() => TeamActivityTypeUpdateToOneWithWhereWithoutTeam_activityInputSchema),z.lazy(() => TeamActivityTypeUpdateWithoutTeam_activityInputSchema),z.lazy(() => TeamActivityTypeUncheckedUpdateWithoutTeam_activityInputSchema) ]).optional(),
 }).strict();
 
+export const UserCreateNestedOneWithoutCookie_clickerInputSchema: z.ZodType<Prisma.UserCreateNestedOneWithoutCookie_clickerInput> = z.object({
+  create: z.union([ z.lazy(() => UserCreateWithoutCookie_clickerInputSchema),z.lazy(() => UserUncheckedCreateWithoutCookie_clickerInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => UserCreateOrConnectWithoutCookie_clickerInputSchema).optional(),
+  connect: z.lazy(() => UserWhereUniqueInputSchema).optional()
+}).strict();
+
+export const BigIntFieldUpdateOperationsInputSchema: z.ZodType<Prisma.BigIntFieldUpdateOperationsInput> = z.object({
+  set: z.bigint().optional(),
+  increment: z.bigint().optional(),
+  decrement: z.bigint().optional(),
+  multiply: z.bigint().optional(),
+  divide: z.bigint().optional()
+}).strict();
+
+export const IntFieldUpdateOperationsInputSchema: z.ZodType<Prisma.IntFieldUpdateOperationsInput> = z.object({
+  set: z.number().optional(),
+  increment: z.number().optional(),
+  decrement: z.number().optional(),
+  multiply: z.number().optional(),
+  divide: z.number().optional()
+}).strict();
+
+export const UserUpdateOneWithoutCookie_clickerNestedInputSchema: z.ZodType<Prisma.UserUpdateOneWithoutCookie_clickerNestedInput> = z.object({
+  create: z.union([ z.lazy(() => UserCreateWithoutCookie_clickerInputSchema),z.lazy(() => UserUncheckedCreateWithoutCookie_clickerInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => UserCreateOrConnectWithoutCookie_clickerInputSchema).optional(),
+  upsert: z.lazy(() => UserUpsertWithoutCookie_clickerInputSchema).optional(),
+  disconnect: z.union([ z.boolean(),z.lazy(() => UserWhereInputSchema) ]).optional(),
+  delete: z.union([ z.boolean(),z.lazy(() => UserWhereInputSchema) ]).optional(),
+  connect: z.lazy(() => UserWhereUniqueInputSchema).optional(),
+  update: z.union([ z.lazy(() => UserUpdateToOneWithWhereWithoutCookie_clickerInputSchema),z.lazy(() => UserUpdateWithoutCookie_clickerInputSchema),z.lazy(() => UserUncheckedUpdateWithoutCookie_clickerInputSchema) ]).optional(),
+}).strict();
+
 export const NestedUuidFilterSchema: z.ZodType<Prisma.NestedUuidFilter> = z.object({
   equals: z.string().optional(),
   in: z.string().array().optional(),
@@ -4116,6 +4571,60 @@ export const NestedStringNullableWithAggregatesFilterSchema: z.ZodType<Prisma.Ne
   _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
   _min: z.lazy(() => NestedStringNullableFilterSchema).optional(),
   _max: z.lazy(() => NestedStringNullableFilterSchema).optional()
+}).strict();
+
+export const NestedBigIntFilterSchema: z.ZodType<Prisma.NestedBigIntFilter> = z.object({
+  equals: z.bigint().optional(),
+  in: z.bigint().array().optional(),
+  notIn: z.bigint().array().optional(),
+  lt: z.bigint().optional(),
+  lte: z.bigint().optional(),
+  gt: z.bigint().optional(),
+  gte: z.bigint().optional(),
+  not: z.union([ z.bigint(),z.lazy(() => NestedBigIntFilterSchema) ]).optional(),
+}).strict();
+
+export const NestedBigIntWithAggregatesFilterSchema: z.ZodType<Prisma.NestedBigIntWithAggregatesFilter> = z.object({
+  equals: z.bigint().optional(),
+  in: z.bigint().array().optional(),
+  notIn: z.bigint().array().optional(),
+  lt: z.bigint().optional(),
+  lte: z.bigint().optional(),
+  gt: z.bigint().optional(),
+  gte: z.bigint().optional(),
+  not: z.union([ z.bigint(),z.lazy(() => NestedBigIntWithAggregatesFilterSchema) ]).optional(),
+  _count: z.lazy(() => NestedIntFilterSchema).optional(),
+  _avg: z.lazy(() => NestedFloatFilterSchema).optional(),
+  _sum: z.lazy(() => NestedBigIntFilterSchema).optional(),
+  _min: z.lazy(() => NestedBigIntFilterSchema).optional(),
+  _max: z.lazy(() => NestedBigIntFilterSchema).optional()
+}).strict();
+
+export const NestedFloatFilterSchema: z.ZodType<Prisma.NestedFloatFilter> = z.object({
+  equals: z.number().optional(),
+  in: z.number().array().optional(),
+  notIn: z.number().array().optional(),
+  lt: z.number().optional(),
+  lte: z.number().optional(),
+  gt: z.number().optional(),
+  gte: z.number().optional(),
+  not: z.union([ z.number(),z.lazy(() => NestedFloatFilterSchema) ]).optional(),
+}).strict();
+
+export const NestedIntWithAggregatesFilterSchema: z.ZodType<Prisma.NestedIntWithAggregatesFilter> = z.object({
+  equals: z.number().optional(),
+  in: z.number().array().optional(),
+  notIn: z.number().array().optional(),
+  lt: z.number().optional(),
+  lte: z.number().optional(),
+  gt: z.number().optional(),
+  gte: z.number().optional(),
+  not: z.union([ z.number(),z.lazy(() => NestedIntWithAggregatesFilterSchema) ]).optional(),
+  _count: z.lazy(() => NestedIntFilterSchema).optional(),
+  _avg: z.lazy(() => NestedFloatFilterSchema).optional(),
+  _sum: z.lazy(() => NestedIntFilterSchema).optional(),
+  _min: z.lazy(() => NestedIntFilterSchema).optional(),
+  _max: z.lazy(() => NestedIntFilterSchema).optional()
 }).strict();
 
 export const TeamCreateWithoutRolesInputSchema: z.ZodType<Prisma.TeamCreateWithoutRolesInput> = z.object({
@@ -4316,7 +4825,8 @@ export const UserCreateWithoutTasksInputSchema: z.ZodType<Prisma.UserCreateWitho
   teams: z.lazy(() => TeamCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateWithoutTasksInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutTasksInput> = z.object({
@@ -4334,7 +4844,8 @@ export const UserUncheckedCreateWithoutTasksInputSchema: z.ZodType<Prisma.UserUn
   teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserCreateOrConnectWithoutTasksInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutTasksInput> = z.object({
@@ -4415,7 +4926,8 @@ export const UserUpdateWithoutTasksInputSchema: z.ZodType<Prisma.UserUpdateWitho
   teams: z.lazy(() => TeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateWithoutTasksInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutTasksInput> = z.object({
@@ -4433,7 +4945,8 @@ export const UserUncheckedUpdateWithoutTasksInputSchema: z.ZodType<Prisma.UserUn
   teams: z.lazy(() => TeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserCreateWithoutTeamsInputSchema: z.ZodType<Prisma.UserCreateWithoutTeamsInput> = z.object({
@@ -4451,7 +4964,8 @@ export const UserCreateWithoutTeamsInputSchema: z.ZodType<Prisma.UserCreateWitho
   user_team: z.lazy(() => UserTeamCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateWithoutTeamsInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutTeamsInput> = z.object({
@@ -4469,7 +4983,8 @@ export const UserUncheckedCreateWithoutTeamsInputSchema: z.ZodType<Prisma.UserUn
   user_team: z.lazy(() => UserTeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserCreateOrConnectWithoutTeamsInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutTeamsInput> = z.object({
@@ -4797,7 +5312,8 @@ export const UserUpdateWithoutTeamsInputSchema: z.ZodType<Prisma.UserUpdateWitho
   user_team: z.lazy(() => UserTeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateWithoutTeamsInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutTeamsInput> = z.object({
@@ -4815,7 +5331,8 @@ export const UserUncheckedUpdateWithoutTeamsInputSchema: z.ZodType<Prisma.UserUn
   user_team: z.lazy(() => UserTeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const RoleUpsertWithWhereUniqueWithoutTeamsInputSchema: z.ZodType<Prisma.RoleUpsertWithWhereUniqueWithoutTeamsInput> = z.object({
@@ -5134,7 +5651,8 @@ export const UserCreateWithoutUser_teamInputSchema: z.ZodType<Prisma.UserCreateW
   teams: z.lazy(() => TeamCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateWithoutUser_teamInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutUser_teamInput> = z.object({
@@ -5152,7 +5670,8 @@ export const UserUncheckedCreateWithoutUser_teamInputSchema: z.ZodType<Prisma.Us
   teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserCreateOrConnectWithoutUser_teamInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutUser_teamInput> = z.object({
@@ -5233,7 +5752,8 @@ export const UserUpdateWithoutUser_teamInputSchema: z.ZodType<Prisma.UserUpdateW
   teams: z.lazy(() => TeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateWithoutUser_teamInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutUser_teamInput> = z.object({
@@ -5251,7 +5771,8 @@ export const UserUncheckedUpdateWithoutUser_teamInputSchema: z.ZodType<Prisma.Us
   teams: z.lazy(() => TeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const TaskCreateWithoutUsersInputSchema: z.ZodType<Prisma.TaskCreateWithoutUsersInput> = z.object({
@@ -5454,6 +5975,42 @@ export const TeamActivityCreateManyUserInputEnvelopeSchema: z.ZodType<Prisma.Tea
   skipDuplicates: z.boolean().optional()
 }).strict();
 
+export const CookieClickerCreateWithoutUserInputSchema: z.ZodType<Prisma.CookieClickerCreateWithoutUserInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  cookie_count: z.bigint().optional(),
+  employee_level_1: z.number().int().optional(),
+  employee_level_2: z.number().int().optional(),
+  employee_level_3: z.number().int().optional(),
+  employee_level_4: z.number().int().optional(),
+  employee_level_5: z.number().int().optional(),
+  employee_level_6: z.number().int().optional()
+}).strict();
+
+export const CookieClickerUncheckedCreateWithoutUserInputSchema: z.ZodType<Prisma.CookieClickerUncheckedCreateWithoutUserInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  cookie_count: z.bigint().optional(),
+  employee_level_1: z.number().int().optional(),
+  employee_level_2: z.number().int().optional(),
+  employee_level_3: z.number().int().optional(),
+  employee_level_4: z.number().int().optional(),
+  employee_level_5: z.number().int().optional(),
+  employee_level_6: z.number().int().optional()
+}).strict();
+
+export const CookieClickerCreateOrConnectWithoutUserInputSchema: z.ZodType<Prisma.CookieClickerCreateOrConnectWithoutUserInput> = z.object({
+  where: z.lazy(() => CookieClickerWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => CookieClickerCreateWithoutUserInputSchema),z.lazy(() => CookieClickerUncheckedCreateWithoutUserInputSchema) ]),
+}).strict();
+
+export const CookieClickerCreateManyUserInputEnvelopeSchema: z.ZodType<Prisma.CookieClickerCreateManyUserInputEnvelope> = z.object({
+  data: z.union([ z.lazy(() => CookieClickerCreateManyUserInputSchema),z.lazy(() => CookieClickerCreateManyUserInputSchema).array() ]),
+  skipDuplicates: z.boolean().optional()
+}).strict();
+
 export const TaskUpsertWithWhereUniqueWithoutUsersInputSchema: z.ZodType<Prisma.TaskUpsertWithWhereUniqueWithoutUsersInput> = z.object({
   where: z.lazy(() => TaskWhereUniqueInputSchema),
   update: z.union([ z.lazy(() => TaskUpdateWithoutUsersInputSchema),z.lazy(() => TaskUncheckedUpdateWithoutUsersInputSchema) ]),
@@ -5577,6 +6134,39 @@ export const TeamActivityUpdateManyWithWhereWithoutUserInputSchema: z.ZodType<Pr
   data: z.union([ z.lazy(() => TeamActivityUpdateManyMutationInputSchema),z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserInputSchema) ]),
 }).strict();
 
+export const CookieClickerUpsertWithWhereUniqueWithoutUserInputSchema: z.ZodType<Prisma.CookieClickerUpsertWithWhereUniqueWithoutUserInput> = z.object({
+  where: z.lazy(() => CookieClickerWhereUniqueInputSchema),
+  update: z.union([ z.lazy(() => CookieClickerUpdateWithoutUserInputSchema),z.lazy(() => CookieClickerUncheckedUpdateWithoutUserInputSchema) ]),
+  create: z.union([ z.lazy(() => CookieClickerCreateWithoutUserInputSchema),z.lazy(() => CookieClickerUncheckedCreateWithoutUserInputSchema) ]),
+}).strict();
+
+export const CookieClickerUpdateWithWhereUniqueWithoutUserInputSchema: z.ZodType<Prisma.CookieClickerUpdateWithWhereUniqueWithoutUserInput> = z.object({
+  where: z.lazy(() => CookieClickerWhereUniqueInputSchema),
+  data: z.union([ z.lazy(() => CookieClickerUpdateWithoutUserInputSchema),z.lazy(() => CookieClickerUncheckedUpdateWithoutUserInputSchema) ]),
+}).strict();
+
+export const CookieClickerUpdateManyWithWhereWithoutUserInputSchema: z.ZodType<Prisma.CookieClickerUpdateManyWithWhereWithoutUserInput> = z.object({
+  where: z.lazy(() => CookieClickerScalarWhereInputSchema),
+  data: z.union([ z.lazy(() => CookieClickerUpdateManyMutationInputSchema),z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserInputSchema) ]),
+}).strict();
+
+export const CookieClickerScalarWhereInputSchema: z.ZodType<Prisma.CookieClickerScalarWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => CookieClickerScalarWhereInputSchema),z.lazy(() => CookieClickerScalarWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => CookieClickerScalarWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => CookieClickerScalarWhereInputSchema),z.lazy(() => CookieClickerScalarWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  user_id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  cookie_count: z.union([ z.lazy(() => BigIntFilterSchema),z.bigint() ]).optional(),
+  employee_level_1: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  employee_level_2: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  employee_level_3: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  employee_level_4: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  employee_level_5: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  employee_level_6: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+}).strict();
+
 export const RoleCreateWithoutUser_roleInputSchema: z.ZodType<Prisma.RoleCreateWithoutUser_roleInput> = z.object({
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
@@ -5656,7 +6246,8 @@ export const UserCreateWithoutUser_roleInputSchema: z.ZodType<Prisma.UserCreateW
   teams: z.lazy(() => TeamCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateWithoutUser_roleInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutUser_roleInput> = z.object({
@@ -5674,7 +6265,8 @@ export const UserUncheckedCreateWithoutUser_roleInputSchema: z.ZodType<Prisma.Us
   teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserCreateOrConnectWithoutUser_roleInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutUser_roleInput> = z.object({
@@ -5784,7 +6376,8 @@ export const UserUpdateWithoutUser_roleInputSchema: z.ZodType<Prisma.UserUpdateW
   teams: z.lazy(() => TeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateWithoutUser_roleInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutUser_roleInput> = z.object({
@@ -5802,7 +6395,8 @@ export const UserUncheckedUpdateWithoutUser_roleInputSchema: z.ZodType<Prisma.Us
   teams: z.lazy(() => TeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const TeamCreateWithoutTeam_parent_child_team_aInputSchema: z.ZodType<Prisma.TeamCreateWithoutTeam_parent_child_team_aInput> = z.object({
@@ -6172,7 +6766,8 @@ export const UserCreateWithoutTeam_invitesInputSchema: z.ZodType<Prisma.UserCrea
   user_team: z.lazy(() => UserTeamCreateNestedManyWithoutUsersInputSchema).optional(),
   teams: z.lazy(() => TeamCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateWithoutTeam_invitesInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutTeam_invitesInput> = z.object({
@@ -6190,7 +6785,8 @@ export const UserUncheckedCreateWithoutTeam_invitesInputSchema: z.ZodType<Prisma
   user_team: z.lazy(() => UserTeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserCreateOrConnectWithoutTeam_invitesInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutTeam_invitesInput> = z.object({
@@ -6265,7 +6861,8 @@ export const UserUpdateWithoutTeam_invitesInputSchema: z.ZodType<Prisma.UserUpda
   user_team: z.lazy(() => UserTeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   teams: z.lazy(() => TeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateWithoutTeam_invitesInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutTeam_invitesInput> = z.object({
@@ -6283,7 +6880,8 @@ export const UserUncheckedUpdateWithoutTeam_invitesInputSchema: z.ZodType<Prisma
   user_team: z.lazy(() => UserTeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   teams: z.lazy(() => TeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const TeamUpsertWithoutTeam_invitesInputSchema: z.ZodType<Prisma.TeamUpsertWithoutTeam_invitesInput> = z.object({
@@ -6348,7 +6946,8 @@ export const UserCreateWithoutVisited_teamInputSchema: z.ZodType<Prisma.UserCrea
   user_team: z.lazy(() => UserTeamCreateNestedManyWithoutUsersInputSchema).optional(),
   teams: z.lazy(() => TeamCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateWithoutVisited_teamInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutVisited_teamInput> = z.object({
@@ -6366,7 +6965,8 @@ export const UserUncheckedCreateWithoutVisited_teamInputSchema: z.ZodType<Prisma
   user_team: z.lazy(() => UserTeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserCreateOrConnectWithoutVisited_teamInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutVisited_teamInput> = z.object({
@@ -6441,7 +7041,8 @@ export const UserUpdateWithoutVisited_teamInputSchema: z.ZodType<Prisma.UserUpda
   user_team: z.lazy(() => UserTeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   teams: z.lazy(() => TeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateWithoutVisited_teamInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutVisited_teamInput> = z.object({
@@ -6459,7 +7060,8 @@ export const UserUncheckedUpdateWithoutVisited_teamInputSchema: z.ZodType<Prisma
   user_team: z.lazy(() => UserTeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   teams: z.lazy(() => TeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const TeamUpsertWithoutVisited_teamInputSchema: z.ZodType<Prisma.TeamUpsertWithoutVisited_teamInput> = z.object({
@@ -6566,7 +7168,8 @@ export const UserCreateWithoutTeam_activityInputSchema: z.ZodType<Prisma.UserCre
   user_team: z.lazy(() => UserTeamCreateNestedManyWithoutUsersInputSchema).optional(),
   teams: z.lazy(() => TeamCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateWithoutTeam_activityInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutTeam_activityInput> = z.object({
@@ -6584,7 +7187,8 @@ export const UserUncheckedCreateWithoutTeam_activityInputSchema: z.ZodType<Prism
   user_team: z.lazy(() => UserTeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserCreateOrConnectWithoutTeam_activityInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutTeam_activityInput> = z.object({
@@ -6678,7 +7282,8 @@ export const UserUpdateWithoutTeam_activityInputSchema: z.ZodType<Prisma.UserUpd
   user_team: z.lazy(() => UserTeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   teams: z.lazy(() => TeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateWithoutTeam_activityInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutTeam_activityInput> = z.object({
@@ -6696,7 +7301,8 @@ export const UserUncheckedUpdateWithoutTeam_activityInputSchema: z.ZodType<Prism
   user_team: z.lazy(() => UserTeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   teams: z.lazy(() => TeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
-  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const TeamUpsertWithoutTeam_activityInputSchema: z.ZodType<Prisma.TeamUpsertWithoutTeam_activityInput> = z.object({
@@ -6769,6 +7375,98 @@ export const TeamActivityTypeUncheckedUpdateWithoutTeam_activityInputSchema: z.Z
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   activity_type: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const UserCreateWithoutCookie_clickerInputSchema: z.ZodType<Prisma.UserCreateWithoutCookie_clickerInput> = z.object({
+  id: z.string().optional(),
+  created_at: z.coerce.date().optional(),
+  updated_at: z.coerce.date().optional(),
+  user_id: z.string(),
+  username: z.string().optional().nullable(),
+  first_name: z.string().optional().nullable(),
+  last_name: z.string().optional().nullable(),
+  email_address: z.string(),
+  image_url: z.string(),
+  tasks: z.lazy(() => TaskCreateNestedManyWithoutUsersInputSchema).optional(),
+  user_role: z.lazy(() => UserRoleCreateNestedManyWithoutUsersInputSchema).optional(),
+  user_team: z.lazy(() => UserTeamCreateNestedManyWithoutUsersInputSchema).optional(),
+  teams: z.lazy(() => TeamCreateNestedManyWithoutUsersInputSchema).optional(),
+  team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional(),
+  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional()
+}).strict();
+
+export const UserUncheckedCreateWithoutCookie_clickerInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutCookie_clickerInput> = z.object({
+  id: z.string().optional(),
+  created_at: z.coerce.date().optional(),
+  updated_at: z.coerce.date().optional(),
+  user_id: z.string(),
+  username: z.string().optional().nullable(),
+  first_name: z.string().optional().nullable(),
+  last_name: z.string().optional().nullable(),
+  email_address: z.string(),
+  image_url: z.string(),
+  tasks: z.lazy(() => TaskUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
+  user_role: z.lazy(() => UserRoleUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
+  user_team: z.lazy(() => UserTeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
+  teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
+  team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
+  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+}).strict();
+
+export const UserCreateOrConnectWithoutCookie_clickerInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutCookie_clickerInput> = z.object({
+  where: z.lazy(() => UserWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => UserCreateWithoutCookie_clickerInputSchema),z.lazy(() => UserUncheckedCreateWithoutCookie_clickerInputSchema) ]),
+}).strict();
+
+export const UserUpsertWithoutCookie_clickerInputSchema: z.ZodType<Prisma.UserUpsertWithoutCookie_clickerInput> = z.object({
+  update: z.union([ z.lazy(() => UserUpdateWithoutCookie_clickerInputSchema),z.lazy(() => UserUncheckedUpdateWithoutCookie_clickerInputSchema) ]),
+  create: z.union([ z.lazy(() => UserCreateWithoutCookie_clickerInputSchema),z.lazy(() => UserUncheckedCreateWithoutCookie_clickerInputSchema) ]),
+  where: z.lazy(() => UserWhereInputSchema).optional()
+}).strict();
+
+export const UserUpdateToOneWithWhereWithoutCookie_clickerInputSchema: z.ZodType<Prisma.UserUpdateToOneWithWhereWithoutCookie_clickerInput> = z.object({
+  where: z.lazy(() => UserWhereInputSchema).optional(),
+  data: z.union([ z.lazy(() => UserUpdateWithoutCookie_clickerInputSchema),z.lazy(() => UserUncheckedUpdateWithoutCookie_clickerInputSchema) ]),
+}).strict();
+
+export const UserUpdateWithoutCookie_clickerInputSchema: z.ZodType<Prisma.UserUpdateWithoutCookie_clickerInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  user_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  username: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  first_name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  last_name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  email_address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image_url: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  tasks: z.lazy(() => TaskUpdateManyWithoutUsersNestedInputSchema).optional(),
+  user_role: z.lazy(() => UserRoleUpdateManyWithoutUsersNestedInputSchema).optional(),
+  user_team: z.lazy(() => UserTeamUpdateManyWithoutUsersNestedInputSchema).optional(),
+  teams: z.lazy(() => TeamUpdateManyWithoutUsersNestedInputSchema).optional(),
+  team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional(),
+  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional()
+}).strict();
+
+export const UserUncheckedUpdateWithoutCookie_clickerInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutCookie_clickerInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  user_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  username: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  first_name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  last_name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  email_address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image_url: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  tasks: z.lazy(() => TaskUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
+  user_role: z.lazy(() => UserRoleUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
+  user_team: z.lazy(() => UserTeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
+  teams: z.lazy(() => TeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
+  team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
+  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserRoleCreateManyRolesInputSchema: z.ZodType<Prisma.UserRoleCreateManyRolesInput> = z.object({
@@ -7223,6 +7921,19 @@ export const TeamActivityCreateManyUserInputSchema: z.ZodType<Prisma.TeamActivit
   activity_type: z.string().optional().nullable()
 }).strict();
 
+export const CookieClickerCreateManyUserInputSchema: z.ZodType<Prisma.CookieClickerCreateManyUserInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  cookie_count: z.bigint().optional(),
+  employee_level_1: z.number().int().optional(),
+  employee_level_2: z.number().int().optional(),
+  employee_level_3: z.number().int().optional(),
+  employee_level_4: z.number().int().optional(),
+  employee_level_5: z.number().int().optional(),
+  employee_level_6: z.number().int().optional()
+}).strict();
+
 export const TaskUpdateWithoutUsersInputSchema: z.ZodType<Prisma.TaskUpdateWithoutUsersInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -7405,6 +8116,45 @@ export const TeamActivityUncheckedUpdateManyWithoutUserInputSchema: z.ZodType<Pr
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   activity_type: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const CookieClickerUpdateWithoutUserInputSchema: z.ZodType<Prisma.CookieClickerUpdateWithoutUserInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  cookie_count: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_1: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_2: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_3: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_4: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_5: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_6: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const CookieClickerUncheckedUpdateWithoutUserInputSchema: z.ZodType<Prisma.CookieClickerUncheckedUpdateWithoutUserInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  cookie_count: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_1: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_2: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_3: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_4: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_5: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_6: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const CookieClickerUncheckedUpdateManyWithoutUserInputSchema: z.ZodType<Prisma.CookieClickerUncheckedUpdateManyWithoutUserInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  cookie_count: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_1: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_2: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_3: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_4: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_5: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  employee_level_6: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const TeamActivityCreateManyTeam_activity_typeInputSchema: z.ZodType<Prisma.TeamActivityCreateManyTeam_activity_typeInput> = z.object({
@@ -8125,6 +8875,68 @@ export const TeamActivityFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.TeamActiv
   where: TeamActivityWhereUniqueInputSchema,
 }).strict() ;
 
+export const CookieClickerFindFirstArgsSchema: z.ZodType<Prisma.CookieClickerFindFirstArgs> = z.object({
+  select: CookieClickerSelectSchema.optional(),
+  include: CookieClickerIncludeSchema.optional(),
+  where: CookieClickerWhereInputSchema.optional(),
+  orderBy: z.union([ CookieClickerOrderByWithRelationInputSchema.array(),CookieClickerOrderByWithRelationInputSchema ]).optional(),
+  cursor: CookieClickerWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ CookieClickerScalarFieldEnumSchema,CookieClickerScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const CookieClickerFindFirstOrThrowArgsSchema: z.ZodType<Prisma.CookieClickerFindFirstOrThrowArgs> = z.object({
+  select: CookieClickerSelectSchema.optional(),
+  include: CookieClickerIncludeSchema.optional(),
+  where: CookieClickerWhereInputSchema.optional(),
+  orderBy: z.union([ CookieClickerOrderByWithRelationInputSchema.array(),CookieClickerOrderByWithRelationInputSchema ]).optional(),
+  cursor: CookieClickerWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ CookieClickerScalarFieldEnumSchema,CookieClickerScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const CookieClickerFindManyArgsSchema: z.ZodType<Prisma.CookieClickerFindManyArgs> = z.object({
+  select: CookieClickerSelectSchema.optional(),
+  include: CookieClickerIncludeSchema.optional(),
+  where: CookieClickerWhereInputSchema.optional(),
+  orderBy: z.union([ CookieClickerOrderByWithRelationInputSchema.array(),CookieClickerOrderByWithRelationInputSchema ]).optional(),
+  cursor: CookieClickerWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ CookieClickerScalarFieldEnumSchema,CookieClickerScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const CookieClickerAggregateArgsSchema: z.ZodType<Prisma.CookieClickerAggregateArgs> = z.object({
+  where: CookieClickerWhereInputSchema.optional(),
+  orderBy: z.union([ CookieClickerOrderByWithRelationInputSchema.array(),CookieClickerOrderByWithRelationInputSchema ]).optional(),
+  cursor: CookieClickerWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const CookieClickerGroupByArgsSchema: z.ZodType<Prisma.CookieClickerGroupByArgs> = z.object({
+  where: CookieClickerWhereInputSchema.optional(),
+  orderBy: z.union([ CookieClickerOrderByWithAggregationInputSchema.array(),CookieClickerOrderByWithAggregationInputSchema ]).optional(),
+  by: CookieClickerScalarFieldEnumSchema.array(),
+  having: CookieClickerScalarWhereWithAggregatesInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const CookieClickerFindUniqueArgsSchema: z.ZodType<Prisma.CookieClickerFindUniqueArgs> = z.object({
+  select: CookieClickerSelectSchema.optional(),
+  include: CookieClickerIncludeSchema.optional(),
+  where: CookieClickerWhereUniqueInputSchema,
+}).strict() ;
+
+export const CookieClickerFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.CookieClickerFindUniqueOrThrowArgs> = z.object({
+  select: CookieClickerSelectSchema.optional(),
+  include: CookieClickerIncludeSchema.optional(),
+  where: CookieClickerWhereUniqueInputSchema,
+}).strict() ;
+
 export const RoleCreateArgsSchema: z.ZodType<Prisma.RoleCreateArgs> = z.object({
   select: RoleSelectSchema.optional(),
   include: RoleIncludeSchema.optional(),
@@ -8140,6 +8952,11 @@ export const RoleUpsertArgsSchema: z.ZodType<Prisma.RoleUpsertArgs> = z.object({
 }).strict() ;
 
 export const RoleCreateManyArgsSchema: z.ZodType<Prisma.RoleCreateManyArgs> = z.object({
+  data: z.union([ RoleCreateManyInputSchema,RoleCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const RoleCreateManyAndReturnArgsSchema: z.ZodType<Prisma.RoleCreateManyAndReturnArgs> = z.object({
   data: z.union([ RoleCreateManyInputSchema,RoleCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
 }).strict() ;
@@ -8185,6 +9002,11 @@ export const TaskCreateManyArgsSchema: z.ZodType<Prisma.TaskCreateManyArgs> = z.
   skipDuplicates: z.boolean().optional(),
 }).strict() ;
 
+export const TaskCreateManyAndReturnArgsSchema: z.ZodType<Prisma.TaskCreateManyAndReturnArgs> = z.object({
+  data: z.union([ TaskCreateManyInputSchema,TaskCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
 export const TaskDeleteArgsSchema: z.ZodType<Prisma.TaskDeleteArgs> = z.object({
   select: TaskSelectSchema.optional(),
   include: TaskIncludeSchema.optional(),
@@ -8222,6 +9044,11 @@ export const TeamUpsertArgsSchema: z.ZodType<Prisma.TeamUpsertArgs> = z.object({
 }).strict() ;
 
 export const TeamCreateManyArgsSchema: z.ZodType<Prisma.TeamCreateManyArgs> = z.object({
+  data: z.union([ TeamCreateManyInputSchema,TeamCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const TeamCreateManyAndReturnArgsSchema: z.ZodType<Prisma.TeamCreateManyAndReturnArgs> = z.object({
   data: z.union([ TeamCreateManyInputSchema,TeamCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
 }).strict() ;
@@ -8267,6 +9094,11 @@ export const UserTeamCreateManyArgsSchema: z.ZodType<Prisma.UserTeamCreateManyAr
   skipDuplicates: z.boolean().optional(),
 }).strict() ;
 
+export const UserTeamCreateManyAndReturnArgsSchema: z.ZodType<Prisma.UserTeamCreateManyAndReturnArgs> = z.object({
+  data: z.union([ UserTeamCreateManyInputSchema,UserTeamCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
 export const UserTeamDeleteArgsSchema: z.ZodType<Prisma.UserTeamDeleteArgs> = z.object({
   select: UserTeamSelectSchema.optional(),
   include: UserTeamIncludeSchema.optional(),
@@ -8304,6 +9136,11 @@ export const UserUpsertArgsSchema: z.ZodType<Prisma.UserUpsertArgs> = z.object({
 }).strict() ;
 
 export const UserCreateManyArgsSchema: z.ZodType<Prisma.UserCreateManyArgs> = z.object({
+  data: z.union([ UserCreateManyInputSchema,UserCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const UserCreateManyAndReturnArgsSchema: z.ZodType<Prisma.UserCreateManyAndReturnArgs> = z.object({
   data: z.union([ UserCreateManyInputSchema,UserCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
 }).strict() ;
@@ -8349,6 +9186,11 @@ export const UserRoleCreateManyArgsSchema: z.ZodType<Prisma.UserRoleCreateManyAr
   skipDuplicates: z.boolean().optional(),
 }).strict() ;
 
+export const UserRoleCreateManyAndReturnArgsSchema: z.ZodType<Prisma.UserRoleCreateManyAndReturnArgs> = z.object({
+  data: z.union([ UserRoleCreateManyInputSchema,UserRoleCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
 export const UserRoleDeleteArgsSchema: z.ZodType<Prisma.UserRoleDeleteArgs> = z.object({
   select: UserRoleSelectSchema.optional(),
   include: UserRoleIncludeSchema.optional(),
@@ -8386,6 +9228,11 @@ export const TeamParentChildUpsertArgsSchema: z.ZodType<Prisma.TeamParentChildUp
 }).strict() ;
 
 export const TeamParentChildCreateManyArgsSchema: z.ZodType<Prisma.TeamParentChildCreateManyArgs> = z.object({
+  data: z.union([ TeamParentChildCreateManyInputSchema,TeamParentChildCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const TeamParentChildCreateManyAndReturnArgsSchema: z.ZodType<Prisma.TeamParentChildCreateManyAndReturnArgs> = z.object({
   data: z.union([ TeamParentChildCreateManyInputSchema,TeamParentChildCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
 }).strict() ;
@@ -8431,6 +9278,11 @@ export const TeamInvitesCreateManyArgsSchema: z.ZodType<Prisma.TeamInvitesCreate
   skipDuplicates: z.boolean().optional(),
 }).strict() ;
 
+export const TeamInvitesCreateManyAndReturnArgsSchema: z.ZodType<Prisma.TeamInvitesCreateManyAndReturnArgs> = z.object({
+  data: z.union([ TeamInvitesCreateManyInputSchema,TeamInvitesCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
 export const TeamInvitesDeleteArgsSchema: z.ZodType<Prisma.TeamInvitesDeleteArgs> = z.object({
   select: TeamInvitesSelectSchema.optional(),
   include: TeamInvitesIncludeSchema.optional(),
@@ -8468,6 +9320,11 @@ export const VisitedTeamUpsertArgsSchema: z.ZodType<Prisma.VisitedTeamUpsertArgs
 }).strict() ;
 
 export const VisitedTeamCreateManyArgsSchema: z.ZodType<Prisma.VisitedTeamCreateManyArgs> = z.object({
+  data: z.union([ VisitedTeamCreateManyInputSchema,VisitedTeamCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const VisitedTeamCreateManyAndReturnArgsSchema: z.ZodType<Prisma.VisitedTeamCreateManyAndReturnArgs> = z.object({
   data: z.union([ VisitedTeamCreateManyInputSchema,VisitedTeamCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
 }).strict() ;
@@ -8513,6 +9370,11 @@ export const TeamActivityTypeCreateManyArgsSchema: z.ZodType<Prisma.TeamActivity
   skipDuplicates: z.boolean().optional(),
 }).strict() ;
 
+export const TeamActivityTypeCreateManyAndReturnArgsSchema: z.ZodType<Prisma.TeamActivityTypeCreateManyAndReturnArgs> = z.object({
+  data: z.union([ TeamActivityTypeCreateManyInputSchema,TeamActivityTypeCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
 export const TeamActivityTypeDeleteArgsSchema: z.ZodType<Prisma.TeamActivityTypeDeleteArgs> = z.object({
   select: TeamActivityTypeSelectSchema.optional(),
   include: TeamActivityTypeIncludeSchema.optional(),
@@ -8554,6 +9416,11 @@ export const TeamActivityCreateManyArgsSchema: z.ZodType<Prisma.TeamActivityCrea
   skipDuplicates: z.boolean().optional(),
 }).strict() ;
 
+export const TeamActivityCreateManyAndReturnArgsSchema: z.ZodType<Prisma.TeamActivityCreateManyAndReturnArgs> = z.object({
+  data: z.union([ TeamActivityCreateManyInputSchema,TeamActivityCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
 export const TeamActivityDeleteArgsSchema: z.ZodType<Prisma.TeamActivityDeleteArgs> = z.object({
   select: TeamActivitySelectSchema.optional(),
   include: TeamActivityIncludeSchema.optional(),
@@ -8574,4 +9441,50 @@ export const TeamActivityUpdateManyArgsSchema: z.ZodType<Prisma.TeamActivityUpda
 
 export const TeamActivityDeleteManyArgsSchema: z.ZodType<Prisma.TeamActivityDeleteManyArgs> = z.object({
   where: TeamActivityWhereInputSchema.optional(),
+}).strict() ;
+
+export const CookieClickerCreateArgsSchema: z.ZodType<Prisma.CookieClickerCreateArgs> = z.object({
+  select: CookieClickerSelectSchema.optional(),
+  include: CookieClickerIncludeSchema.optional(),
+  data: z.union([ CookieClickerCreateInputSchema,CookieClickerUncheckedCreateInputSchema ]),
+}).strict() ;
+
+export const CookieClickerUpsertArgsSchema: z.ZodType<Prisma.CookieClickerUpsertArgs> = z.object({
+  select: CookieClickerSelectSchema.optional(),
+  include: CookieClickerIncludeSchema.optional(),
+  where: CookieClickerWhereUniqueInputSchema,
+  create: z.union([ CookieClickerCreateInputSchema,CookieClickerUncheckedCreateInputSchema ]),
+  update: z.union([ CookieClickerUpdateInputSchema,CookieClickerUncheckedUpdateInputSchema ]),
+}).strict() ;
+
+export const CookieClickerCreateManyArgsSchema: z.ZodType<Prisma.CookieClickerCreateManyArgs> = z.object({
+  data: z.union([ CookieClickerCreateManyInputSchema,CookieClickerCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const CookieClickerCreateManyAndReturnArgsSchema: z.ZodType<Prisma.CookieClickerCreateManyAndReturnArgs> = z.object({
+  data: z.union([ CookieClickerCreateManyInputSchema,CookieClickerCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const CookieClickerDeleteArgsSchema: z.ZodType<Prisma.CookieClickerDeleteArgs> = z.object({
+  select: CookieClickerSelectSchema.optional(),
+  include: CookieClickerIncludeSchema.optional(),
+  where: CookieClickerWhereUniqueInputSchema,
+}).strict() ;
+
+export const CookieClickerUpdateArgsSchema: z.ZodType<Prisma.CookieClickerUpdateArgs> = z.object({
+  select: CookieClickerSelectSchema.optional(),
+  include: CookieClickerIncludeSchema.optional(),
+  data: z.union([ CookieClickerUpdateInputSchema,CookieClickerUncheckedUpdateInputSchema ]),
+  where: CookieClickerWhereUniqueInputSchema,
+}).strict() ;
+
+export const CookieClickerUpdateManyArgsSchema: z.ZodType<Prisma.CookieClickerUpdateManyArgs> = z.object({
+  data: z.union([ CookieClickerUpdateManyMutationInputSchema,CookieClickerUncheckedUpdateManyInputSchema ]),
+  where: CookieClickerWhereInputSchema.optional(),
+}).strict() ;
+
+export const CookieClickerDeleteManyArgsSchema: z.ZodType<Prisma.CookieClickerDeleteManyArgs> = z.object({
+  where: CookieClickerWhereInputSchema.optional(),
 }).strict() ;
