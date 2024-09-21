@@ -3,13 +3,14 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { clsx } from 'clsx';
-import { HomeIcon, CalendarIcon, UsersIcon } from '@heroicons/react/24/outline'; 
+import { HomeIcon, CalendarIcon, UsersIcon, CursorArrowRaysIcon } from '@heroicons/react/24/outline'; 
 
 // sidebarにつかうデータ
 const links = [
   { name: 'ホーム', href: '/home', icon: HomeIcon },
   { name: 'カレンダー', href: '/calendar', icon: CalendarIcon },
   { name: 'チーム', href: '/team', icon: UsersIcon },
+  { name: 'クッキークリッカー', href: '/cookie', icon: CursorArrowRaysIcon},
 ];
 
 export default function Sidebar() {
