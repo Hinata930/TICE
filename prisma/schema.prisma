@@ -241,7 +241,7 @@ model CookieClicker {
   user_id            String            @unique @db.Uuid
   cookie_count       BigInt            @default(0) // クッキーの数を保存するフィールド
 
-  employee_level_1   Int               @default(0) // 従業員1のレベル
+  employee_level_1   Int               @default(1) // 従業員1のレベル
   employee_level_2   Int               @default(0) // 従業員2のレベル
   employee_level_3   Int               @default(0) // 従業員3のレベル
   employee_level_4   Int               @default(0) // 従業員4のレベル
