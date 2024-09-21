@@ -19,10 +19,11 @@ export default function PaginationDetail({ totalPages }: props) {
 
   // 引数のページのurlの文字列を返す
   const createPageURL = (pageNumber: number | string) => {
-    const params = new URLSearchParams(searchParams); // urlのクエリパラメータ
+    const params = new URLSearchParams(searchParams.toString()); // 文字列に変換してからURLSearchParamsを作成
     params.set('page', pageNumber.toString()); // urlのクエリのpageにpageNumberを入れる
-    return `${pathname}?${params.toString()}`; // パスとクエリをくっつける。pageはpageNumberに更新された
-  }
+    return `${pathname}?${params.toString()}`; // パスとクエリをくっつける
+  };
+
 
   const allPages = generatePagination(currentPage, totalPages);
 
