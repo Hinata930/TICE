@@ -56,7 +56,7 @@ export default function CookieClicker(cookie: Cookie) {
 
   const getUpgradeCost = (level: number, index: number) => {
     const baseCost = 144 * Math.pow(index + 1, 2); // ベースコスト 144 * (index + 1) ^ 2
-    const upgradeCost = baseCost * Math.pow(1.04, level); // アップグレードコスト base_cost * 1.04 ^ レベル
+    const upgradeCost = baseCost * Math.pow(1.043, level); // アップグレードコスト base_cost * 1.043 ^ レベル
     return BigInt(Math.floor(upgradeCost)); // 整数化してBigIntで返す
   };
 
