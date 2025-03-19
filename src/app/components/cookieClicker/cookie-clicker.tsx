@@ -46,11 +46,16 @@ export default function CookieClicker(cookie: Cookie) {
       addedCookies += BigInt((index + 1) * level); // 従業員のレベルに応じてクリックしたときにもらえるクッキーを増加
     });
     addedCookies /= BigInt(10);
-    setCookieCount(prevCount => prevCount + addedCookies);
+    if ((addedCookies / BigInt(10)) <= BigInt(1)) {
+      setCookieCount(prevCount => prevCount + BigInt(1));
+    }
+    else {
+      setCookieCount(prevCount => prevCount + addedCookies);
+    };
   };
 
   const getUpgradeCost = (level: number, index: number) => {
-    const baseCost = (216 + 144) * Math.pow(index + 1, 2); // ベースコスト (216 + 144) * (index + 1) ^ 2
+    const baseCost = 144 * Math.pow(index + 1, 2); // ベースコスト 144 * (index + 1) ^ 2
     const upgradeCost = baseCost * Math.pow(1.04, level); // アップグレードコスト base_cost * 1.04 ^ レベル
     return BigInt(Math.floor(upgradeCost)); // 整数化してBigIntで返す
   };
@@ -92,11 +97,11 @@ export default function CookieClicker(cookie: Cookie) {
   useEffect(() => {
     const interval = setInterval(() => {
       setCookieCount(prevCount => {
-        let newCookieCount = prevCount;
+        let cookiePerSecond = prevCount;
         employeeLevels.forEach((level, index) => {
-          newCookieCount += BigInt((index + 1) * level); // レベルに応じて毎秒クッキーを増加
+          cookiePerSecond += BigInt((index + 1) * level); // レベルに応じて毎秒クッキーを増加
         });
-        return newCookieCount;
+        return cookiePerSecond;
       });
     }, 1000); // 1秒ごとにクッキーを増加
 
@@ -141,7 +146,7 @@ export default function CookieClicker(cookie: Cookie) {
                 onClick={() => upgradeEmployee(index)}
                 className='ml-4 px-4 py-2 bg-blue-500 hover:bg-blue-400 active:bg-blue-300 text-white rounded-lg shadow-md'
               >
-                Upgrade +{(index + 1) * (level + 1)} (Cost: {getUpgradeCost(level, index).toString()})
+                Upgrade to +{(index + 1) * (level + 1)}/s (Cost: {getUpgradeCost(level, index).toString()})
               </button>
             </div>
           ))}
