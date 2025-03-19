@@ -41,7 +41,12 @@ export default function CookieClicker(cookie: Cookie) {
   }, [cookie]);
 
   const clickCookie = () => {
-    setCookieCount(prevCount => prevCount + BigInt(1));
+    let addedCookies = BigInt(0); // クリックによって追加されるクッキー数
+    employeeLevels.forEach((level, index) => {
+      addedCookies += BigInt((index + 1) * level); // 従業員のレベルに応じてクリックしたときにもらえるクッキーを増加
+    });
+    addedCookies /= BigInt(10);
+    setCookieCount(prevCount => prevCount + addedCookies);
   };
 
   const getUpgradeCost = (level: number, index: number) => {
