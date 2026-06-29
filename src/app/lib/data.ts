@@ -6,6 +6,7 @@ import { addDays, startOfWeek, endOfWeek, format } from 'date-fns';
 import { WeeklyTask, WeeklyTaskByTeam } from './difinitions';
 import { fetchCurrentDate } from './utils';
 import { CreateCookieClicker } from './actions/cookie-clicker-actions';
+import { CreateNewFarmingProfile } from './actions/farm-actions';
 
 const prisma = new PrismaClient();
 
@@ -752,6 +753,7 @@ export async function fetchCookieClickerByUserId(userId: string) {
 
     if (cookieClicker) {
       return cookieClicker;
+
     } else {
       console.log("hello world!");
       await CreateCookieClicker(userId);
@@ -764,8 +766,74 @@ export async function fetchCookieClickerByUserId(userId: string) {
 
       return newCookieClicker;
     }
+
   } catch(error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to create cookie clicker.');
+    throw new Error('Failed to create cookie click profile.');
+  }
+}
+
+
+
+// userのfarmingのセーブデータを取得
+export async function fetchFarmingByUserId(userId: string) {
+  try {
+    const farming = await prisma.farming.findUnique({
+      where: {
+        userId: userId,
+      },
+      include: {
+        tiles: {
+          include: {
+            crop: true,
+          },
+          orderBy: [
+            { y: "asc" },
+            { x: "asc" },
+          ],
+        },
+        parks: true,
+        seeds: {
+          include: {
+            crop: true
+          }
+        },
+      }
+    });
+
+    if (!farming) {
+      console.log("hello world!"); // デバッグ
+
+      await CreateNewFarmingProfile(userId);
+
+      return await prisma.farming.findUnique({
+        where: {
+          userId: userId,
+        },
+        include: {
+          tiles: {
+            include: {
+              crop: true,
+            },
+            orderBy: [
+              { y: "asc" },
+              { x: "asc" },
+            ],
+          },
+          parks: true,
+          seeds: {
+            include: {
+              crop: true,
+            },
+          },
+        },
+      });
+    }
+
+    return farming; //\u-n/.AIつよい
+
+  } catch(error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to create new farming profile.');
   }
 }

@@ -36,11 +36,28 @@ export const TeamActivityScalarFieldEnumSchema = z.enum(['id','createdAt','updat
 
 export const CookieClickerScalarFieldEnumSchema = z.enum(['id','createdAt','updatedAt','user_id','cookie_count','employee_level_1','employee_level_2','employee_level_3','employee_level_4','employee_level_5','employee_level_6']);
 
+export const FarmingScalarFieldEnumSchema = z.enum(['id','createdAt','updatedAt','userId','level','exp','money','parkPoint']);
+
+export const FarmingTileScalarFieldEnumSchema = z.enum(['id','farmingId','x','y','cropId','plantedAt','qualityScore','lastWateredAt']);
+
+export const FarmingParkScalarFieldEnumSchema = z.enum(['id','farmingId','parkType','level']);
+
+export const CropScalarFieldEnumSchema = z.enum(['id','name','displayName','growTime','seedPrice','bSellPrice','aSellPrice','sSellPrice','bHarvestExp','aHarvestExp','sHarvestExp','waterScore']);
+
+export const CropQualityScalarFieldEnumSchema = z.enum(['id','cropId','minScore','bRate','aRate','sRate']);
+
+export const FarmingSeedScalarFieldEnumSchema = z.enum(['id','farmingId','cropId','count']);
+
 export const SortOrderSchema = z.enum(['asc','desc']);
 
 export const QueryModeSchema = z.enum(['default','insensitive']);
 
 export const NullsOrderSchema = z.enum(['first','last']);
+
+export const ParkTypeSchema = z.enum(['HARVEST','QUALITY']);
+
+export type ParkTypeType = `${z.infer<typeof ParkTypeSchema>}`
+
 /////////////////////////////////////////
 // MODELS
 /////////////////////////////////////////
@@ -231,6 +248,102 @@ export const CookieClickerSchema = z.object({
 export type CookieClicker = z.infer<typeof CookieClickerSchema>
 
 /////////////////////////////////////////
+// FARMING SCHEMA
+/////////////////////////////////////////
+
+export const FarmingSchema = z.object({
+  id: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  userId: z.string(),
+  level: z.number().int(),
+  exp: z.bigint(),
+  money: z.bigint(),
+  parkPoint: z.number().int(),
+})
+
+export type Farming = z.infer<typeof FarmingSchema>
+
+/////////////////////////////////////////
+// FARMING TILE SCHEMA
+/////////////////////////////////////////
+
+export const FarmingTileSchema = z.object({
+  id: z.string(),
+  farmingId: z.string(),
+  x: z.number().int(),
+  y: z.number().int(),
+  cropId: z.string().nullable(),
+  plantedAt: z.coerce.date().nullable(),
+  qualityScore: z.number().int(),
+  lastWateredAt: z.coerce.date().nullable(),
+})
+
+export type FarmingTile = z.infer<typeof FarmingTileSchema>
+
+/////////////////////////////////////////
+// FARMING PARK SCHEMA
+/////////////////////////////////////////
+
+export const FarmingParkSchema = z.object({
+  parkType: ParkTypeSchema,
+  id: z.string(),
+  farmingId: z.string(),
+  level: z.number().int(),
+})
+
+export type FarmingPark = z.infer<typeof FarmingParkSchema>
+
+/////////////////////////////////////////
+// CROP SCHEMA
+/////////////////////////////////////////
+
+export const CropSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  displayName: z.string(),
+  growTime: z.number().int(),
+  seedPrice: z.number().int(),
+  bSellPrice: z.number().int(),
+  aSellPrice: z.number().int(),
+  sSellPrice: z.number().int(),
+  bHarvestExp: z.number().int(),
+  aHarvestExp: z.number().int(),
+  sHarvestExp: z.number().int(),
+  waterScore: z.number().int(),
+})
+
+export type Crop = z.infer<typeof CropSchema>
+
+/////////////////////////////////////////
+// CROP QUALITY SCHEMA
+/////////////////////////////////////////
+
+export const CropQualitySchema = z.object({
+  id: z.string(),
+  cropId: z.string(),
+  minScore: z.number().int(),
+  bRate: z.number().int(),
+  aRate: z.number().int(),
+  sRate: z.number().int(),
+})
+
+export type CropQuality = z.infer<typeof CropQualitySchema>
+
+/////////////////////////////////////////
+// FARMING SEED SCHEMA
+/////////////////////////////////////////
+
+export const FarmingSeedSchema = z.object({
+  id: z.string(),
+  farmingId: z.string(),
+  cropId: z.string(),
+  count: z.number().int(),
+})
+
+export type FarmingSeed = z.infer<typeof FarmingSeedSchema>
+
+/////////////////////////////////////////
 // SELECT & INCLUDE
 /////////////////////////////////////////
 
@@ -392,6 +505,7 @@ export const UserIncludeSchema: z.ZodType<Prisma.UserInclude> = z.object({
   visited_team: z.union([z.boolean(),z.lazy(() => VisitedTeamFindManyArgsSchema)]).optional(),
   team_activity: z.union([z.boolean(),z.lazy(() => TeamActivityFindManyArgsSchema)]).optional(),
   cookie_clicker: z.union([z.boolean(),z.lazy(() => CookieClickerFindManyArgsSchema)]).optional(),
+  farming: z.union([z.boolean(),z.lazy(() => FarmingFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => UserCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -413,6 +527,7 @@ export const UserCountOutputTypeSelectSchema: z.ZodType<Prisma.UserCountOutputTy
   visited_team: z.boolean().optional(),
   team_activity: z.boolean().optional(),
   cookie_clicker: z.boolean().optional(),
+  farming: z.boolean().optional(),
 }).strict();
 
 export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z.object({
@@ -433,6 +548,7 @@ export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z.object({
   visited_team: z.union([z.boolean(),z.lazy(() => VisitedTeamFindManyArgsSchema)]).optional(),
   team_activity: z.union([z.boolean(),z.lazy(() => TeamActivityFindManyArgsSchema)]).optional(),
   cookie_clicker: z.union([z.boolean(),z.lazy(() => CookieClickerFindManyArgsSchema)]).optional(),
+  farming: z.union([z.boolean(),z.lazy(() => FarmingFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => UserCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -618,6 +734,182 @@ export const CookieClickerSelectSchema: z.ZodType<Prisma.CookieClickerSelect> = 
   employee_level_5: z.boolean().optional(),
   employee_level_6: z.boolean().optional(),
   user: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
+}).strict()
+
+// FARMING
+//------------------------------------------------------
+
+export const FarmingIncludeSchema: z.ZodType<Prisma.FarmingInclude> = z.object({
+  user: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
+  tiles: z.union([z.boolean(),z.lazy(() => FarmingTileFindManyArgsSchema)]).optional(),
+  parks: z.union([z.boolean(),z.lazy(() => FarmingParkFindManyArgsSchema)]).optional(),
+  seeds: z.union([z.boolean(),z.lazy(() => FarmingSeedFindManyArgsSchema)]).optional(),
+  _count: z.union([z.boolean(),z.lazy(() => FarmingCountOutputTypeArgsSchema)]).optional(),
+}).strict()
+
+export const FarmingArgsSchema: z.ZodType<Prisma.FarmingDefaultArgs> = z.object({
+  select: z.lazy(() => FarmingSelectSchema).optional(),
+  include: z.lazy(() => FarmingIncludeSchema).optional(),
+}).strict();
+
+export const FarmingCountOutputTypeArgsSchema: z.ZodType<Prisma.FarmingCountOutputTypeDefaultArgs> = z.object({
+  select: z.lazy(() => FarmingCountOutputTypeSelectSchema).nullish(),
+}).strict();
+
+export const FarmingCountOutputTypeSelectSchema: z.ZodType<Prisma.FarmingCountOutputTypeSelect> = z.object({
+  tiles: z.boolean().optional(),
+  parks: z.boolean().optional(),
+  seeds: z.boolean().optional(),
+}).strict();
+
+export const FarmingSelectSchema: z.ZodType<Prisma.FarmingSelect> = z.object({
+  id: z.boolean().optional(),
+  createdAt: z.boolean().optional(),
+  updatedAt: z.boolean().optional(),
+  userId: z.boolean().optional(),
+  level: z.boolean().optional(),
+  exp: z.boolean().optional(),
+  money: z.boolean().optional(),
+  parkPoint: z.boolean().optional(),
+  user: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
+  tiles: z.union([z.boolean(),z.lazy(() => FarmingTileFindManyArgsSchema)]).optional(),
+  parks: z.union([z.boolean(),z.lazy(() => FarmingParkFindManyArgsSchema)]).optional(),
+  seeds: z.union([z.boolean(),z.lazy(() => FarmingSeedFindManyArgsSchema)]).optional(),
+  _count: z.union([z.boolean(),z.lazy(() => FarmingCountOutputTypeArgsSchema)]).optional(),
+}).strict()
+
+// FARMING TILE
+//------------------------------------------------------
+
+export const FarmingTileIncludeSchema: z.ZodType<Prisma.FarmingTileInclude> = z.object({
+  farming: z.union([z.boolean(),z.lazy(() => FarmingArgsSchema)]).optional(),
+  crop: z.union([z.boolean(),z.lazy(() => CropArgsSchema)]).optional(),
+}).strict()
+
+export const FarmingTileArgsSchema: z.ZodType<Prisma.FarmingTileDefaultArgs> = z.object({
+  select: z.lazy(() => FarmingTileSelectSchema).optional(),
+  include: z.lazy(() => FarmingTileIncludeSchema).optional(),
+}).strict();
+
+export const FarmingTileSelectSchema: z.ZodType<Prisma.FarmingTileSelect> = z.object({
+  id: z.boolean().optional(),
+  farmingId: z.boolean().optional(),
+  x: z.boolean().optional(),
+  y: z.boolean().optional(),
+  cropId: z.boolean().optional(),
+  plantedAt: z.boolean().optional(),
+  qualityScore: z.boolean().optional(),
+  lastWateredAt: z.boolean().optional(),
+  farming: z.union([z.boolean(),z.lazy(() => FarmingArgsSchema)]).optional(),
+  crop: z.union([z.boolean(),z.lazy(() => CropArgsSchema)]).optional(),
+}).strict()
+
+// FARMING PARK
+//------------------------------------------------------
+
+export const FarmingParkIncludeSchema: z.ZodType<Prisma.FarmingParkInclude> = z.object({
+  farming: z.union([z.boolean(),z.lazy(() => FarmingArgsSchema)]).optional(),
+}).strict()
+
+export const FarmingParkArgsSchema: z.ZodType<Prisma.FarmingParkDefaultArgs> = z.object({
+  select: z.lazy(() => FarmingParkSelectSchema).optional(),
+  include: z.lazy(() => FarmingParkIncludeSchema).optional(),
+}).strict();
+
+export const FarmingParkSelectSchema: z.ZodType<Prisma.FarmingParkSelect> = z.object({
+  id: z.boolean().optional(),
+  farmingId: z.boolean().optional(),
+  parkType: z.boolean().optional(),
+  level: z.boolean().optional(),
+  farming: z.union([z.boolean(),z.lazy(() => FarmingArgsSchema)]).optional(),
+}).strict()
+
+// CROP
+//------------------------------------------------------
+
+export const CropIncludeSchema: z.ZodType<Prisma.CropInclude> = z.object({
+  tiles: z.union([z.boolean(),z.lazy(() => FarmingTileFindManyArgsSchema)]).optional(),
+  rates: z.union([z.boolean(),z.lazy(() => CropQualityFindManyArgsSchema)]).optional(),
+  seeds: z.union([z.boolean(),z.lazy(() => FarmingSeedFindManyArgsSchema)]).optional(),
+  _count: z.union([z.boolean(),z.lazy(() => CropCountOutputTypeArgsSchema)]).optional(),
+}).strict()
+
+export const CropArgsSchema: z.ZodType<Prisma.CropDefaultArgs> = z.object({
+  select: z.lazy(() => CropSelectSchema).optional(),
+  include: z.lazy(() => CropIncludeSchema).optional(),
+}).strict();
+
+export const CropCountOutputTypeArgsSchema: z.ZodType<Prisma.CropCountOutputTypeDefaultArgs> = z.object({
+  select: z.lazy(() => CropCountOutputTypeSelectSchema).nullish(),
+}).strict();
+
+export const CropCountOutputTypeSelectSchema: z.ZodType<Prisma.CropCountOutputTypeSelect> = z.object({
+  tiles: z.boolean().optional(),
+  rates: z.boolean().optional(),
+  seeds: z.boolean().optional(),
+}).strict();
+
+export const CropSelectSchema: z.ZodType<Prisma.CropSelect> = z.object({
+  id: z.boolean().optional(),
+  name: z.boolean().optional(),
+  displayName: z.boolean().optional(),
+  growTime: z.boolean().optional(),
+  seedPrice: z.boolean().optional(),
+  bSellPrice: z.boolean().optional(),
+  aSellPrice: z.boolean().optional(),
+  sSellPrice: z.boolean().optional(),
+  bHarvestExp: z.boolean().optional(),
+  aHarvestExp: z.boolean().optional(),
+  sHarvestExp: z.boolean().optional(),
+  waterScore: z.boolean().optional(),
+  tiles: z.union([z.boolean(),z.lazy(() => FarmingTileFindManyArgsSchema)]).optional(),
+  rates: z.union([z.boolean(),z.lazy(() => CropQualityFindManyArgsSchema)]).optional(),
+  seeds: z.union([z.boolean(),z.lazy(() => FarmingSeedFindManyArgsSchema)]).optional(),
+  _count: z.union([z.boolean(),z.lazy(() => CropCountOutputTypeArgsSchema)]).optional(),
+}).strict()
+
+// CROP QUALITY
+//------------------------------------------------------
+
+export const CropQualityIncludeSchema: z.ZodType<Prisma.CropQualityInclude> = z.object({
+  crop: z.union([z.boolean(),z.lazy(() => CropArgsSchema)]).optional(),
+}).strict()
+
+export const CropQualityArgsSchema: z.ZodType<Prisma.CropQualityDefaultArgs> = z.object({
+  select: z.lazy(() => CropQualitySelectSchema).optional(),
+  include: z.lazy(() => CropQualityIncludeSchema).optional(),
+}).strict();
+
+export const CropQualitySelectSchema: z.ZodType<Prisma.CropQualitySelect> = z.object({
+  id: z.boolean().optional(),
+  cropId: z.boolean().optional(),
+  minScore: z.boolean().optional(),
+  bRate: z.boolean().optional(),
+  aRate: z.boolean().optional(),
+  sRate: z.boolean().optional(),
+  crop: z.union([z.boolean(),z.lazy(() => CropArgsSchema)]).optional(),
+}).strict()
+
+// FARMING SEED
+//------------------------------------------------------
+
+export const FarmingSeedIncludeSchema: z.ZodType<Prisma.FarmingSeedInclude> = z.object({
+  farming: z.union([z.boolean(),z.lazy(() => FarmingArgsSchema)]).optional(),
+  crop: z.union([z.boolean(),z.lazy(() => CropArgsSchema)]).optional(),
+}).strict()
+
+export const FarmingSeedArgsSchema: z.ZodType<Prisma.FarmingSeedDefaultArgs> = z.object({
+  select: z.lazy(() => FarmingSeedSelectSchema).optional(),
+  include: z.lazy(() => FarmingSeedIncludeSchema).optional(),
+}).strict();
+
+export const FarmingSeedSelectSchema: z.ZodType<Prisma.FarmingSeedSelect> = z.object({
+  id: z.boolean().optional(),
+  farmingId: z.boolean().optional(),
+  cropId: z.boolean().optional(),
+  count: z.boolean().optional(),
+  farming: z.union([z.boolean(),z.lazy(() => FarmingArgsSchema)]).optional(),
+  crop: z.union([z.boolean(),z.lazy(() => CropArgsSchema)]).optional(),
 }).strict()
 
 
@@ -959,7 +1251,8 @@ export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z.object({
   team_invites: z.lazy(() => TeamInvitesListRelationFilterSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamListRelationFilterSchema).optional(),
   team_activity: z.lazy(() => TeamActivityListRelationFilterSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerListRelationFilterSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerListRelationFilterSchema).optional(),
+  farming: z.lazy(() => FarmingListRelationFilterSchema).optional()
 }).strict();
 
 export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWithRelationInput> = z.object({
@@ -979,7 +1272,8 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
   team_invites: z.lazy(() => TeamInvitesOrderByRelationAggregateInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamOrderByRelationAggregateInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityOrderByRelationAggregateInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerOrderByRelationAggregateInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerOrderByRelationAggregateInputSchema).optional(),
+  farming: z.lazy(() => FarmingOrderByRelationAggregateInputSchema).optional()
 }).strict();
 
 export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> = z.union([
@@ -1030,7 +1324,8 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
   team_invites: z.lazy(() => TeamInvitesListRelationFilterSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamListRelationFilterSchema).optional(),
   team_activity: z.lazy(() => TeamActivityListRelationFilterSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerListRelationFilterSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerListRelationFilterSchema).optional(),
+  farming: z.lazy(() => FarmingListRelationFilterSchema).optional()
 }).strict());
 
 export const UserOrderByWithAggregationInputSchema: z.ZodType<Prisma.UserOrderByWithAggregationInput> = z.object({
@@ -1601,6 +1896,505 @@ export const CookieClickerScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma
   employee_level_6: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
 }).strict();
 
+export const FarmingWhereInputSchema: z.ZodType<Prisma.FarmingWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => FarmingWhereInputSchema),z.lazy(() => FarmingWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => FarmingWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => FarmingWhereInputSchema),z.lazy(() => FarmingWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  userId: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  level: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  exp: z.union([ z.lazy(() => BigIntFilterSchema),z.bigint() ]).optional(),
+  money: z.union([ z.lazy(() => BigIntFilterSchema),z.bigint() ]).optional(),
+  parkPoint: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  user: z.union([ z.lazy(() => UserRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
+  tiles: z.lazy(() => FarmingTileListRelationFilterSchema).optional(),
+  parks: z.lazy(() => FarmingParkListRelationFilterSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedListRelationFilterSchema).optional()
+}).strict();
+
+export const FarmingOrderByWithRelationInputSchema: z.ZodType<Prisma.FarmingOrderByWithRelationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
+  level: z.lazy(() => SortOrderSchema).optional(),
+  exp: z.lazy(() => SortOrderSchema).optional(),
+  money: z.lazy(() => SortOrderSchema).optional(),
+  parkPoint: z.lazy(() => SortOrderSchema).optional(),
+  user: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
+  tiles: z.lazy(() => FarmingTileOrderByRelationAggregateInputSchema).optional(),
+  parks: z.lazy(() => FarmingParkOrderByRelationAggregateInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedOrderByRelationAggregateInputSchema).optional()
+}).strict();
+
+export const FarmingWhereUniqueInputSchema: z.ZodType<Prisma.FarmingWhereUniqueInput> = z.union([
+  z.object({
+    id: z.string(),
+    userId: z.string()
+  }),
+  z.object({
+    id: z.string(),
+  }),
+  z.object({
+    userId: z.string(),
+  }),
+])
+.and(z.object({
+  id: z.string().optional(),
+  userId: z.string().optional(),
+  AND: z.union([ z.lazy(() => FarmingWhereInputSchema),z.lazy(() => FarmingWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => FarmingWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => FarmingWhereInputSchema),z.lazy(() => FarmingWhereInputSchema).array() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  level: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  exp: z.union([ z.lazy(() => BigIntFilterSchema),z.bigint() ]).optional(),
+  money: z.union([ z.lazy(() => BigIntFilterSchema),z.bigint() ]).optional(),
+  parkPoint: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  user: z.union([ z.lazy(() => UserRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
+  tiles: z.lazy(() => FarmingTileListRelationFilterSchema).optional(),
+  parks: z.lazy(() => FarmingParkListRelationFilterSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedListRelationFilterSchema).optional()
+}).strict());
+
+export const FarmingOrderByWithAggregationInputSchema: z.ZodType<Prisma.FarmingOrderByWithAggregationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
+  level: z.lazy(() => SortOrderSchema).optional(),
+  exp: z.lazy(() => SortOrderSchema).optional(),
+  money: z.lazy(() => SortOrderSchema).optional(),
+  parkPoint: z.lazy(() => SortOrderSchema).optional(),
+  _count: z.lazy(() => FarmingCountOrderByAggregateInputSchema).optional(),
+  _avg: z.lazy(() => FarmingAvgOrderByAggregateInputSchema).optional(),
+  _max: z.lazy(() => FarmingMaxOrderByAggregateInputSchema).optional(),
+  _min: z.lazy(() => FarmingMinOrderByAggregateInputSchema).optional(),
+  _sum: z.lazy(() => FarmingSumOrderByAggregateInputSchema).optional()
+}).strict();
+
+export const FarmingScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.FarmingScalarWhereWithAggregatesInput> = z.object({
+  AND: z.union([ z.lazy(() => FarmingScalarWhereWithAggregatesInputSchema),z.lazy(() => FarmingScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  OR: z.lazy(() => FarmingScalarWhereWithAggregatesInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => FarmingScalarWhereWithAggregatesInputSchema),z.lazy(() => FarmingScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidWithAggregatesFilterSchema),z.string() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
+  userId: z.union([ z.lazy(() => UuidWithAggregatesFilterSchema),z.string() ]).optional(),
+  level: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  exp: z.union([ z.lazy(() => BigIntWithAggregatesFilterSchema),z.bigint() ]).optional(),
+  money: z.union([ z.lazy(() => BigIntWithAggregatesFilterSchema),z.bigint() ]).optional(),
+  parkPoint: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+}).strict();
+
+export const FarmingTileWhereInputSchema: z.ZodType<Prisma.FarmingTileWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => FarmingTileWhereInputSchema),z.lazy(() => FarmingTileWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => FarmingTileWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => FarmingTileWhereInputSchema),z.lazy(() => FarmingTileWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  farmingId: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  x: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  y: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  cropId: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
+  plantedAt: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
+  qualityScore: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  lastWateredAt: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
+  farming: z.union([ z.lazy(() => FarmingRelationFilterSchema),z.lazy(() => FarmingWhereInputSchema) ]).optional(),
+  crop: z.union([ z.lazy(() => CropNullableRelationFilterSchema),z.lazy(() => CropWhereInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const FarmingTileOrderByWithRelationInputSchema: z.ZodType<Prisma.FarmingTileOrderByWithRelationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  farmingId: z.lazy(() => SortOrderSchema).optional(),
+  x: z.lazy(() => SortOrderSchema).optional(),
+  y: z.lazy(() => SortOrderSchema).optional(),
+  cropId: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  plantedAt: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  qualityScore: z.lazy(() => SortOrderSchema).optional(),
+  lastWateredAt: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  farming: z.lazy(() => FarmingOrderByWithRelationInputSchema).optional(),
+  crop: z.lazy(() => CropOrderByWithRelationInputSchema).optional()
+}).strict();
+
+export const FarmingTileWhereUniqueInputSchema: z.ZodType<Prisma.FarmingTileWhereUniqueInput> = z.union([
+  z.object({
+    id: z.string(),
+    farmingId_x_y: z.lazy(() => FarmingTileFarmingIdXYCompoundUniqueInputSchema)
+  }),
+  z.object({
+    id: z.string(),
+  }),
+  z.object({
+    farmingId_x_y: z.lazy(() => FarmingTileFarmingIdXYCompoundUniqueInputSchema),
+  }),
+])
+.and(z.object({
+  id: z.string().optional(),
+  farmingId_x_y: z.lazy(() => FarmingTileFarmingIdXYCompoundUniqueInputSchema).optional(),
+  AND: z.union([ z.lazy(() => FarmingTileWhereInputSchema),z.lazy(() => FarmingTileWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => FarmingTileWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => FarmingTileWhereInputSchema),z.lazy(() => FarmingTileWhereInputSchema).array() ]).optional(),
+  farmingId: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  x: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  y: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  cropId: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
+  plantedAt: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
+  qualityScore: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  lastWateredAt: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
+  farming: z.union([ z.lazy(() => FarmingRelationFilterSchema),z.lazy(() => FarmingWhereInputSchema) ]).optional(),
+  crop: z.union([ z.lazy(() => CropNullableRelationFilterSchema),z.lazy(() => CropWhereInputSchema) ]).optional().nullable(),
+}).strict());
+
+export const FarmingTileOrderByWithAggregationInputSchema: z.ZodType<Prisma.FarmingTileOrderByWithAggregationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  farmingId: z.lazy(() => SortOrderSchema).optional(),
+  x: z.lazy(() => SortOrderSchema).optional(),
+  y: z.lazy(() => SortOrderSchema).optional(),
+  cropId: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  plantedAt: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  qualityScore: z.lazy(() => SortOrderSchema).optional(),
+  lastWateredAt: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  _count: z.lazy(() => FarmingTileCountOrderByAggregateInputSchema).optional(),
+  _avg: z.lazy(() => FarmingTileAvgOrderByAggregateInputSchema).optional(),
+  _max: z.lazy(() => FarmingTileMaxOrderByAggregateInputSchema).optional(),
+  _min: z.lazy(() => FarmingTileMinOrderByAggregateInputSchema).optional(),
+  _sum: z.lazy(() => FarmingTileSumOrderByAggregateInputSchema).optional()
+}).strict();
+
+export const FarmingTileScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.FarmingTileScalarWhereWithAggregatesInput> = z.object({
+  AND: z.union([ z.lazy(() => FarmingTileScalarWhereWithAggregatesInputSchema),z.lazy(() => FarmingTileScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  OR: z.lazy(() => FarmingTileScalarWhereWithAggregatesInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => FarmingTileScalarWhereWithAggregatesInputSchema),z.lazy(() => FarmingTileScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidWithAggregatesFilterSchema),z.string() ]).optional(),
+  farmingId: z.union([ z.lazy(() => UuidWithAggregatesFilterSchema),z.string() ]).optional(),
+  x: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  y: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  cropId: z.union([ z.lazy(() => UuidNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
+  plantedAt: z.union([ z.lazy(() => DateTimeNullableWithAggregatesFilterSchema),z.coerce.date() ]).optional().nullable(),
+  qualityScore: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  lastWateredAt: z.union([ z.lazy(() => DateTimeNullableWithAggregatesFilterSchema),z.coerce.date() ]).optional().nullable(),
+}).strict();
+
+export const FarmingParkWhereInputSchema: z.ZodType<Prisma.FarmingParkWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => FarmingParkWhereInputSchema),z.lazy(() => FarmingParkWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => FarmingParkWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => FarmingParkWhereInputSchema),z.lazy(() => FarmingParkWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  farmingId: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  parkType: z.union([ z.lazy(() => EnumParkTypeFilterSchema),z.lazy(() => ParkTypeSchema) ]).optional(),
+  level: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  farming: z.union([ z.lazy(() => FarmingRelationFilterSchema),z.lazy(() => FarmingWhereInputSchema) ]).optional(),
+}).strict();
+
+export const FarmingParkOrderByWithRelationInputSchema: z.ZodType<Prisma.FarmingParkOrderByWithRelationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  farmingId: z.lazy(() => SortOrderSchema).optional(),
+  parkType: z.lazy(() => SortOrderSchema).optional(),
+  level: z.lazy(() => SortOrderSchema).optional(),
+  farming: z.lazy(() => FarmingOrderByWithRelationInputSchema).optional()
+}).strict();
+
+export const FarmingParkWhereUniqueInputSchema: z.ZodType<Prisma.FarmingParkWhereUniqueInput> = z.union([
+  z.object({
+    id: z.string(),
+    farmingId_parkType: z.lazy(() => FarmingParkFarmingIdParkTypeCompoundUniqueInputSchema)
+  }),
+  z.object({
+    id: z.string(),
+  }),
+  z.object({
+    farmingId_parkType: z.lazy(() => FarmingParkFarmingIdParkTypeCompoundUniqueInputSchema),
+  }),
+])
+.and(z.object({
+  id: z.string().optional(),
+  farmingId_parkType: z.lazy(() => FarmingParkFarmingIdParkTypeCompoundUniqueInputSchema).optional(),
+  AND: z.union([ z.lazy(() => FarmingParkWhereInputSchema),z.lazy(() => FarmingParkWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => FarmingParkWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => FarmingParkWhereInputSchema),z.lazy(() => FarmingParkWhereInputSchema).array() ]).optional(),
+  farmingId: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  parkType: z.union([ z.lazy(() => EnumParkTypeFilterSchema),z.lazy(() => ParkTypeSchema) ]).optional(),
+  level: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  farming: z.union([ z.lazy(() => FarmingRelationFilterSchema),z.lazy(() => FarmingWhereInputSchema) ]).optional(),
+}).strict());
+
+export const FarmingParkOrderByWithAggregationInputSchema: z.ZodType<Prisma.FarmingParkOrderByWithAggregationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  farmingId: z.lazy(() => SortOrderSchema).optional(),
+  parkType: z.lazy(() => SortOrderSchema).optional(),
+  level: z.lazy(() => SortOrderSchema).optional(),
+  _count: z.lazy(() => FarmingParkCountOrderByAggregateInputSchema).optional(),
+  _avg: z.lazy(() => FarmingParkAvgOrderByAggregateInputSchema).optional(),
+  _max: z.lazy(() => FarmingParkMaxOrderByAggregateInputSchema).optional(),
+  _min: z.lazy(() => FarmingParkMinOrderByAggregateInputSchema).optional(),
+  _sum: z.lazy(() => FarmingParkSumOrderByAggregateInputSchema).optional()
+}).strict();
+
+export const FarmingParkScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.FarmingParkScalarWhereWithAggregatesInput> = z.object({
+  AND: z.union([ z.lazy(() => FarmingParkScalarWhereWithAggregatesInputSchema),z.lazy(() => FarmingParkScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  OR: z.lazy(() => FarmingParkScalarWhereWithAggregatesInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => FarmingParkScalarWhereWithAggregatesInputSchema),z.lazy(() => FarmingParkScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidWithAggregatesFilterSchema),z.string() ]).optional(),
+  farmingId: z.union([ z.lazy(() => UuidWithAggregatesFilterSchema),z.string() ]).optional(),
+  parkType: z.union([ z.lazy(() => EnumParkTypeWithAggregatesFilterSchema),z.lazy(() => ParkTypeSchema) ]).optional(),
+  level: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+}).strict();
+
+export const CropWhereInputSchema: z.ZodType<Prisma.CropWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => CropWhereInputSchema),z.lazy(() => CropWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => CropWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => CropWhereInputSchema),z.lazy(() => CropWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  displayName: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  growTime: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  seedPrice: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  bSellPrice: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  aSellPrice: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  sSellPrice: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  bHarvestExp: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  aHarvestExp: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  sHarvestExp: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  waterScore: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  tiles: z.lazy(() => FarmingTileListRelationFilterSchema).optional(),
+  rates: z.lazy(() => CropQualityListRelationFilterSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedListRelationFilterSchema).optional()
+}).strict();
+
+export const CropOrderByWithRelationInputSchema: z.ZodType<Prisma.CropOrderByWithRelationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  name: z.lazy(() => SortOrderSchema).optional(),
+  displayName: z.lazy(() => SortOrderSchema).optional(),
+  growTime: z.lazy(() => SortOrderSchema).optional(),
+  seedPrice: z.lazy(() => SortOrderSchema).optional(),
+  bSellPrice: z.lazy(() => SortOrderSchema).optional(),
+  aSellPrice: z.lazy(() => SortOrderSchema).optional(),
+  sSellPrice: z.lazy(() => SortOrderSchema).optional(),
+  bHarvestExp: z.lazy(() => SortOrderSchema).optional(),
+  aHarvestExp: z.lazy(() => SortOrderSchema).optional(),
+  sHarvestExp: z.lazy(() => SortOrderSchema).optional(),
+  waterScore: z.lazy(() => SortOrderSchema).optional(),
+  tiles: z.lazy(() => FarmingTileOrderByRelationAggregateInputSchema).optional(),
+  rates: z.lazy(() => CropQualityOrderByRelationAggregateInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedOrderByRelationAggregateInputSchema).optional()
+}).strict();
+
+export const CropWhereUniqueInputSchema: z.ZodType<Prisma.CropWhereUniqueInput> = z.union([
+  z.object({
+    id: z.string(),
+    name: z.string()
+  }),
+  z.object({
+    id: z.string(),
+  }),
+  z.object({
+    name: z.string(),
+  }),
+])
+.and(z.object({
+  id: z.string().optional(),
+  name: z.string().optional(),
+  AND: z.union([ z.lazy(() => CropWhereInputSchema),z.lazy(() => CropWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => CropWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => CropWhereInputSchema),z.lazy(() => CropWhereInputSchema).array() ]).optional(),
+  displayName: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  growTime: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  seedPrice: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  bSellPrice: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  aSellPrice: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  sSellPrice: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  bHarvestExp: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  aHarvestExp: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  sHarvestExp: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  waterScore: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  tiles: z.lazy(() => FarmingTileListRelationFilterSchema).optional(),
+  rates: z.lazy(() => CropQualityListRelationFilterSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedListRelationFilterSchema).optional()
+}).strict());
+
+export const CropOrderByWithAggregationInputSchema: z.ZodType<Prisma.CropOrderByWithAggregationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  name: z.lazy(() => SortOrderSchema).optional(),
+  displayName: z.lazy(() => SortOrderSchema).optional(),
+  growTime: z.lazy(() => SortOrderSchema).optional(),
+  seedPrice: z.lazy(() => SortOrderSchema).optional(),
+  bSellPrice: z.lazy(() => SortOrderSchema).optional(),
+  aSellPrice: z.lazy(() => SortOrderSchema).optional(),
+  sSellPrice: z.lazy(() => SortOrderSchema).optional(),
+  bHarvestExp: z.lazy(() => SortOrderSchema).optional(),
+  aHarvestExp: z.lazy(() => SortOrderSchema).optional(),
+  sHarvestExp: z.lazy(() => SortOrderSchema).optional(),
+  waterScore: z.lazy(() => SortOrderSchema).optional(),
+  _count: z.lazy(() => CropCountOrderByAggregateInputSchema).optional(),
+  _avg: z.lazy(() => CropAvgOrderByAggregateInputSchema).optional(),
+  _max: z.lazy(() => CropMaxOrderByAggregateInputSchema).optional(),
+  _min: z.lazy(() => CropMinOrderByAggregateInputSchema).optional(),
+  _sum: z.lazy(() => CropSumOrderByAggregateInputSchema).optional()
+}).strict();
+
+export const CropScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.CropScalarWhereWithAggregatesInput> = z.object({
+  AND: z.union([ z.lazy(() => CropScalarWhereWithAggregatesInputSchema),z.lazy(() => CropScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  OR: z.lazy(() => CropScalarWhereWithAggregatesInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => CropScalarWhereWithAggregatesInputSchema),z.lazy(() => CropScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidWithAggregatesFilterSchema),z.string() ]).optional(),
+  name: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  displayName: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  growTime: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  seedPrice: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  bSellPrice: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  aSellPrice: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  sSellPrice: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  bHarvestExp: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  aHarvestExp: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  sHarvestExp: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  waterScore: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+}).strict();
+
+export const CropQualityWhereInputSchema: z.ZodType<Prisma.CropQualityWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => CropQualityWhereInputSchema),z.lazy(() => CropQualityWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => CropQualityWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => CropQualityWhereInputSchema),z.lazy(() => CropQualityWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  cropId: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  minScore: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  bRate: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  aRate: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  sRate: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  crop: z.union([ z.lazy(() => CropRelationFilterSchema),z.lazy(() => CropWhereInputSchema) ]).optional(),
+}).strict();
+
+export const CropQualityOrderByWithRelationInputSchema: z.ZodType<Prisma.CropQualityOrderByWithRelationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  cropId: z.lazy(() => SortOrderSchema).optional(),
+  minScore: z.lazy(() => SortOrderSchema).optional(),
+  bRate: z.lazy(() => SortOrderSchema).optional(),
+  aRate: z.lazy(() => SortOrderSchema).optional(),
+  sRate: z.lazy(() => SortOrderSchema).optional(),
+  crop: z.lazy(() => CropOrderByWithRelationInputSchema).optional()
+}).strict();
+
+export const CropQualityWhereUniqueInputSchema: z.ZodType<Prisma.CropQualityWhereUniqueInput> = z.union([
+  z.object({
+    id: z.string(),
+    cropId_minScore: z.lazy(() => CropQualityCropIdMinScoreCompoundUniqueInputSchema)
+  }),
+  z.object({
+    id: z.string(),
+  }),
+  z.object({
+    cropId_minScore: z.lazy(() => CropQualityCropIdMinScoreCompoundUniqueInputSchema),
+  }),
+])
+.and(z.object({
+  id: z.string().optional(),
+  cropId_minScore: z.lazy(() => CropQualityCropIdMinScoreCompoundUniqueInputSchema).optional(),
+  AND: z.union([ z.lazy(() => CropQualityWhereInputSchema),z.lazy(() => CropQualityWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => CropQualityWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => CropQualityWhereInputSchema),z.lazy(() => CropQualityWhereInputSchema).array() ]).optional(),
+  cropId: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  minScore: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  bRate: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  aRate: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  sRate: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  crop: z.union([ z.lazy(() => CropRelationFilterSchema),z.lazy(() => CropWhereInputSchema) ]).optional(),
+}).strict());
+
+export const CropQualityOrderByWithAggregationInputSchema: z.ZodType<Prisma.CropQualityOrderByWithAggregationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  cropId: z.lazy(() => SortOrderSchema).optional(),
+  minScore: z.lazy(() => SortOrderSchema).optional(),
+  bRate: z.lazy(() => SortOrderSchema).optional(),
+  aRate: z.lazy(() => SortOrderSchema).optional(),
+  sRate: z.lazy(() => SortOrderSchema).optional(),
+  _count: z.lazy(() => CropQualityCountOrderByAggregateInputSchema).optional(),
+  _avg: z.lazy(() => CropQualityAvgOrderByAggregateInputSchema).optional(),
+  _max: z.lazy(() => CropQualityMaxOrderByAggregateInputSchema).optional(),
+  _min: z.lazy(() => CropQualityMinOrderByAggregateInputSchema).optional(),
+  _sum: z.lazy(() => CropQualitySumOrderByAggregateInputSchema).optional()
+}).strict();
+
+export const CropQualityScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.CropQualityScalarWhereWithAggregatesInput> = z.object({
+  AND: z.union([ z.lazy(() => CropQualityScalarWhereWithAggregatesInputSchema),z.lazy(() => CropQualityScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  OR: z.lazy(() => CropQualityScalarWhereWithAggregatesInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => CropQualityScalarWhereWithAggregatesInputSchema),z.lazy(() => CropQualityScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidWithAggregatesFilterSchema),z.string() ]).optional(),
+  cropId: z.union([ z.lazy(() => UuidWithAggregatesFilterSchema),z.string() ]).optional(),
+  minScore: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  bRate: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  aRate: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  sRate: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+}).strict();
+
+export const FarmingSeedWhereInputSchema: z.ZodType<Prisma.FarmingSeedWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => FarmingSeedWhereInputSchema),z.lazy(() => FarmingSeedWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => FarmingSeedWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => FarmingSeedWhereInputSchema),z.lazy(() => FarmingSeedWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  farmingId: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  cropId: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  count: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  farming: z.union([ z.lazy(() => FarmingRelationFilterSchema),z.lazy(() => FarmingWhereInputSchema) ]).optional(),
+  crop: z.union([ z.lazy(() => CropRelationFilterSchema),z.lazy(() => CropWhereInputSchema) ]).optional(),
+}).strict();
+
+export const FarmingSeedOrderByWithRelationInputSchema: z.ZodType<Prisma.FarmingSeedOrderByWithRelationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  farmingId: z.lazy(() => SortOrderSchema).optional(),
+  cropId: z.lazy(() => SortOrderSchema).optional(),
+  count: z.lazy(() => SortOrderSchema).optional(),
+  farming: z.lazy(() => FarmingOrderByWithRelationInputSchema).optional(),
+  crop: z.lazy(() => CropOrderByWithRelationInputSchema).optional()
+}).strict();
+
+export const FarmingSeedWhereUniqueInputSchema: z.ZodType<Prisma.FarmingSeedWhereUniqueInput> = z.union([
+  z.object({
+    id: z.string(),
+    farmingId_cropId: z.lazy(() => FarmingSeedFarmingIdCropIdCompoundUniqueInputSchema)
+  }),
+  z.object({
+    id: z.string(),
+  }),
+  z.object({
+    farmingId_cropId: z.lazy(() => FarmingSeedFarmingIdCropIdCompoundUniqueInputSchema),
+  }),
+])
+.and(z.object({
+  id: z.string().optional(),
+  farmingId_cropId: z.lazy(() => FarmingSeedFarmingIdCropIdCompoundUniqueInputSchema).optional(),
+  AND: z.union([ z.lazy(() => FarmingSeedWhereInputSchema),z.lazy(() => FarmingSeedWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => FarmingSeedWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => FarmingSeedWhereInputSchema),z.lazy(() => FarmingSeedWhereInputSchema).array() ]).optional(),
+  farmingId: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  cropId: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  count: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  farming: z.union([ z.lazy(() => FarmingRelationFilterSchema),z.lazy(() => FarmingWhereInputSchema) ]).optional(),
+  crop: z.union([ z.lazy(() => CropRelationFilterSchema),z.lazy(() => CropWhereInputSchema) ]).optional(),
+}).strict());
+
+export const FarmingSeedOrderByWithAggregationInputSchema: z.ZodType<Prisma.FarmingSeedOrderByWithAggregationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  farmingId: z.lazy(() => SortOrderSchema).optional(),
+  cropId: z.lazy(() => SortOrderSchema).optional(),
+  count: z.lazy(() => SortOrderSchema).optional(),
+  _count: z.lazy(() => FarmingSeedCountOrderByAggregateInputSchema).optional(),
+  _avg: z.lazy(() => FarmingSeedAvgOrderByAggregateInputSchema).optional(),
+  _max: z.lazy(() => FarmingSeedMaxOrderByAggregateInputSchema).optional(),
+  _min: z.lazy(() => FarmingSeedMinOrderByAggregateInputSchema).optional(),
+  _sum: z.lazy(() => FarmingSeedSumOrderByAggregateInputSchema).optional()
+}).strict();
+
+export const FarmingSeedScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.FarmingSeedScalarWhereWithAggregatesInput> = z.object({
+  AND: z.union([ z.lazy(() => FarmingSeedScalarWhereWithAggregatesInputSchema),z.lazy(() => FarmingSeedScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  OR: z.lazy(() => FarmingSeedScalarWhereWithAggregatesInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => FarmingSeedScalarWhereWithAggregatesInputSchema),z.lazy(() => FarmingSeedScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidWithAggregatesFilterSchema),z.string() ]).optional(),
+  farmingId: z.union([ z.lazy(() => UuidWithAggregatesFilterSchema),z.string() ]).optional(),
+  cropId: z.union([ z.lazy(() => UuidWithAggregatesFilterSchema),z.string() ]).optional(),
+  count: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+}).strict();
+
 export const RoleCreateInputSchema: z.ZodType<Prisma.RoleCreateInput> = z.object({
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
@@ -1912,7 +2706,8 @@ export const UserCreateInputSchema: z.ZodType<Prisma.UserCreateInput> = z.object
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional(),
+  farming: z.lazy(() => FarmingCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreateInput> = z.object({
@@ -1932,7 +2727,8 @@ export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreat
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  farming: z.lazy(() => FarmingUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z.object({
@@ -1952,7 +2748,8 @@ export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z.object
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional(),
+  farming: z.lazy(() => FarmingUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdateInput> = z.object({
@@ -1972,7 +2769,8 @@ export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdat
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  farming: z.lazy(() => FarmingUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserCreateManyInputSchema: z.ZodType<Prisma.UserCreateManyInput> = z.object({
@@ -2455,6 +3253,443 @@ export const CookieClickerUncheckedUpdateManyInputSchema: z.ZodType<Prisma.Cooki
   employee_level_6: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
+export const FarmingCreateInputSchema: z.ZodType<Prisma.FarmingCreateInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  level: z.number().int().optional(),
+  exp: z.bigint().optional(),
+  money: z.bigint().optional(),
+  parkPoint: z.number().int().optional(),
+  user: z.lazy(() => UserCreateNestedOneWithoutFarmingInputSchema),
+  tiles: z.lazy(() => FarmingTileCreateNestedManyWithoutFarmingInputSchema).optional(),
+  parks: z.lazy(() => FarmingParkCreateNestedManyWithoutFarmingInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedCreateNestedManyWithoutFarmingInputSchema).optional()
+}).strict();
+
+export const FarmingUncheckedCreateInputSchema: z.ZodType<Prisma.FarmingUncheckedCreateInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  userId: z.string(),
+  level: z.number().int().optional(),
+  exp: z.bigint().optional(),
+  money: z.bigint().optional(),
+  parkPoint: z.number().int().optional(),
+  tiles: z.lazy(() => FarmingTileUncheckedCreateNestedManyWithoutFarmingInputSchema).optional(),
+  parks: z.lazy(() => FarmingParkUncheckedCreateNestedManyWithoutFarmingInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedUncheckedCreateNestedManyWithoutFarmingInputSchema).optional()
+}).strict();
+
+export const FarmingUpdateInputSchema: z.ZodType<Prisma.FarmingUpdateInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  exp: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  money: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  parkPoint: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  user: z.lazy(() => UserUpdateOneRequiredWithoutFarmingNestedInputSchema).optional(),
+  tiles: z.lazy(() => FarmingTileUpdateManyWithoutFarmingNestedInputSchema).optional(),
+  parks: z.lazy(() => FarmingParkUpdateManyWithoutFarmingNestedInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedUpdateManyWithoutFarmingNestedInputSchema).optional()
+}).strict();
+
+export const FarmingUncheckedUpdateInputSchema: z.ZodType<Prisma.FarmingUncheckedUpdateInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  exp: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  money: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  parkPoint: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  tiles: z.lazy(() => FarmingTileUncheckedUpdateManyWithoutFarmingNestedInputSchema).optional(),
+  parks: z.lazy(() => FarmingParkUncheckedUpdateManyWithoutFarmingNestedInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedUncheckedUpdateManyWithoutFarmingNestedInputSchema).optional()
+}).strict();
+
+export const FarmingCreateManyInputSchema: z.ZodType<Prisma.FarmingCreateManyInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  userId: z.string(),
+  level: z.number().int().optional(),
+  exp: z.bigint().optional(),
+  money: z.bigint().optional(),
+  parkPoint: z.number().int().optional()
+}).strict();
+
+export const FarmingUpdateManyMutationInputSchema: z.ZodType<Prisma.FarmingUpdateManyMutationInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  exp: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  money: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  parkPoint: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const FarmingUncheckedUpdateManyInputSchema: z.ZodType<Prisma.FarmingUncheckedUpdateManyInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  exp: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  money: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  parkPoint: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const FarmingTileCreateInputSchema: z.ZodType<Prisma.FarmingTileCreateInput> = z.object({
+  id: z.string().optional(),
+  x: z.number().int(),
+  y: z.number().int(),
+  plantedAt: z.coerce.date().optional().nullable(),
+  qualityScore: z.number().int().optional(),
+  lastWateredAt: z.coerce.date().optional().nullable(),
+  farming: z.lazy(() => FarmingCreateNestedOneWithoutTilesInputSchema),
+  crop: z.lazy(() => CropCreateNestedOneWithoutTilesInputSchema).optional()
+}).strict();
+
+export const FarmingTileUncheckedCreateInputSchema: z.ZodType<Prisma.FarmingTileUncheckedCreateInput> = z.object({
+  id: z.string().optional(),
+  farmingId: z.string(),
+  x: z.number().int(),
+  y: z.number().int(),
+  cropId: z.string().optional().nullable(),
+  plantedAt: z.coerce.date().optional().nullable(),
+  qualityScore: z.number().int().optional(),
+  lastWateredAt: z.coerce.date().optional().nullable()
+}).strict();
+
+export const FarmingTileUpdateInputSchema: z.ZodType<Prisma.FarmingTileUpdateInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  x: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  y: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  plantedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  qualityScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  lastWateredAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  farming: z.lazy(() => FarmingUpdateOneRequiredWithoutTilesNestedInputSchema).optional(),
+  crop: z.lazy(() => CropUpdateOneWithoutTilesNestedInputSchema).optional()
+}).strict();
+
+export const FarmingTileUncheckedUpdateInputSchema: z.ZodType<Prisma.FarmingTileUncheckedUpdateInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  farmingId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  x: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  y: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  cropId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  plantedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  qualityScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  lastWateredAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const FarmingTileCreateManyInputSchema: z.ZodType<Prisma.FarmingTileCreateManyInput> = z.object({
+  id: z.string().optional(),
+  farmingId: z.string(),
+  x: z.number().int(),
+  y: z.number().int(),
+  cropId: z.string().optional().nullable(),
+  plantedAt: z.coerce.date().optional().nullable(),
+  qualityScore: z.number().int().optional(),
+  lastWateredAt: z.coerce.date().optional().nullable()
+}).strict();
+
+export const FarmingTileUpdateManyMutationInputSchema: z.ZodType<Prisma.FarmingTileUpdateManyMutationInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  x: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  y: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  plantedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  qualityScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  lastWateredAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const FarmingTileUncheckedUpdateManyInputSchema: z.ZodType<Prisma.FarmingTileUncheckedUpdateManyInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  farmingId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  x: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  y: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  cropId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  plantedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  qualityScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  lastWateredAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const FarmingParkCreateInputSchema: z.ZodType<Prisma.FarmingParkCreateInput> = z.object({
+  id: z.string().optional(),
+  parkType: z.lazy(() => ParkTypeSchema),
+  level: z.number().int().optional(),
+  farming: z.lazy(() => FarmingCreateNestedOneWithoutParksInputSchema)
+}).strict();
+
+export const FarmingParkUncheckedCreateInputSchema: z.ZodType<Prisma.FarmingParkUncheckedCreateInput> = z.object({
+  id: z.string().optional(),
+  farmingId: z.string(),
+  parkType: z.lazy(() => ParkTypeSchema),
+  level: z.number().int().optional()
+}).strict();
+
+export const FarmingParkUpdateInputSchema: z.ZodType<Prisma.FarmingParkUpdateInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  parkType: z.union([ z.lazy(() => ParkTypeSchema),z.lazy(() => EnumParkTypeFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  farming: z.lazy(() => FarmingUpdateOneRequiredWithoutParksNestedInputSchema).optional()
+}).strict();
+
+export const FarmingParkUncheckedUpdateInputSchema: z.ZodType<Prisma.FarmingParkUncheckedUpdateInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  farmingId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  parkType: z.union([ z.lazy(() => ParkTypeSchema),z.lazy(() => EnumParkTypeFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const FarmingParkCreateManyInputSchema: z.ZodType<Prisma.FarmingParkCreateManyInput> = z.object({
+  id: z.string().optional(),
+  farmingId: z.string(),
+  parkType: z.lazy(() => ParkTypeSchema),
+  level: z.number().int().optional()
+}).strict();
+
+export const FarmingParkUpdateManyMutationInputSchema: z.ZodType<Prisma.FarmingParkUpdateManyMutationInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  parkType: z.union([ z.lazy(() => ParkTypeSchema),z.lazy(() => EnumParkTypeFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const FarmingParkUncheckedUpdateManyInputSchema: z.ZodType<Prisma.FarmingParkUncheckedUpdateManyInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  farmingId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  parkType: z.union([ z.lazy(() => ParkTypeSchema),z.lazy(() => EnumParkTypeFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const CropCreateInputSchema: z.ZodType<Prisma.CropCreateInput> = z.object({
+  id: z.string().optional(),
+  name: z.string(),
+  displayName: z.string(),
+  growTime: z.number().int(),
+  seedPrice: z.number().int(),
+  bSellPrice: z.number().int(),
+  aSellPrice: z.number().int(),
+  sSellPrice: z.number().int(),
+  bHarvestExp: z.number().int(),
+  aHarvestExp: z.number().int(),
+  sHarvestExp: z.number().int(),
+  waterScore: z.number().int(),
+  tiles: z.lazy(() => FarmingTileCreateNestedManyWithoutCropInputSchema).optional(),
+  rates: z.lazy(() => CropQualityCreateNestedManyWithoutCropInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedCreateNestedManyWithoutCropInputSchema).optional()
+}).strict();
+
+export const CropUncheckedCreateInputSchema: z.ZodType<Prisma.CropUncheckedCreateInput> = z.object({
+  id: z.string().optional(),
+  name: z.string(),
+  displayName: z.string(),
+  growTime: z.number().int(),
+  seedPrice: z.number().int(),
+  bSellPrice: z.number().int(),
+  aSellPrice: z.number().int(),
+  sSellPrice: z.number().int(),
+  bHarvestExp: z.number().int(),
+  aHarvestExp: z.number().int(),
+  sHarvestExp: z.number().int(),
+  waterScore: z.number().int(),
+  tiles: z.lazy(() => FarmingTileUncheckedCreateNestedManyWithoutCropInputSchema).optional(),
+  rates: z.lazy(() => CropQualityUncheckedCreateNestedManyWithoutCropInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedUncheckedCreateNestedManyWithoutCropInputSchema).optional()
+}).strict();
+
+export const CropUpdateInputSchema: z.ZodType<Prisma.CropUpdateInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  displayName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  growTime: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  seedPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  waterScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  tiles: z.lazy(() => FarmingTileUpdateManyWithoutCropNestedInputSchema).optional(),
+  rates: z.lazy(() => CropQualityUpdateManyWithoutCropNestedInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedUpdateManyWithoutCropNestedInputSchema).optional()
+}).strict();
+
+export const CropUncheckedUpdateInputSchema: z.ZodType<Prisma.CropUncheckedUpdateInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  displayName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  growTime: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  seedPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  waterScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  tiles: z.lazy(() => FarmingTileUncheckedUpdateManyWithoutCropNestedInputSchema).optional(),
+  rates: z.lazy(() => CropQualityUncheckedUpdateManyWithoutCropNestedInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedUncheckedUpdateManyWithoutCropNestedInputSchema).optional()
+}).strict();
+
+export const CropCreateManyInputSchema: z.ZodType<Prisma.CropCreateManyInput> = z.object({
+  id: z.string().optional(),
+  name: z.string(),
+  displayName: z.string(),
+  growTime: z.number().int(),
+  seedPrice: z.number().int(),
+  bSellPrice: z.number().int(),
+  aSellPrice: z.number().int(),
+  sSellPrice: z.number().int(),
+  bHarvestExp: z.number().int(),
+  aHarvestExp: z.number().int(),
+  sHarvestExp: z.number().int(),
+  waterScore: z.number().int()
+}).strict();
+
+export const CropUpdateManyMutationInputSchema: z.ZodType<Prisma.CropUpdateManyMutationInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  displayName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  growTime: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  seedPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  waterScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const CropUncheckedUpdateManyInputSchema: z.ZodType<Prisma.CropUncheckedUpdateManyInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  displayName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  growTime: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  seedPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  waterScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const CropQualityCreateInputSchema: z.ZodType<Prisma.CropQualityCreateInput> = z.object({
+  id: z.string().optional(),
+  minScore: z.number().int(),
+  bRate: z.number().int(),
+  aRate: z.number().int(),
+  sRate: z.number().int(),
+  crop: z.lazy(() => CropCreateNestedOneWithoutRatesInputSchema)
+}).strict();
+
+export const CropQualityUncheckedCreateInputSchema: z.ZodType<Prisma.CropQualityUncheckedCreateInput> = z.object({
+  id: z.string().optional(),
+  cropId: z.string(),
+  minScore: z.number().int(),
+  bRate: z.number().int(),
+  aRate: z.number().int(),
+  sRate: z.number().int()
+}).strict();
+
+export const CropQualityUpdateInputSchema: z.ZodType<Prisma.CropQualityUpdateInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  minScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bRate: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aRate: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sRate: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  crop: z.lazy(() => CropUpdateOneRequiredWithoutRatesNestedInputSchema).optional()
+}).strict();
+
+export const CropQualityUncheckedUpdateInputSchema: z.ZodType<Prisma.CropQualityUncheckedUpdateInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  cropId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  minScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bRate: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aRate: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sRate: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const CropQualityCreateManyInputSchema: z.ZodType<Prisma.CropQualityCreateManyInput> = z.object({
+  id: z.string().optional(),
+  cropId: z.string(),
+  minScore: z.number().int(),
+  bRate: z.number().int(),
+  aRate: z.number().int(),
+  sRate: z.number().int()
+}).strict();
+
+export const CropQualityUpdateManyMutationInputSchema: z.ZodType<Prisma.CropQualityUpdateManyMutationInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  minScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bRate: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aRate: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sRate: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const CropQualityUncheckedUpdateManyInputSchema: z.ZodType<Prisma.CropQualityUncheckedUpdateManyInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  cropId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  minScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bRate: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aRate: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sRate: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const FarmingSeedCreateInputSchema: z.ZodType<Prisma.FarmingSeedCreateInput> = z.object({
+  id: z.string().optional(),
+  count: z.number().int().optional(),
+  farming: z.lazy(() => FarmingCreateNestedOneWithoutSeedsInputSchema),
+  crop: z.lazy(() => CropCreateNestedOneWithoutSeedsInputSchema)
+}).strict();
+
+export const FarmingSeedUncheckedCreateInputSchema: z.ZodType<Prisma.FarmingSeedUncheckedCreateInput> = z.object({
+  id: z.string().optional(),
+  farmingId: z.string(),
+  cropId: z.string(),
+  count: z.number().int().optional()
+}).strict();
+
+export const FarmingSeedUpdateInputSchema: z.ZodType<Prisma.FarmingSeedUpdateInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  count: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  farming: z.lazy(() => FarmingUpdateOneRequiredWithoutSeedsNestedInputSchema).optional(),
+  crop: z.lazy(() => CropUpdateOneRequiredWithoutSeedsNestedInputSchema).optional()
+}).strict();
+
+export const FarmingSeedUncheckedUpdateInputSchema: z.ZodType<Prisma.FarmingSeedUncheckedUpdateInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  farmingId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  cropId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  count: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const FarmingSeedCreateManyInputSchema: z.ZodType<Prisma.FarmingSeedCreateManyInput> = z.object({
+  id: z.string().optional(),
+  farmingId: z.string(),
+  cropId: z.string(),
+  count: z.number().int().optional()
+}).strict();
+
+export const FarmingSeedUpdateManyMutationInputSchema: z.ZodType<Prisma.FarmingSeedUpdateManyMutationInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  count: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const FarmingSeedUncheckedUpdateManyInputSchema: z.ZodType<Prisma.FarmingSeedUncheckedUpdateManyInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  farmingId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  cropId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  count: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
 export const UuidFilterSchema: z.ZodType<Prisma.UuidFilter> = z.object({
   equals: z.string().optional(),
   in: z.string().array().optional(),
@@ -2825,11 +4060,21 @@ export const CookieClickerListRelationFilterSchema: z.ZodType<Prisma.CookieClick
   none: z.lazy(() => CookieClickerWhereInputSchema).optional()
 }).strict();
 
+export const FarmingListRelationFilterSchema: z.ZodType<Prisma.FarmingListRelationFilter> = z.object({
+  every: z.lazy(() => FarmingWhereInputSchema).optional(),
+  some: z.lazy(() => FarmingWhereInputSchema).optional(),
+  none: z.lazy(() => FarmingWhereInputSchema).optional()
+}).strict();
+
 export const TeamOrderByRelationAggregateInputSchema: z.ZodType<Prisma.TeamOrderByRelationAggregateInput> = z.object({
   _count: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const CookieClickerOrderByRelationAggregateInputSchema: z.ZodType<Prisma.CookieClickerOrderByRelationAggregateInput> = z.object({
+  _count: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const FarmingOrderByRelationAggregateInputSchema: z.ZodType<Prisma.FarmingOrderByRelationAggregateInput> = z.object({
   _count: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
@@ -3166,6 +4411,389 @@ export const IntWithAggregatesFilterSchema: z.ZodType<Prisma.IntWithAggregatesFi
   _sum: z.lazy(() => NestedIntFilterSchema).optional(),
   _min: z.lazy(() => NestedIntFilterSchema).optional(),
   _max: z.lazy(() => NestedIntFilterSchema).optional()
+}).strict();
+
+export const UserRelationFilterSchema: z.ZodType<Prisma.UserRelationFilter> = z.object({
+  is: z.lazy(() => UserWhereInputSchema).optional(),
+  isNot: z.lazy(() => UserWhereInputSchema).optional()
+}).strict();
+
+export const FarmingTileListRelationFilterSchema: z.ZodType<Prisma.FarmingTileListRelationFilter> = z.object({
+  every: z.lazy(() => FarmingTileWhereInputSchema).optional(),
+  some: z.lazy(() => FarmingTileWhereInputSchema).optional(),
+  none: z.lazy(() => FarmingTileWhereInputSchema).optional()
+}).strict();
+
+export const FarmingParkListRelationFilterSchema: z.ZodType<Prisma.FarmingParkListRelationFilter> = z.object({
+  every: z.lazy(() => FarmingParkWhereInputSchema).optional(),
+  some: z.lazy(() => FarmingParkWhereInputSchema).optional(),
+  none: z.lazy(() => FarmingParkWhereInputSchema).optional()
+}).strict();
+
+export const FarmingSeedListRelationFilterSchema: z.ZodType<Prisma.FarmingSeedListRelationFilter> = z.object({
+  every: z.lazy(() => FarmingSeedWhereInputSchema).optional(),
+  some: z.lazy(() => FarmingSeedWhereInputSchema).optional(),
+  none: z.lazy(() => FarmingSeedWhereInputSchema).optional()
+}).strict();
+
+export const FarmingTileOrderByRelationAggregateInputSchema: z.ZodType<Prisma.FarmingTileOrderByRelationAggregateInput> = z.object({
+  _count: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const FarmingParkOrderByRelationAggregateInputSchema: z.ZodType<Prisma.FarmingParkOrderByRelationAggregateInput> = z.object({
+  _count: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const FarmingSeedOrderByRelationAggregateInputSchema: z.ZodType<Prisma.FarmingSeedOrderByRelationAggregateInput> = z.object({
+  _count: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const FarmingCountOrderByAggregateInputSchema: z.ZodType<Prisma.FarmingCountOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
+  level: z.lazy(() => SortOrderSchema).optional(),
+  exp: z.lazy(() => SortOrderSchema).optional(),
+  money: z.lazy(() => SortOrderSchema).optional(),
+  parkPoint: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const FarmingAvgOrderByAggregateInputSchema: z.ZodType<Prisma.FarmingAvgOrderByAggregateInput> = z.object({
+  level: z.lazy(() => SortOrderSchema).optional(),
+  exp: z.lazy(() => SortOrderSchema).optional(),
+  money: z.lazy(() => SortOrderSchema).optional(),
+  parkPoint: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const FarmingMaxOrderByAggregateInputSchema: z.ZodType<Prisma.FarmingMaxOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
+  level: z.lazy(() => SortOrderSchema).optional(),
+  exp: z.lazy(() => SortOrderSchema).optional(),
+  money: z.lazy(() => SortOrderSchema).optional(),
+  parkPoint: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const FarmingMinOrderByAggregateInputSchema: z.ZodType<Prisma.FarmingMinOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
+  level: z.lazy(() => SortOrderSchema).optional(),
+  exp: z.lazy(() => SortOrderSchema).optional(),
+  money: z.lazy(() => SortOrderSchema).optional(),
+  parkPoint: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const FarmingSumOrderByAggregateInputSchema: z.ZodType<Prisma.FarmingSumOrderByAggregateInput> = z.object({
+  level: z.lazy(() => SortOrderSchema).optional(),
+  exp: z.lazy(() => SortOrderSchema).optional(),
+  money: z.lazy(() => SortOrderSchema).optional(),
+  parkPoint: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const DateTimeNullableFilterSchema: z.ZodType<Prisma.DateTimeNullableFilter> = z.object({
+  equals: z.coerce.date().optional().nullable(),
+  in: z.coerce.date().array().optional().nullable(),
+  notIn: z.coerce.date().array().optional().nullable(),
+  lt: z.coerce.date().optional(),
+  lte: z.coerce.date().optional(),
+  gt: z.coerce.date().optional(),
+  gte: z.coerce.date().optional(),
+  not: z.union([ z.coerce.date(),z.lazy(() => NestedDateTimeNullableFilterSchema) ]).optional().nullable(),
+}).strict();
+
+export const FarmingRelationFilterSchema: z.ZodType<Prisma.FarmingRelationFilter> = z.object({
+  is: z.lazy(() => FarmingWhereInputSchema).optional(),
+  isNot: z.lazy(() => FarmingWhereInputSchema).optional()
+}).strict();
+
+export const CropNullableRelationFilterSchema: z.ZodType<Prisma.CropNullableRelationFilter> = z.object({
+  is: z.lazy(() => CropWhereInputSchema).optional().nullable(),
+  isNot: z.lazy(() => CropWhereInputSchema).optional().nullable()
+}).strict();
+
+export const FarmingTileFarmingIdXYCompoundUniqueInputSchema: z.ZodType<Prisma.FarmingTileFarmingIdXYCompoundUniqueInput> = z.object({
+  farmingId: z.string(),
+  x: z.number(),
+  y: z.number()
+}).strict();
+
+export const FarmingTileCountOrderByAggregateInputSchema: z.ZodType<Prisma.FarmingTileCountOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  farmingId: z.lazy(() => SortOrderSchema).optional(),
+  x: z.lazy(() => SortOrderSchema).optional(),
+  y: z.lazy(() => SortOrderSchema).optional(),
+  cropId: z.lazy(() => SortOrderSchema).optional(),
+  plantedAt: z.lazy(() => SortOrderSchema).optional(),
+  qualityScore: z.lazy(() => SortOrderSchema).optional(),
+  lastWateredAt: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const FarmingTileAvgOrderByAggregateInputSchema: z.ZodType<Prisma.FarmingTileAvgOrderByAggregateInput> = z.object({
+  x: z.lazy(() => SortOrderSchema).optional(),
+  y: z.lazy(() => SortOrderSchema).optional(),
+  qualityScore: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const FarmingTileMaxOrderByAggregateInputSchema: z.ZodType<Prisma.FarmingTileMaxOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  farmingId: z.lazy(() => SortOrderSchema).optional(),
+  x: z.lazy(() => SortOrderSchema).optional(),
+  y: z.lazy(() => SortOrderSchema).optional(),
+  cropId: z.lazy(() => SortOrderSchema).optional(),
+  plantedAt: z.lazy(() => SortOrderSchema).optional(),
+  qualityScore: z.lazy(() => SortOrderSchema).optional(),
+  lastWateredAt: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const FarmingTileMinOrderByAggregateInputSchema: z.ZodType<Prisma.FarmingTileMinOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  farmingId: z.lazy(() => SortOrderSchema).optional(),
+  x: z.lazy(() => SortOrderSchema).optional(),
+  y: z.lazy(() => SortOrderSchema).optional(),
+  cropId: z.lazy(() => SortOrderSchema).optional(),
+  plantedAt: z.lazy(() => SortOrderSchema).optional(),
+  qualityScore: z.lazy(() => SortOrderSchema).optional(),
+  lastWateredAt: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const FarmingTileSumOrderByAggregateInputSchema: z.ZodType<Prisma.FarmingTileSumOrderByAggregateInput> = z.object({
+  x: z.lazy(() => SortOrderSchema).optional(),
+  y: z.lazy(() => SortOrderSchema).optional(),
+  qualityScore: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const DateTimeNullableWithAggregatesFilterSchema: z.ZodType<Prisma.DateTimeNullableWithAggregatesFilter> = z.object({
+  equals: z.coerce.date().optional().nullable(),
+  in: z.coerce.date().array().optional().nullable(),
+  notIn: z.coerce.date().array().optional().nullable(),
+  lt: z.coerce.date().optional(),
+  lte: z.coerce.date().optional(),
+  gt: z.coerce.date().optional(),
+  gte: z.coerce.date().optional(),
+  not: z.union([ z.coerce.date(),z.lazy(() => NestedDateTimeNullableWithAggregatesFilterSchema) ]).optional().nullable(),
+  _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
+  _min: z.lazy(() => NestedDateTimeNullableFilterSchema).optional(),
+  _max: z.lazy(() => NestedDateTimeNullableFilterSchema).optional()
+}).strict();
+
+export const EnumParkTypeFilterSchema: z.ZodType<Prisma.EnumParkTypeFilter> = z.object({
+  equals: z.lazy(() => ParkTypeSchema).optional(),
+  in: z.lazy(() => ParkTypeSchema).array().optional(),
+  notIn: z.lazy(() => ParkTypeSchema).array().optional(),
+  not: z.union([ z.lazy(() => ParkTypeSchema),z.lazy(() => NestedEnumParkTypeFilterSchema) ]).optional(),
+}).strict();
+
+export const FarmingParkFarmingIdParkTypeCompoundUniqueInputSchema: z.ZodType<Prisma.FarmingParkFarmingIdParkTypeCompoundUniqueInput> = z.object({
+  farmingId: z.string(),
+  parkType: z.lazy(() => ParkTypeSchema)
+}).strict();
+
+export const FarmingParkCountOrderByAggregateInputSchema: z.ZodType<Prisma.FarmingParkCountOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  farmingId: z.lazy(() => SortOrderSchema).optional(),
+  parkType: z.lazy(() => SortOrderSchema).optional(),
+  level: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const FarmingParkAvgOrderByAggregateInputSchema: z.ZodType<Prisma.FarmingParkAvgOrderByAggregateInput> = z.object({
+  level: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const FarmingParkMaxOrderByAggregateInputSchema: z.ZodType<Prisma.FarmingParkMaxOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  farmingId: z.lazy(() => SortOrderSchema).optional(),
+  parkType: z.lazy(() => SortOrderSchema).optional(),
+  level: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const FarmingParkMinOrderByAggregateInputSchema: z.ZodType<Prisma.FarmingParkMinOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  farmingId: z.lazy(() => SortOrderSchema).optional(),
+  parkType: z.lazy(() => SortOrderSchema).optional(),
+  level: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const FarmingParkSumOrderByAggregateInputSchema: z.ZodType<Prisma.FarmingParkSumOrderByAggregateInput> = z.object({
+  level: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const EnumParkTypeWithAggregatesFilterSchema: z.ZodType<Prisma.EnumParkTypeWithAggregatesFilter> = z.object({
+  equals: z.lazy(() => ParkTypeSchema).optional(),
+  in: z.lazy(() => ParkTypeSchema).array().optional(),
+  notIn: z.lazy(() => ParkTypeSchema).array().optional(),
+  not: z.union([ z.lazy(() => ParkTypeSchema),z.lazy(() => NestedEnumParkTypeWithAggregatesFilterSchema) ]).optional(),
+  _count: z.lazy(() => NestedIntFilterSchema).optional(),
+  _min: z.lazy(() => NestedEnumParkTypeFilterSchema).optional(),
+  _max: z.lazy(() => NestedEnumParkTypeFilterSchema).optional()
+}).strict();
+
+export const CropQualityListRelationFilterSchema: z.ZodType<Prisma.CropQualityListRelationFilter> = z.object({
+  every: z.lazy(() => CropQualityWhereInputSchema).optional(),
+  some: z.lazy(() => CropQualityWhereInputSchema).optional(),
+  none: z.lazy(() => CropQualityWhereInputSchema).optional()
+}).strict();
+
+export const CropQualityOrderByRelationAggregateInputSchema: z.ZodType<Prisma.CropQualityOrderByRelationAggregateInput> = z.object({
+  _count: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const CropCountOrderByAggregateInputSchema: z.ZodType<Prisma.CropCountOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  name: z.lazy(() => SortOrderSchema).optional(),
+  displayName: z.lazy(() => SortOrderSchema).optional(),
+  growTime: z.lazy(() => SortOrderSchema).optional(),
+  seedPrice: z.lazy(() => SortOrderSchema).optional(),
+  bSellPrice: z.lazy(() => SortOrderSchema).optional(),
+  aSellPrice: z.lazy(() => SortOrderSchema).optional(),
+  sSellPrice: z.lazy(() => SortOrderSchema).optional(),
+  bHarvestExp: z.lazy(() => SortOrderSchema).optional(),
+  aHarvestExp: z.lazy(() => SortOrderSchema).optional(),
+  sHarvestExp: z.lazy(() => SortOrderSchema).optional(),
+  waterScore: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const CropAvgOrderByAggregateInputSchema: z.ZodType<Prisma.CropAvgOrderByAggregateInput> = z.object({
+  growTime: z.lazy(() => SortOrderSchema).optional(),
+  seedPrice: z.lazy(() => SortOrderSchema).optional(),
+  bSellPrice: z.lazy(() => SortOrderSchema).optional(),
+  aSellPrice: z.lazy(() => SortOrderSchema).optional(),
+  sSellPrice: z.lazy(() => SortOrderSchema).optional(),
+  bHarvestExp: z.lazy(() => SortOrderSchema).optional(),
+  aHarvestExp: z.lazy(() => SortOrderSchema).optional(),
+  sHarvestExp: z.lazy(() => SortOrderSchema).optional(),
+  waterScore: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const CropMaxOrderByAggregateInputSchema: z.ZodType<Prisma.CropMaxOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  name: z.lazy(() => SortOrderSchema).optional(),
+  displayName: z.lazy(() => SortOrderSchema).optional(),
+  growTime: z.lazy(() => SortOrderSchema).optional(),
+  seedPrice: z.lazy(() => SortOrderSchema).optional(),
+  bSellPrice: z.lazy(() => SortOrderSchema).optional(),
+  aSellPrice: z.lazy(() => SortOrderSchema).optional(),
+  sSellPrice: z.lazy(() => SortOrderSchema).optional(),
+  bHarvestExp: z.lazy(() => SortOrderSchema).optional(),
+  aHarvestExp: z.lazy(() => SortOrderSchema).optional(),
+  sHarvestExp: z.lazy(() => SortOrderSchema).optional(),
+  waterScore: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const CropMinOrderByAggregateInputSchema: z.ZodType<Prisma.CropMinOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  name: z.lazy(() => SortOrderSchema).optional(),
+  displayName: z.lazy(() => SortOrderSchema).optional(),
+  growTime: z.lazy(() => SortOrderSchema).optional(),
+  seedPrice: z.lazy(() => SortOrderSchema).optional(),
+  bSellPrice: z.lazy(() => SortOrderSchema).optional(),
+  aSellPrice: z.lazy(() => SortOrderSchema).optional(),
+  sSellPrice: z.lazy(() => SortOrderSchema).optional(),
+  bHarvestExp: z.lazy(() => SortOrderSchema).optional(),
+  aHarvestExp: z.lazy(() => SortOrderSchema).optional(),
+  sHarvestExp: z.lazy(() => SortOrderSchema).optional(),
+  waterScore: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const CropSumOrderByAggregateInputSchema: z.ZodType<Prisma.CropSumOrderByAggregateInput> = z.object({
+  growTime: z.lazy(() => SortOrderSchema).optional(),
+  seedPrice: z.lazy(() => SortOrderSchema).optional(),
+  bSellPrice: z.lazy(() => SortOrderSchema).optional(),
+  aSellPrice: z.lazy(() => SortOrderSchema).optional(),
+  sSellPrice: z.lazy(() => SortOrderSchema).optional(),
+  bHarvestExp: z.lazy(() => SortOrderSchema).optional(),
+  aHarvestExp: z.lazy(() => SortOrderSchema).optional(),
+  sHarvestExp: z.lazy(() => SortOrderSchema).optional(),
+  waterScore: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const CropRelationFilterSchema: z.ZodType<Prisma.CropRelationFilter> = z.object({
+  is: z.lazy(() => CropWhereInputSchema).optional(),
+  isNot: z.lazy(() => CropWhereInputSchema).optional()
+}).strict();
+
+export const CropQualityCropIdMinScoreCompoundUniqueInputSchema: z.ZodType<Prisma.CropQualityCropIdMinScoreCompoundUniqueInput> = z.object({
+  cropId: z.string(),
+  minScore: z.number()
+}).strict();
+
+export const CropQualityCountOrderByAggregateInputSchema: z.ZodType<Prisma.CropQualityCountOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  cropId: z.lazy(() => SortOrderSchema).optional(),
+  minScore: z.lazy(() => SortOrderSchema).optional(),
+  bRate: z.lazy(() => SortOrderSchema).optional(),
+  aRate: z.lazy(() => SortOrderSchema).optional(),
+  sRate: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const CropQualityAvgOrderByAggregateInputSchema: z.ZodType<Prisma.CropQualityAvgOrderByAggregateInput> = z.object({
+  minScore: z.lazy(() => SortOrderSchema).optional(),
+  bRate: z.lazy(() => SortOrderSchema).optional(),
+  aRate: z.lazy(() => SortOrderSchema).optional(),
+  sRate: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const CropQualityMaxOrderByAggregateInputSchema: z.ZodType<Prisma.CropQualityMaxOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  cropId: z.lazy(() => SortOrderSchema).optional(),
+  minScore: z.lazy(() => SortOrderSchema).optional(),
+  bRate: z.lazy(() => SortOrderSchema).optional(),
+  aRate: z.lazy(() => SortOrderSchema).optional(),
+  sRate: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const CropQualityMinOrderByAggregateInputSchema: z.ZodType<Prisma.CropQualityMinOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  cropId: z.lazy(() => SortOrderSchema).optional(),
+  minScore: z.lazy(() => SortOrderSchema).optional(),
+  bRate: z.lazy(() => SortOrderSchema).optional(),
+  aRate: z.lazy(() => SortOrderSchema).optional(),
+  sRate: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const CropQualitySumOrderByAggregateInputSchema: z.ZodType<Prisma.CropQualitySumOrderByAggregateInput> = z.object({
+  minScore: z.lazy(() => SortOrderSchema).optional(),
+  bRate: z.lazy(() => SortOrderSchema).optional(),
+  aRate: z.lazy(() => SortOrderSchema).optional(),
+  sRate: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const FarmingSeedFarmingIdCropIdCompoundUniqueInputSchema: z.ZodType<Prisma.FarmingSeedFarmingIdCropIdCompoundUniqueInput> = z.object({
+  farmingId: z.string(),
+  cropId: z.string()
+}).strict();
+
+export const FarmingSeedCountOrderByAggregateInputSchema: z.ZodType<Prisma.FarmingSeedCountOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  farmingId: z.lazy(() => SortOrderSchema).optional(),
+  cropId: z.lazy(() => SortOrderSchema).optional(),
+  count: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const FarmingSeedAvgOrderByAggregateInputSchema: z.ZodType<Prisma.FarmingSeedAvgOrderByAggregateInput> = z.object({
+  count: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const FarmingSeedMaxOrderByAggregateInputSchema: z.ZodType<Prisma.FarmingSeedMaxOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  farmingId: z.lazy(() => SortOrderSchema).optional(),
+  cropId: z.lazy(() => SortOrderSchema).optional(),
+  count: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const FarmingSeedMinOrderByAggregateInputSchema: z.ZodType<Prisma.FarmingSeedMinOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  farmingId: z.lazy(() => SortOrderSchema).optional(),
+  cropId: z.lazy(() => SortOrderSchema).optional(),
+  count: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const FarmingSeedSumOrderByAggregateInputSchema: z.ZodType<Prisma.FarmingSeedSumOrderByAggregateInput> = z.object({
+  count: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const TeamCreateNestedOneWithoutRolesInputSchema: z.ZodType<Prisma.TeamCreateNestedOneWithoutRolesInput> = z.object({
@@ -3836,6 +5464,13 @@ export const CookieClickerCreateNestedManyWithoutUserInputSchema: z.ZodType<Pris
   connect: z.union([ z.lazy(() => CookieClickerWhereUniqueInputSchema),z.lazy(() => CookieClickerWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
+export const FarmingCreateNestedManyWithoutUserInputSchema: z.ZodType<Prisma.FarmingCreateNestedManyWithoutUserInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingCreateWithoutUserInputSchema),z.lazy(() => FarmingCreateWithoutUserInputSchema).array(),z.lazy(() => FarmingUncheckedCreateWithoutUserInputSchema),z.lazy(() => FarmingUncheckedCreateWithoutUserInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FarmingCreateOrConnectWithoutUserInputSchema),z.lazy(() => FarmingCreateOrConnectWithoutUserInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FarmingCreateManyUserInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => FarmingWhereUniqueInputSchema),z.lazy(() => FarmingWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
 export const TaskUncheckedCreateNestedManyWithoutUsersInputSchema: z.ZodType<Prisma.TaskUncheckedCreateNestedManyWithoutUsersInput> = z.object({
   create: z.union([ z.lazy(() => TaskCreateWithoutUsersInputSchema),z.lazy(() => TaskCreateWithoutUsersInputSchema).array(),z.lazy(() => TaskUncheckedCreateWithoutUsersInputSchema),z.lazy(() => TaskUncheckedCreateWithoutUsersInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TaskCreateOrConnectWithoutUsersInputSchema),z.lazy(() => TaskCreateOrConnectWithoutUsersInputSchema).array() ]).optional(),
@@ -3890,6 +5525,13 @@ export const CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema: z.Zod
   connectOrCreate: z.union([ z.lazy(() => CookieClickerCreateOrConnectWithoutUserInputSchema),z.lazy(() => CookieClickerCreateOrConnectWithoutUserInputSchema).array() ]).optional(),
   createMany: z.lazy(() => CookieClickerCreateManyUserInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => CookieClickerWhereUniqueInputSchema),z.lazy(() => CookieClickerWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const FarmingUncheckedCreateNestedManyWithoutUserInputSchema: z.ZodType<Prisma.FarmingUncheckedCreateNestedManyWithoutUserInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingCreateWithoutUserInputSchema),z.lazy(() => FarmingCreateWithoutUserInputSchema).array(),z.lazy(() => FarmingUncheckedCreateWithoutUserInputSchema),z.lazy(() => FarmingUncheckedCreateWithoutUserInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FarmingCreateOrConnectWithoutUserInputSchema),z.lazy(() => FarmingCreateOrConnectWithoutUserInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FarmingCreateManyUserInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => FarmingWhereUniqueInputSchema),z.lazy(() => FarmingWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
 export const TaskUpdateManyWithoutUsersNestedInputSchema: z.ZodType<Prisma.TaskUpdateManyWithoutUsersNestedInput> = z.object({
@@ -4004,6 +5646,20 @@ export const CookieClickerUpdateManyWithoutUserNestedInputSchema: z.ZodType<Pris
   deleteMany: z.union([ z.lazy(() => CookieClickerScalarWhereInputSchema),z.lazy(() => CookieClickerScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
+export const FarmingUpdateManyWithoutUserNestedInputSchema: z.ZodType<Prisma.FarmingUpdateManyWithoutUserNestedInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingCreateWithoutUserInputSchema),z.lazy(() => FarmingCreateWithoutUserInputSchema).array(),z.lazy(() => FarmingUncheckedCreateWithoutUserInputSchema),z.lazy(() => FarmingUncheckedCreateWithoutUserInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FarmingCreateOrConnectWithoutUserInputSchema),z.lazy(() => FarmingCreateOrConnectWithoutUserInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => FarmingUpsertWithWhereUniqueWithoutUserInputSchema),z.lazy(() => FarmingUpsertWithWhereUniqueWithoutUserInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FarmingCreateManyUserInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => FarmingWhereUniqueInputSchema),z.lazy(() => FarmingWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => FarmingWhereUniqueInputSchema),z.lazy(() => FarmingWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => FarmingWhereUniqueInputSchema),z.lazy(() => FarmingWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => FarmingWhereUniqueInputSchema),z.lazy(() => FarmingWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => FarmingUpdateWithWhereUniqueWithoutUserInputSchema),z.lazy(() => FarmingUpdateWithWhereUniqueWithoutUserInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => FarmingUpdateManyWithWhereWithoutUserInputSchema),z.lazy(() => FarmingUpdateManyWithWhereWithoutUserInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => FarmingScalarWhereInputSchema),z.lazy(() => FarmingScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
 export const TaskUncheckedUpdateManyWithoutUsersNestedInputSchema: z.ZodType<Prisma.TaskUncheckedUpdateManyWithoutUsersNestedInput> = z.object({
   create: z.union([ z.lazy(() => TaskCreateWithoutUsersInputSchema),z.lazy(() => TaskCreateWithoutUsersInputSchema).array(),z.lazy(() => TaskUncheckedCreateWithoutUsersInputSchema),z.lazy(() => TaskUncheckedCreateWithoutUsersInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TaskCreateOrConnectWithoutUsersInputSchema),z.lazy(() => TaskCreateOrConnectWithoutUsersInputSchema).array() ]).optional(),
@@ -4114,6 +5770,20 @@ export const CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema: z.Zod
   update: z.union([ z.lazy(() => CookieClickerUpdateWithWhereUniqueWithoutUserInputSchema),z.lazy(() => CookieClickerUpdateWithWhereUniqueWithoutUserInputSchema).array() ]).optional(),
   updateMany: z.union([ z.lazy(() => CookieClickerUpdateManyWithWhereWithoutUserInputSchema),z.lazy(() => CookieClickerUpdateManyWithWhereWithoutUserInputSchema).array() ]).optional(),
   deleteMany: z.union([ z.lazy(() => CookieClickerScalarWhereInputSchema),z.lazy(() => CookieClickerScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const FarmingUncheckedUpdateManyWithoutUserNestedInputSchema: z.ZodType<Prisma.FarmingUncheckedUpdateManyWithoutUserNestedInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingCreateWithoutUserInputSchema),z.lazy(() => FarmingCreateWithoutUserInputSchema).array(),z.lazy(() => FarmingUncheckedCreateWithoutUserInputSchema),z.lazy(() => FarmingUncheckedCreateWithoutUserInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FarmingCreateOrConnectWithoutUserInputSchema),z.lazy(() => FarmingCreateOrConnectWithoutUserInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => FarmingUpsertWithWhereUniqueWithoutUserInputSchema),z.lazy(() => FarmingUpsertWithWhereUniqueWithoutUserInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FarmingCreateManyUserInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => FarmingWhereUniqueInputSchema),z.lazy(() => FarmingWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => FarmingWhereUniqueInputSchema),z.lazy(() => FarmingWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => FarmingWhereUniqueInputSchema),z.lazy(() => FarmingWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => FarmingWhereUniqueInputSchema),z.lazy(() => FarmingWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => FarmingUpdateWithWhereUniqueWithoutUserInputSchema),z.lazy(() => FarmingUpdateWithWhereUniqueWithoutUserInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => FarmingUpdateManyWithWhereWithoutUserInputSchema),z.lazy(() => FarmingUpdateManyWithWhereWithoutUserInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => FarmingScalarWhereInputSchema),z.lazy(() => FarmingScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
 export const RoleCreateNestedOneWithoutUser_roleInputSchema: z.ZodType<Prisma.RoleCreateNestedOneWithoutUser_roleInput> = z.object({
@@ -4414,6 +6084,366 @@ export const UserUpdateOneWithoutCookie_clickerNestedInputSchema: z.ZodType<Pris
   update: z.union([ z.lazy(() => UserUpdateToOneWithWhereWithoutCookie_clickerInputSchema),z.lazy(() => UserUpdateWithoutCookie_clickerInputSchema),z.lazy(() => UserUncheckedUpdateWithoutCookie_clickerInputSchema) ]).optional(),
 }).strict();
 
+export const UserCreateNestedOneWithoutFarmingInputSchema: z.ZodType<Prisma.UserCreateNestedOneWithoutFarmingInput> = z.object({
+  create: z.union([ z.lazy(() => UserCreateWithoutFarmingInputSchema),z.lazy(() => UserUncheckedCreateWithoutFarmingInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => UserCreateOrConnectWithoutFarmingInputSchema).optional(),
+  connect: z.lazy(() => UserWhereUniqueInputSchema).optional()
+}).strict();
+
+export const FarmingTileCreateNestedManyWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingTileCreateNestedManyWithoutFarmingInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingTileCreateWithoutFarmingInputSchema),z.lazy(() => FarmingTileCreateWithoutFarmingInputSchema).array(),z.lazy(() => FarmingTileUncheckedCreateWithoutFarmingInputSchema),z.lazy(() => FarmingTileUncheckedCreateWithoutFarmingInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FarmingTileCreateOrConnectWithoutFarmingInputSchema),z.lazy(() => FarmingTileCreateOrConnectWithoutFarmingInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FarmingTileCreateManyFarmingInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => FarmingTileWhereUniqueInputSchema),z.lazy(() => FarmingTileWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const FarmingParkCreateNestedManyWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingParkCreateNestedManyWithoutFarmingInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingParkCreateWithoutFarmingInputSchema),z.lazy(() => FarmingParkCreateWithoutFarmingInputSchema).array(),z.lazy(() => FarmingParkUncheckedCreateWithoutFarmingInputSchema),z.lazy(() => FarmingParkUncheckedCreateWithoutFarmingInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FarmingParkCreateOrConnectWithoutFarmingInputSchema),z.lazy(() => FarmingParkCreateOrConnectWithoutFarmingInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FarmingParkCreateManyFarmingInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => FarmingParkWhereUniqueInputSchema),z.lazy(() => FarmingParkWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const FarmingSeedCreateNestedManyWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingSeedCreateNestedManyWithoutFarmingInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingSeedCreateWithoutFarmingInputSchema),z.lazy(() => FarmingSeedCreateWithoutFarmingInputSchema).array(),z.lazy(() => FarmingSeedUncheckedCreateWithoutFarmingInputSchema),z.lazy(() => FarmingSeedUncheckedCreateWithoutFarmingInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FarmingSeedCreateOrConnectWithoutFarmingInputSchema),z.lazy(() => FarmingSeedCreateOrConnectWithoutFarmingInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FarmingSeedCreateManyFarmingInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => FarmingSeedWhereUniqueInputSchema),z.lazy(() => FarmingSeedWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const FarmingTileUncheckedCreateNestedManyWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingTileUncheckedCreateNestedManyWithoutFarmingInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingTileCreateWithoutFarmingInputSchema),z.lazy(() => FarmingTileCreateWithoutFarmingInputSchema).array(),z.lazy(() => FarmingTileUncheckedCreateWithoutFarmingInputSchema),z.lazy(() => FarmingTileUncheckedCreateWithoutFarmingInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FarmingTileCreateOrConnectWithoutFarmingInputSchema),z.lazy(() => FarmingTileCreateOrConnectWithoutFarmingInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FarmingTileCreateManyFarmingInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => FarmingTileWhereUniqueInputSchema),z.lazy(() => FarmingTileWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const FarmingParkUncheckedCreateNestedManyWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingParkUncheckedCreateNestedManyWithoutFarmingInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingParkCreateWithoutFarmingInputSchema),z.lazy(() => FarmingParkCreateWithoutFarmingInputSchema).array(),z.lazy(() => FarmingParkUncheckedCreateWithoutFarmingInputSchema),z.lazy(() => FarmingParkUncheckedCreateWithoutFarmingInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FarmingParkCreateOrConnectWithoutFarmingInputSchema),z.lazy(() => FarmingParkCreateOrConnectWithoutFarmingInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FarmingParkCreateManyFarmingInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => FarmingParkWhereUniqueInputSchema),z.lazy(() => FarmingParkWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const FarmingSeedUncheckedCreateNestedManyWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingSeedUncheckedCreateNestedManyWithoutFarmingInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingSeedCreateWithoutFarmingInputSchema),z.lazy(() => FarmingSeedCreateWithoutFarmingInputSchema).array(),z.lazy(() => FarmingSeedUncheckedCreateWithoutFarmingInputSchema),z.lazy(() => FarmingSeedUncheckedCreateWithoutFarmingInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FarmingSeedCreateOrConnectWithoutFarmingInputSchema),z.lazy(() => FarmingSeedCreateOrConnectWithoutFarmingInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FarmingSeedCreateManyFarmingInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => FarmingSeedWhereUniqueInputSchema),z.lazy(() => FarmingSeedWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const UserUpdateOneRequiredWithoutFarmingNestedInputSchema: z.ZodType<Prisma.UserUpdateOneRequiredWithoutFarmingNestedInput> = z.object({
+  create: z.union([ z.lazy(() => UserCreateWithoutFarmingInputSchema),z.lazy(() => UserUncheckedCreateWithoutFarmingInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => UserCreateOrConnectWithoutFarmingInputSchema).optional(),
+  upsert: z.lazy(() => UserUpsertWithoutFarmingInputSchema).optional(),
+  connect: z.lazy(() => UserWhereUniqueInputSchema).optional(),
+  update: z.union([ z.lazy(() => UserUpdateToOneWithWhereWithoutFarmingInputSchema),z.lazy(() => UserUpdateWithoutFarmingInputSchema),z.lazy(() => UserUncheckedUpdateWithoutFarmingInputSchema) ]).optional(),
+}).strict();
+
+export const FarmingTileUpdateManyWithoutFarmingNestedInputSchema: z.ZodType<Prisma.FarmingTileUpdateManyWithoutFarmingNestedInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingTileCreateWithoutFarmingInputSchema),z.lazy(() => FarmingTileCreateWithoutFarmingInputSchema).array(),z.lazy(() => FarmingTileUncheckedCreateWithoutFarmingInputSchema),z.lazy(() => FarmingTileUncheckedCreateWithoutFarmingInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FarmingTileCreateOrConnectWithoutFarmingInputSchema),z.lazy(() => FarmingTileCreateOrConnectWithoutFarmingInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => FarmingTileUpsertWithWhereUniqueWithoutFarmingInputSchema),z.lazy(() => FarmingTileUpsertWithWhereUniqueWithoutFarmingInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FarmingTileCreateManyFarmingInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => FarmingTileWhereUniqueInputSchema),z.lazy(() => FarmingTileWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => FarmingTileWhereUniqueInputSchema),z.lazy(() => FarmingTileWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => FarmingTileWhereUniqueInputSchema),z.lazy(() => FarmingTileWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => FarmingTileWhereUniqueInputSchema),z.lazy(() => FarmingTileWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => FarmingTileUpdateWithWhereUniqueWithoutFarmingInputSchema),z.lazy(() => FarmingTileUpdateWithWhereUniqueWithoutFarmingInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => FarmingTileUpdateManyWithWhereWithoutFarmingInputSchema),z.lazy(() => FarmingTileUpdateManyWithWhereWithoutFarmingInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => FarmingTileScalarWhereInputSchema),z.lazy(() => FarmingTileScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const FarmingParkUpdateManyWithoutFarmingNestedInputSchema: z.ZodType<Prisma.FarmingParkUpdateManyWithoutFarmingNestedInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingParkCreateWithoutFarmingInputSchema),z.lazy(() => FarmingParkCreateWithoutFarmingInputSchema).array(),z.lazy(() => FarmingParkUncheckedCreateWithoutFarmingInputSchema),z.lazy(() => FarmingParkUncheckedCreateWithoutFarmingInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FarmingParkCreateOrConnectWithoutFarmingInputSchema),z.lazy(() => FarmingParkCreateOrConnectWithoutFarmingInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => FarmingParkUpsertWithWhereUniqueWithoutFarmingInputSchema),z.lazy(() => FarmingParkUpsertWithWhereUniqueWithoutFarmingInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FarmingParkCreateManyFarmingInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => FarmingParkWhereUniqueInputSchema),z.lazy(() => FarmingParkWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => FarmingParkWhereUniqueInputSchema),z.lazy(() => FarmingParkWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => FarmingParkWhereUniqueInputSchema),z.lazy(() => FarmingParkWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => FarmingParkWhereUniqueInputSchema),z.lazy(() => FarmingParkWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => FarmingParkUpdateWithWhereUniqueWithoutFarmingInputSchema),z.lazy(() => FarmingParkUpdateWithWhereUniqueWithoutFarmingInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => FarmingParkUpdateManyWithWhereWithoutFarmingInputSchema),z.lazy(() => FarmingParkUpdateManyWithWhereWithoutFarmingInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => FarmingParkScalarWhereInputSchema),z.lazy(() => FarmingParkScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const FarmingSeedUpdateManyWithoutFarmingNestedInputSchema: z.ZodType<Prisma.FarmingSeedUpdateManyWithoutFarmingNestedInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingSeedCreateWithoutFarmingInputSchema),z.lazy(() => FarmingSeedCreateWithoutFarmingInputSchema).array(),z.lazy(() => FarmingSeedUncheckedCreateWithoutFarmingInputSchema),z.lazy(() => FarmingSeedUncheckedCreateWithoutFarmingInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FarmingSeedCreateOrConnectWithoutFarmingInputSchema),z.lazy(() => FarmingSeedCreateOrConnectWithoutFarmingInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => FarmingSeedUpsertWithWhereUniqueWithoutFarmingInputSchema),z.lazy(() => FarmingSeedUpsertWithWhereUniqueWithoutFarmingInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FarmingSeedCreateManyFarmingInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => FarmingSeedWhereUniqueInputSchema),z.lazy(() => FarmingSeedWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => FarmingSeedWhereUniqueInputSchema),z.lazy(() => FarmingSeedWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => FarmingSeedWhereUniqueInputSchema),z.lazy(() => FarmingSeedWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => FarmingSeedWhereUniqueInputSchema),z.lazy(() => FarmingSeedWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => FarmingSeedUpdateWithWhereUniqueWithoutFarmingInputSchema),z.lazy(() => FarmingSeedUpdateWithWhereUniqueWithoutFarmingInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => FarmingSeedUpdateManyWithWhereWithoutFarmingInputSchema),z.lazy(() => FarmingSeedUpdateManyWithWhereWithoutFarmingInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => FarmingSeedScalarWhereInputSchema),z.lazy(() => FarmingSeedScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const FarmingTileUncheckedUpdateManyWithoutFarmingNestedInputSchema: z.ZodType<Prisma.FarmingTileUncheckedUpdateManyWithoutFarmingNestedInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingTileCreateWithoutFarmingInputSchema),z.lazy(() => FarmingTileCreateWithoutFarmingInputSchema).array(),z.lazy(() => FarmingTileUncheckedCreateWithoutFarmingInputSchema),z.lazy(() => FarmingTileUncheckedCreateWithoutFarmingInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FarmingTileCreateOrConnectWithoutFarmingInputSchema),z.lazy(() => FarmingTileCreateOrConnectWithoutFarmingInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => FarmingTileUpsertWithWhereUniqueWithoutFarmingInputSchema),z.lazy(() => FarmingTileUpsertWithWhereUniqueWithoutFarmingInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FarmingTileCreateManyFarmingInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => FarmingTileWhereUniqueInputSchema),z.lazy(() => FarmingTileWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => FarmingTileWhereUniqueInputSchema),z.lazy(() => FarmingTileWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => FarmingTileWhereUniqueInputSchema),z.lazy(() => FarmingTileWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => FarmingTileWhereUniqueInputSchema),z.lazy(() => FarmingTileWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => FarmingTileUpdateWithWhereUniqueWithoutFarmingInputSchema),z.lazy(() => FarmingTileUpdateWithWhereUniqueWithoutFarmingInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => FarmingTileUpdateManyWithWhereWithoutFarmingInputSchema),z.lazy(() => FarmingTileUpdateManyWithWhereWithoutFarmingInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => FarmingTileScalarWhereInputSchema),z.lazy(() => FarmingTileScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const FarmingParkUncheckedUpdateManyWithoutFarmingNestedInputSchema: z.ZodType<Prisma.FarmingParkUncheckedUpdateManyWithoutFarmingNestedInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingParkCreateWithoutFarmingInputSchema),z.lazy(() => FarmingParkCreateWithoutFarmingInputSchema).array(),z.lazy(() => FarmingParkUncheckedCreateWithoutFarmingInputSchema),z.lazy(() => FarmingParkUncheckedCreateWithoutFarmingInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FarmingParkCreateOrConnectWithoutFarmingInputSchema),z.lazy(() => FarmingParkCreateOrConnectWithoutFarmingInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => FarmingParkUpsertWithWhereUniqueWithoutFarmingInputSchema),z.lazy(() => FarmingParkUpsertWithWhereUniqueWithoutFarmingInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FarmingParkCreateManyFarmingInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => FarmingParkWhereUniqueInputSchema),z.lazy(() => FarmingParkWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => FarmingParkWhereUniqueInputSchema),z.lazy(() => FarmingParkWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => FarmingParkWhereUniqueInputSchema),z.lazy(() => FarmingParkWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => FarmingParkWhereUniqueInputSchema),z.lazy(() => FarmingParkWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => FarmingParkUpdateWithWhereUniqueWithoutFarmingInputSchema),z.lazy(() => FarmingParkUpdateWithWhereUniqueWithoutFarmingInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => FarmingParkUpdateManyWithWhereWithoutFarmingInputSchema),z.lazy(() => FarmingParkUpdateManyWithWhereWithoutFarmingInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => FarmingParkScalarWhereInputSchema),z.lazy(() => FarmingParkScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const FarmingSeedUncheckedUpdateManyWithoutFarmingNestedInputSchema: z.ZodType<Prisma.FarmingSeedUncheckedUpdateManyWithoutFarmingNestedInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingSeedCreateWithoutFarmingInputSchema),z.lazy(() => FarmingSeedCreateWithoutFarmingInputSchema).array(),z.lazy(() => FarmingSeedUncheckedCreateWithoutFarmingInputSchema),z.lazy(() => FarmingSeedUncheckedCreateWithoutFarmingInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FarmingSeedCreateOrConnectWithoutFarmingInputSchema),z.lazy(() => FarmingSeedCreateOrConnectWithoutFarmingInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => FarmingSeedUpsertWithWhereUniqueWithoutFarmingInputSchema),z.lazy(() => FarmingSeedUpsertWithWhereUniqueWithoutFarmingInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FarmingSeedCreateManyFarmingInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => FarmingSeedWhereUniqueInputSchema),z.lazy(() => FarmingSeedWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => FarmingSeedWhereUniqueInputSchema),z.lazy(() => FarmingSeedWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => FarmingSeedWhereUniqueInputSchema),z.lazy(() => FarmingSeedWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => FarmingSeedWhereUniqueInputSchema),z.lazy(() => FarmingSeedWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => FarmingSeedUpdateWithWhereUniqueWithoutFarmingInputSchema),z.lazy(() => FarmingSeedUpdateWithWhereUniqueWithoutFarmingInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => FarmingSeedUpdateManyWithWhereWithoutFarmingInputSchema),z.lazy(() => FarmingSeedUpdateManyWithWhereWithoutFarmingInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => FarmingSeedScalarWhereInputSchema),z.lazy(() => FarmingSeedScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const FarmingCreateNestedOneWithoutTilesInputSchema: z.ZodType<Prisma.FarmingCreateNestedOneWithoutTilesInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingCreateWithoutTilesInputSchema),z.lazy(() => FarmingUncheckedCreateWithoutTilesInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => FarmingCreateOrConnectWithoutTilesInputSchema).optional(),
+  connect: z.lazy(() => FarmingWhereUniqueInputSchema).optional()
+}).strict();
+
+export const CropCreateNestedOneWithoutTilesInputSchema: z.ZodType<Prisma.CropCreateNestedOneWithoutTilesInput> = z.object({
+  create: z.union([ z.lazy(() => CropCreateWithoutTilesInputSchema),z.lazy(() => CropUncheckedCreateWithoutTilesInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => CropCreateOrConnectWithoutTilesInputSchema).optional(),
+  connect: z.lazy(() => CropWhereUniqueInputSchema).optional()
+}).strict();
+
+export const NullableDateTimeFieldUpdateOperationsInputSchema: z.ZodType<Prisma.NullableDateTimeFieldUpdateOperationsInput> = z.object({
+  set: z.coerce.date().optional().nullable()
+}).strict();
+
+export const FarmingUpdateOneRequiredWithoutTilesNestedInputSchema: z.ZodType<Prisma.FarmingUpdateOneRequiredWithoutTilesNestedInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingCreateWithoutTilesInputSchema),z.lazy(() => FarmingUncheckedCreateWithoutTilesInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => FarmingCreateOrConnectWithoutTilesInputSchema).optional(),
+  upsert: z.lazy(() => FarmingUpsertWithoutTilesInputSchema).optional(),
+  connect: z.lazy(() => FarmingWhereUniqueInputSchema).optional(),
+  update: z.union([ z.lazy(() => FarmingUpdateToOneWithWhereWithoutTilesInputSchema),z.lazy(() => FarmingUpdateWithoutTilesInputSchema),z.lazy(() => FarmingUncheckedUpdateWithoutTilesInputSchema) ]).optional(),
+}).strict();
+
+export const CropUpdateOneWithoutTilesNestedInputSchema: z.ZodType<Prisma.CropUpdateOneWithoutTilesNestedInput> = z.object({
+  create: z.union([ z.lazy(() => CropCreateWithoutTilesInputSchema),z.lazy(() => CropUncheckedCreateWithoutTilesInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => CropCreateOrConnectWithoutTilesInputSchema).optional(),
+  upsert: z.lazy(() => CropUpsertWithoutTilesInputSchema).optional(),
+  disconnect: z.union([ z.boolean(),z.lazy(() => CropWhereInputSchema) ]).optional(),
+  delete: z.union([ z.boolean(),z.lazy(() => CropWhereInputSchema) ]).optional(),
+  connect: z.lazy(() => CropWhereUniqueInputSchema).optional(),
+  update: z.union([ z.lazy(() => CropUpdateToOneWithWhereWithoutTilesInputSchema),z.lazy(() => CropUpdateWithoutTilesInputSchema),z.lazy(() => CropUncheckedUpdateWithoutTilesInputSchema) ]).optional(),
+}).strict();
+
+export const FarmingCreateNestedOneWithoutParksInputSchema: z.ZodType<Prisma.FarmingCreateNestedOneWithoutParksInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingCreateWithoutParksInputSchema),z.lazy(() => FarmingUncheckedCreateWithoutParksInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => FarmingCreateOrConnectWithoutParksInputSchema).optional(),
+  connect: z.lazy(() => FarmingWhereUniqueInputSchema).optional()
+}).strict();
+
+export const EnumParkTypeFieldUpdateOperationsInputSchema: z.ZodType<Prisma.EnumParkTypeFieldUpdateOperationsInput> = z.object({
+  set: z.lazy(() => ParkTypeSchema).optional()
+}).strict();
+
+export const FarmingUpdateOneRequiredWithoutParksNestedInputSchema: z.ZodType<Prisma.FarmingUpdateOneRequiredWithoutParksNestedInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingCreateWithoutParksInputSchema),z.lazy(() => FarmingUncheckedCreateWithoutParksInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => FarmingCreateOrConnectWithoutParksInputSchema).optional(),
+  upsert: z.lazy(() => FarmingUpsertWithoutParksInputSchema).optional(),
+  connect: z.lazy(() => FarmingWhereUniqueInputSchema).optional(),
+  update: z.union([ z.lazy(() => FarmingUpdateToOneWithWhereWithoutParksInputSchema),z.lazy(() => FarmingUpdateWithoutParksInputSchema),z.lazy(() => FarmingUncheckedUpdateWithoutParksInputSchema) ]).optional(),
+}).strict();
+
+export const FarmingTileCreateNestedManyWithoutCropInputSchema: z.ZodType<Prisma.FarmingTileCreateNestedManyWithoutCropInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingTileCreateWithoutCropInputSchema),z.lazy(() => FarmingTileCreateWithoutCropInputSchema).array(),z.lazy(() => FarmingTileUncheckedCreateWithoutCropInputSchema),z.lazy(() => FarmingTileUncheckedCreateWithoutCropInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FarmingTileCreateOrConnectWithoutCropInputSchema),z.lazy(() => FarmingTileCreateOrConnectWithoutCropInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FarmingTileCreateManyCropInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => FarmingTileWhereUniqueInputSchema),z.lazy(() => FarmingTileWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const CropQualityCreateNestedManyWithoutCropInputSchema: z.ZodType<Prisma.CropQualityCreateNestedManyWithoutCropInput> = z.object({
+  create: z.union([ z.lazy(() => CropQualityCreateWithoutCropInputSchema),z.lazy(() => CropQualityCreateWithoutCropInputSchema).array(),z.lazy(() => CropQualityUncheckedCreateWithoutCropInputSchema),z.lazy(() => CropQualityUncheckedCreateWithoutCropInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => CropQualityCreateOrConnectWithoutCropInputSchema),z.lazy(() => CropQualityCreateOrConnectWithoutCropInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => CropQualityCreateManyCropInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => CropQualityWhereUniqueInputSchema),z.lazy(() => CropQualityWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const FarmingSeedCreateNestedManyWithoutCropInputSchema: z.ZodType<Prisma.FarmingSeedCreateNestedManyWithoutCropInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingSeedCreateWithoutCropInputSchema),z.lazy(() => FarmingSeedCreateWithoutCropInputSchema).array(),z.lazy(() => FarmingSeedUncheckedCreateWithoutCropInputSchema),z.lazy(() => FarmingSeedUncheckedCreateWithoutCropInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FarmingSeedCreateOrConnectWithoutCropInputSchema),z.lazy(() => FarmingSeedCreateOrConnectWithoutCropInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FarmingSeedCreateManyCropInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => FarmingSeedWhereUniqueInputSchema),z.lazy(() => FarmingSeedWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const FarmingTileUncheckedCreateNestedManyWithoutCropInputSchema: z.ZodType<Prisma.FarmingTileUncheckedCreateNestedManyWithoutCropInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingTileCreateWithoutCropInputSchema),z.lazy(() => FarmingTileCreateWithoutCropInputSchema).array(),z.lazy(() => FarmingTileUncheckedCreateWithoutCropInputSchema),z.lazy(() => FarmingTileUncheckedCreateWithoutCropInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FarmingTileCreateOrConnectWithoutCropInputSchema),z.lazy(() => FarmingTileCreateOrConnectWithoutCropInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FarmingTileCreateManyCropInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => FarmingTileWhereUniqueInputSchema),z.lazy(() => FarmingTileWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const CropQualityUncheckedCreateNestedManyWithoutCropInputSchema: z.ZodType<Prisma.CropQualityUncheckedCreateNestedManyWithoutCropInput> = z.object({
+  create: z.union([ z.lazy(() => CropQualityCreateWithoutCropInputSchema),z.lazy(() => CropQualityCreateWithoutCropInputSchema).array(),z.lazy(() => CropQualityUncheckedCreateWithoutCropInputSchema),z.lazy(() => CropQualityUncheckedCreateWithoutCropInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => CropQualityCreateOrConnectWithoutCropInputSchema),z.lazy(() => CropQualityCreateOrConnectWithoutCropInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => CropQualityCreateManyCropInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => CropQualityWhereUniqueInputSchema),z.lazy(() => CropQualityWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const FarmingSeedUncheckedCreateNestedManyWithoutCropInputSchema: z.ZodType<Prisma.FarmingSeedUncheckedCreateNestedManyWithoutCropInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingSeedCreateWithoutCropInputSchema),z.lazy(() => FarmingSeedCreateWithoutCropInputSchema).array(),z.lazy(() => FarmingSeedUncheckedCreateWithoutCropInputSchema),z.lazy(() => FarmingSeedUncheckedCreateWithoutCropInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FarmingSeedCreateOrConnectWithoutCropInputSchema),z.lazy(() => FarmingSeedCreateOrConnectWithoutCropInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FarmingSeedCreateManyCropInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => FarmingSeedWhereUniqueInputSchema),z.lazy(() => FarmingSeedWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const FarmingTileUpdateManyWithoutCropNestedInputSchema: z.ZodType<Prisma.FarmingTileUpdateManyWithoutCropNestedInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingTileCreateWithoutCropInputSchema),z.lazy(() => FarmingTileCreateWithoutCropInputSchema).array(),z.lazy(() => FarmingTileUncheckedCreateWithoutCropInputSchema),z.lazy(() => FarmingTileUncheckedCreateWithoutCropInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FarmingTileCreateOrConnectWithoutCropInputSchema),z.lazy(() => FarmingTileCreateOrConnectWithoutCropInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => FarmingTileUpsertWithWhereUniqueWithoutCropInputSchema),z.lazy(() => FarmingTileUpsertWithWhereUniqueWithoutCropInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FarmingTileCreateManyCropInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => FarmingTileWhereUniqueInputSchema),z.lazy(() => FarmingTileWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => FarmingTileWhereUniqueInputSchema),z.lazy(() => FarmingTileWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => FarmingTileWhereUniqueInputSchema),z.lazy(() => FarmingTileWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => FarmingTileWhereUniqueInputSchema),z.lazy(() => FarmingTileWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => FarmingTileUpdateWithWhereUniqueWithoutCropInputSchema),z.lazy(() => FarmingTileUpdateWithWhereUniqueWithoutCropInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => FarmingTileUpdateManyWithWhereWithoutCropInputSchema),z.lazy(() => FarmingTileUpdateManyWithWhereWithoutCropInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => FarmingTileScalarWhereInputSchema),z.lazy(() => FarmingTileScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const CropQualityUpdateManyWithoutCropNestedInputSchema: z.ZodType<Prisma.CropQualityUpdateManyWithoutCropNestedInput> = z.object({
+  create: z.union([ z.lazy(() => CropQualityCreateWithoutCropInputSchema),z.lazy(() => CropQualityCreateWithoutCropInputSchema).array(),z.lazy(() => CropQualityUncheckedCreateWithoutCropInputSchema),z.lazy(() => CropQualityUncheckedCreateWithoutCropInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => CropQualityCreateOrConnectWithoutCropInputSchema),z.lazy(() => CropQualityCreateOrConnectWithoutCropInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => CropQualityUpsertWithWhereUniqueWithoutCropInputSchema),z.lazy(() => CropQualityUpsertWithWhereUniqueWithoutCropInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => CropQualityCreateManyCropInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => CropQualityWhereUniqueInputSchema),z.lazy(() => CropQualityWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => CropQualityWhereUniqueInputSchema),z.lazy(() => CropQualityWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => CropQualityWhereUniqueInputSchema),z.lazy(() => CropQualityWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => CropQualityWhereUniqueInputSchema),z.lazy(() => CropQualityWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => CropQualityUpdateWithWhereUniqueWithoutCropInputSchema),z.lazy(() => CropQualityUpdateWithWhereUniqueWithoutCropInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => CropQualityUpdateManyWithWhereWithoutCropInputSchema),z.lazy(() => CropQualityUpdateManyWithWhereWithoutCropInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => CropQualityScalarWhereInputSchema),z.lazy(() => CropQualityScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const FarmingSeedUpdateManyWithoutCropNestedInputSchema: z.ZodType<Prisma.FarmingSeedUpdateManyWithoutCropNestedInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingSeedCreateWithoutCropInputSchema),z.lazy(() => FarmingSeedCreateWithoutCropInputSchema).array(),z.lazy(() => FarmingSeedUncheckedCreateWithoutCropInputSchema),z.lazy(() => FarmingSeedUncheckedCreateWithoutCropInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FarmingSeedCreateOrConnectWithoutCropInputSchema),z.lazy(() => FarmingSeedCreateOrConnectWithoutCropInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => FarmingSeedUpsertWithWhereUniqueWithoutCropInputSchema),z.lazy(() => FarmingSeedUpsertWithWhereUniqueWithoutCropInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FarmingSeedCreateManyCropInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => FarmingSeedWhereUniqueInputSchema),z.lazy(() => FarmingSeedWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => FarmingSeedWhereUniqueInputSchema),z.lazy(() => FarmingSeedWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => FarmingSeedWhereUniqueInputSchema),z.lazy(() => FarmingSeedWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => FarmingSeedWhereUniqueInputSchema),z.lazy(() => FarmingSeedWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => FarmingSeedUpdateWithWhereUniqueWithoutCropInputSchema),z.lazy(() => FarmingSeedUpdateWithWhereUniqueWithoutCropInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => FarmingSeedUpdateManyWithWhereWithoutCropInputSchema),z.lazy(() => FarmingSeedUpdateManyWithWhereWithoutCropInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => FarmingSeedScalarWhereInputSchema),z.lazy(() => FarmingSeedScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const FarmingTileUncheckedUpdateManyWithoutCropNestedInputSchema: z.ZodType<Prisma.FarmingTileUncheckedUpdateManyWithoutCropNestedInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingTileCreateWithoutCropInputSchema),z.lazy(() => FarmingTileCreateWithoutCropInputSchema).array(),z.lazy(() => FarmingTileUncheckedCreateWithoutCropInputSchema),z.lazy(() => FarmingTileUncheckedCreateWithoutCropInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FarmingTileCreateOrConnectWithoutCropInputSchema),z.lazy(() => FarmingTileCreateOrConnectWithoutCropInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => FarmingTileUpsertWithWhereUniqueWithoutCropInputSchema),z.lazy(() => FarmingTileUpsertWithWhereUniqueWithoutCropInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FarmingTileCreateManyCropInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => FarmingTileWhereUniqueInputSchema),z.lazy(() => FarmingTileWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => FarmingTileWhereUniqueInputSchema),z.lazy(() => FarmingTileWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => FarmingTileWhereUniqueInputSchema),z.lazy(() => FarmingTileWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => FarmingTileWhereUniqueInputSchema),z.lazy(() => FarmingTileWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => FarmingTileUpdateWithWhereUniqueWithoutCropInputSchema),z.lazy(() => FarmingTileUpdateWithWhereUniqueWithoutCropInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => FarmingTileUpdateManyWithWhereWithoutCropInputSchema),z.lazy(() => FarmingTileUpdateManyWithWhereWithoutCropInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => FarmingTileScalarWhereInputSchema),z.lazy(() => FarmingTileScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const CropQualityUncheckedUpdateManyWithoutCropNestedInputSchema: z.ZodType<Prisma.CropQualityUncheckedUpdateManyWithoutCropNestedInput> = z.object({
+  create: z.union([ z.lazy(() => CropQualityCreateWithoutCropInputSchema),z.lazy(() => CropQualityCreateWithoutCropInputSchema).array(),z.lazy(() => CropQualityUncheckedCreateWithoutCropInputSchema),z.lazy(() => CropQualityUncheckedCreateWithoutCropInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => CropQualityCreateOrConnectWithoutCropInputSchema),z.lazy(() => CropQualityCreateOrConnectWithoutCropInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => CropQualityUpsertWithWhereUniqueWithoutCropInputSchema),z.lazy(() => CropQualityUpsertWithWhereUniqueWithoutCropInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => CropQualityCreateManyCropInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => CropQualityWhereUniqueInputSchema),z.lazy(() => CropQualityWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => CropQualityWhereUniqueInputSchema),z.lazy(() => CropQualityWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => CropQualityWhereUniqueInputSchema),z.lazy(() => CropQualityWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => CropQualityWhereUniqueInputSchema),z.lazy(() => CropQualityWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => CropQualityUpdateWithWhereUniqueWithoutCropInputSchema),z.lazy(() => CropQualityUpdateWithWhereUniqueWithoutCropInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => CropQualityUpdateManyWithWhereWithoutCropInputSchema),z.lazy(() => CropQualityUpdateManyWithWhereWithoutCropInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => CropQualityScalarWhereInputSchema),z.lazy(() => CropQualityScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const FarmingSeedUncheckedUpdateManyWithoutCropNestedInputSchema: z.ZodType<Prisma.FarmingSeedUncheckedUpdateManyWithoutCropNestedInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingSeedCreateWithoutCropInputSchema),z.lazy(() => FarmingSeedCreateWithoutCropInputSchema).array(),z.lazy(() => FarmingSeedUncheckedCreateWithoutCropInputSchema),z.lazy(() => FarmingSeedUncheckedCreateWithoutCropInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FarmingSeedCreateOrConnectWithoutCropInputSchema),z.lazy(() => FarmingSeedCreateOrConnectWithoutCropInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => FarmingSeedUpsertWithWhereUniqueWithoutCropInputSchema),z.lazy(() => FarmingSeedUpsertWithWhereUniqueWithoutCropInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FarmingSeedCreateManyCropInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => FarmingSeedWhereUniqueInputSchema),z.lazy(() => FarmingSeedWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => FarmingSeedWhereUniqueInputSchema),z.lazy(() => FarmingSeedWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => FarmingSeedWhereUniqueInputSchema),z.lazy(() => FarmingSeedWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => FarmingSeedWhereUniqueInputSchema),z.lazy(() => FarmingSeedWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => FarmingSeedUpdateWithWhereUniqueWithoutCropInputSchema),z.lazy(() => FarmingSeedUpdateWithWhereUniqueWithoutCropInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => FarmingSeedUpdateManyWithWhereWithoutCropInputSchema),z.lazy(() => FarmingSeedUpdateManyWithWhereWithoutCropInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => FarmingSeedScalarWhereInputSchema),z.lazy(() => FarmingSeedScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const CropCreateNestedOneWithoutRatesInputSchema: z.ZodType<Prisma.CropCreateNestedOneWithoutRatesInput> = z.object({
+  create: z.union([ z.lazy(() => CropCreateWithoutRatesInputSchema),z.lazy(() => CropUncheckedCreateWithoutRatesInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => CropCreateOrConnectWithoutRatesInputSchema).optional(),
+  connect: z.lazy(() => CropWhereUniqueInputSchema).optional()
+}).strict();
+
+export const CropUpdateOneRequiredWithoutRatesNestedInputSchema: z.ZodType<Prisma.CropUpdateOneRequiredWithoutRatesNestedInput> = z.object({
+  create: z.union([ z.lazy(() => CropCreateWithoutRatesInputSchema),z.lazy(() => CropUncheckedCreateWithoutRatesInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => CropCreateOrConnectWithoutRatesInputSchema).optional(),
+  upsert: z.lazy(() => CropUpsertWithoutRatesInputSchema).optional(),
+  connect: z.lazy(() => CropWhereUniqueInputSchema).optional(),
+  update: z.union([ z.lazy(() => CropUpdateToOneWithWhereWithoutRatesInputSchema),z.lazy(() => CropUpdateWithoutRatesInputSchema),z.lazy(() => CropUncheckedUpdateWithoutRatesInputSchema) ]).optional(),
+}).strict();
+
+export const FarmingCreateNestedOneWithoutSeedsInputSchema: z.ZodType<Prisma.FarmingCreateNestedOneWithoutSeedsInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingCreateWithoutSeedsInputSchema),z.lazy(() => FarmingUncheckedCreateWithoutSeedsInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => FarmingCreateOrConnectWithoutSeedsInputSchema).optional(),
+  connect: z.lazy(() => FarmingWhereUniqueInputSchema).optional()
+}).strict();
+
+export const CropCreateNestedOneWithoutSeedsInputSchema: z.ZodType<Prisma.CropCreateNestedOneWithoutSeedsInput> = z.object({
+  create: z.union([ z.lazy(() => CropCreateWithoutSeedsInputSchema),z.lazy(() => CropUncheckedCreateWithoutSeedsInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => CropCreateOrConnectWithoutSeedsInputSchema).optional(),
+  connect: z.lazy(() => CropWhereUniqueInputSchema).optional()
+}).strict();
+
+export const FarmingUpdateOneRequiredWithoutSeedsNestedInputSchema: z.ZodType<Prisma.FarmingUpdateOneRequiredWithoutSeedsNestedInput> = z.object({
+  create: z.union([ z.lazy(() => FarmingCreateWithoutSeedsInputSchema),z.lazy(() => FarmingUncheckedCreateWithoutSeedsInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => FarmingCreateOrConnectWithoutSeedsInputSchema).optional(),
+  upsert: z.lazy(() => FarmingUpsertWithoutSeedsInputSchema).optional(),
+  connect: z.lazy(() => FarmingWhereUniqueInputSchema).optional(),
+  update: z.union([ z.lazy(() => FarmingUpdateToOneWithWhereWithoutSeedsInputSchema),z.lazy(() => FarmingUpdateWithoutSeedsInputSchema),z.lazy(() => FarmingUncheckedUpdateWithoutSeedsInputSchema) ]).optional(),
+}).strict();
+
+export const CropUpdateOneRequiredWithoutSeedsNestedInputSchema: z.ZodType<Prisma.CropUpdateOneRequiredWithoutSeedsNestedInput> = z.object({
+  create: z.union([ z.lazy(() => CropCreateWithoutSeedsInputSchema),z.lazy(() => CropUncheckedCreateWithoutSeedsInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => CropCreateOrConnectWithoutSeedsInputSchema).optional(),
+  upsert: z.lazy(() => CropUpsertWithoutSeedsInputSchema).optional(),
+  connect: z.lazy(() => CropWhereUniqueInputSchema).optional(),
+  update: z.union([ z.lazy(() => CropUpdateToOneWithWhereWithoutSeedsInputSchema),z.lazy(() => CropUpdateWithoutSeedsInputSchema),z.lazy(() => CropUncheckedUpdateWithoutSeedsInputSchema) ]).optional(),
+}).strict();
+
 export const NestedUuidFilterSchema: z.ZodType<Prisma.NestedUuidFilter> = z.object({
   equals: z.string().optional(),
   in: z.string().array().optional(),
@@ -4627,6 +6657,48 @@ export const NestedIntWithAggregatesFilterSchema: z.ZodType<Prisma.NestedIntWith
   _max: z.lazy(() => NestedIntFilterSchema).optional()
 }).strict();
 
+export const NestedDateTimeNullableFilterSchema: z.ZodType<Prisma.NestedDateTimeNullableFilter> = z.object({
+  equals: z.coerce.date().optional().nullable(),
+  in: z.coerce.date().array().optional().nullable(),
+  notIn: z.coerce.date().array().optional().nullable(),
+  lt: z.coerce.date().optional(),
+  lte: z.coerce.date().optional(),
+  gt: z.coerce.date().optional(),
+  gte: z.coerce.date().optional(),
+  not: z.union([ z.coerce.date(),z.lazy(() => NestedDateTimeNullableFilterSchema) ]).optional().nullable(),
+}).strict();
+
+export const NestedDateTimeNullableWithAggregatesFilterSchema: z.ZodType<Prisma.NestedDateTimeNullableWithAggregatesFilter> = z.object({
+  equals: z.coerce.date().optional().nullable(),
+  in: z.coerce.date().array().optional().nullable(),
+  notIn: z.coerce.date().array().optional().nullable(),
+  lt: z.coerce.date().optional(),
+  lte: z.coerce.date().optional(),
+  gt: z.coerce.date().optional(),
+  gte: z.coerce.date().optional(),
+  not: z.union([ z.coerce.date(),z.lazy(() => NestedDateTimeNullableWithAggregatesFilterSchema) ]).optional().nullable(),
+  _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
+  _min: z.lazy(() => NestedDateTimeNullableFilterSchema).optional(),
+  _max: z.lazy(() => NestedDateTimeNullableFilterSchema).optional()
+}).strict();
+
+export const NestedEnumParkTypeFilterSchema: z.ZodType<Prisma.NestedEnumParkTypeFilter> = z.object({
+  equals: z.lazy(() => ParkTypeSchema).optional(),
+  in: z.lazy(() => ParkTypeSchema).array().optional(),
+  notIn: z.lazy(() => ParkTypeSchema).array().optional(),
+  not: z.union([ z.lazy(() => ParkTypeSchema),z.lazy(() => NestedEnumParkTypeFilterSchema) ]).optional(),
+}).strict();
+
+export const NestedEnumParkTypeWithAggregatesFilterSchema: z.ZodType<Prisma.NestedEnumParkTypeWithAggregatesFilter> = z.object({
+  equals: z.lazy(() => ParkTypeSchema).optional(),
+  in: z.lazy(() => ParkTypeSchema).array().optional(),
+  notIn: z.lazy(() => ParkTypeSchema).array().optional(),
+  not: z.union([ z.lazy(() => ParkTypeSchema),z.lazy(() => NestedEnumParkTypeWithAggregatesFilterSchema) ]).optional(),
+  _count: z.lazy(() => NestedIntFilterSchema).optional(),
+  _min: z.lazy(() => NestedEnumParkTypeFilterSchema).optional(),
+  _max: z.lazy(() => NestedEnumParkTypeFilterSchema).optional()
+}).strict();
+
 export const TeamCreateWithoutRolesInputSchema: z.ZodType<Prisma.TeamCreateWithoutRolesInput> = z.object({
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
@@ -4826,7 +6898,8 @@ export const UserCreateWithoutTasksInputSchema: z.ZodType<Prisma.UserCreateWitho
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional(),
+  farming: z.lazy(() => FarmingCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateWithoutTasksInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutTasksInput> = z.object({
@@ -4845,7 +6918,8 @@ export const UserUncheckedCreateWithoutTasksInputSchema: z.ZodType<Prisma.UserUn
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  farming: z.lazy(() => FarmingUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserCreateOrConnectWithoutTasksInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutTasksInput> = z.object({
@@ -4927,7 +7001,8 @@ export const UserUpdateWithoutTasksInputSchema: z.ZodType<Prisma.UserUpdateWitho
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional(),
+  farming: z.lazy(() => FarmingUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateWithoutTasksInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutTasksInput> = z.object({
@@ -4946,7 +7021,8 @@ export const UserUncheckedUpdateWithoutTasksInputSchema: z.ZodType<Prisma.UserUn
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  farming: z.lazy(() => FarmingUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserCreateWithoutTeamsInputSchema: z.ZodType<Prisma.UserCreateWithoutTeamsInput> = z.object({
@@ -4965,7 +7041,8 @@ export const UserCreateWithoutTeamsInputSchema: z.ZodType<Prisma.UserCreateWitho
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional(),
+  farming: z.lazy(() => FarmingCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateWithoutTeamsInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutTeamsInput> = z.object({
@@ -4984,7 +7061,8 @@ export const UserUncheckedCreateWithoutTeamsInputSchema: z.ZodType<Prisma.UserUn
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  farming: z.lazy(() => FarmingUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserCreateOrConnectWithoutTeamsInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutTeamsInput> = z.object({
@@ -5313,7 +7391,8 @@ export const UserUpdateWithoutTeamsInputSchema: z.ZodType<Prisma.UserUpdateWitho
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional(),
+  farming: z.lazy(() => FarmingUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateWithoutTeamsInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutTeamsInput> = z.object({
@@ -5332,7 +7411,8 @@ export const UserUncheckedUpdateWithoutTeamsInputSchema: z.ZodType<Prisma.UserUn
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  farming: z.lazy(() => FarmingUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const RoleUpsertWithWhereUniqueWithoutTeamsInputSchema: z.ZodType<Prisma.RoleUpsertWithWhereUniqueWithoutTeamsInput> = z.object({
@@ -5652,7 +7732,8 @@ export const UserCreateWithoutUser_teamInputSchema: z.ZodType<Prisma.UserCreateW
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional(),
+  farming: z.lazy(() => FarmingCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateWithoutUser_teamInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutUser_teamInput> = z.object({
@@ -5671,7 +7752,8 @@ export const UserUncheckedCreateWithoutUser_teamInputSchema: z.ZodType<Prisma.Us
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  farming: z.lazy(() => FarmingUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserCreateOrConnectWithoutUser_teamInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutUser_teamInput> = z.object({
@@ -5753,7 +7835,8 @@ export const UserUpdateWithoutUser_teamInputSchema: z.ZodType<Prisma.UserUpdateW
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional(),
+  farming: z.lazy(() => FarmingUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateWithoutUser_teamInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutUser_teamInput> = z.object({
@@ -5772,7 +7855,8 @@ export const UserUncheckedUpdateWithoutUser_teamInputSchema: z.ZodType<Prisma.Us
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  farming: z.lazy(() => FarmingUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const TaskCreateWithoutUsersInputSchema: z.ZodType<Prisma.TaskCreateWithoutUsersInput> = z.object({
@@ -6011,6 +8095,42 @@ export const CookieClickerCreateManyUserInputEnvelopeSchema: z.ZodType<Prisma.Co
   skipDuplicates: z.boolean().optional()
 }).strict();
 
+export const FarmingCreateWithoutUserInputSchema: z.ZodType<Prisma.FarmingCreateWithoutUserInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  level: z.number().int().optional(),
+  exp: z.bigint().optional(),
+  money: z.bigint().optional(),
+  parkPoint: z.number().int().optional(),
+  tiles: z.lazy(() => FarmingTileCreateNestedManyWithoutFarmingInputSchema).optional(),
+  parks: z.lazy(() => FarmingParkCreateNestedManyWithoutFarmingInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedCreateNestedManyWithoutFarmingInputSchema).optional()
+}).strict();
+
+export const FarmingUncheckedCreateWithoutUserInputSchema: z.ZodType<Prisma.FarmingUncheckedCreateWithoutUserInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  level: z.number().int().optional(),
+  exp: z.bigint().optional(),
+  money: z.bigint().optional(),
+  parkPoint: z.number().int().optional(),
+  tiles: z.lazy(() => FarmingTileUncheckedCreateNestedManyWithoutFarmingInputSchema).optional(),
+  parks: z.lazy(() => FarmingParkUncheckedCreateNestedManyWithoutFarmingInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedUncheckedCreateNestedManyWithoutFarmingInputSchema).optional()
+}).strict();
+
+export const FarmingCreateOrConnectWithoutUserInputSchema: z.ZodType<Prisma.FarmingCreateOrConnectWithoutUserInput> = z.object({
+  where: z.lazy(() => FarmingWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => FarmingCreateWithoutUserInputSchema),z.lazy(() => FarmingUncheckedCreateWithoutUserInputSchema) ]),
+}).strict();
+
+export const FarmingCreateManyUserInputEnvelopeSchema: z.ZodType<Prisma.FarmingCreateManyUserInputEnvelope> = z.object({
+  data: z.union([ z.lazy(() => FarmingCreateManyUserInputSchema),z.lazy(() => FarmingCreateManyUserInputSchema).array() ]),
+  skipDuplicates: z.boolean().optional()
+}).strict();
+
 export const TaskUpsertWithWhereUniqueWithoutUsersInputSchema: z.ZodType<Prisma.TaskUpsertWithWhereUniqueWithoutUsersInput> = z.object({
   where: z.lazy(() => TaskWhereUniqueInputSchema),
   update: z.union([ z.lazy(() => TaskUpdateWithoutUsersInputSchema),z.lazy(() => TaskUncheckedUpdateWithoutUsersInputSchema) ]),
@@ -6167,6 +8287,36 @@ export const CookieClickerScalarWhereInputSchema: z.ZodType<Prisma.CookieClicker
   employee_level_6: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
 }).strict();
 
+export const FarmingUpsertWithWhereUniqueWithoutUserInputSchema: z.ZodType<Prisma.FarmingUpsertWithWhereUniqueWithoutUserInput> = z.object({
+  where: z.lazy(() => FarmingWhereUniqueInputSchema),
+  update: z.union([ z.lazy(() => FarmingUpdateWithoutUserInputSchema),z.lazy(() => FarmingUncheckedUpdateWithoutUserInputSchema) ]),
+  create: z.union([ z.lazy(() => FarmingCreateWithoutUserInputSchema),z.lazy(() => FarmingUncheckedCreateWithoutUserInputSchema) ]),
+}).strict();
+
+export const FarmingUpdateWithWhereUniqueWithoutUserInputSchema: z.ZodType<Prisma.FarmingUpdateWithWhereUniqueWithoutUserInput> = z.object({
+  where: z.lazy(() => FarmingWhereUniqueInputSchema),
+  data: z.union([ z.lazy(() => FarmingUpdateWithoutUserInputSchema),z.lazy(() => FarmingUncheckedUpdateWithoutUserInputSchema) ]),
+}).strict();
+
+export const FarmingUpdateManyWithWhereWithoutUserInputSchema: z.ZodType<Prisma.FarmingUpdateManyWithWhereWithoutUserInput> = z.object({
+  where: z.lazy(() => FarmingScalarWhereInputSchema),
+  data: z.union([ z.lazy(() => FarmingUpdateManyMutationInputSchema),z.lazy(() => FarmingUncheckedUpdateManyWithoutUserInputSchema) ]),
+}).strict();
+
+export const FarmingScalarWhereInputSchema: z.ZodType<Prisma.FarmingScalarWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => FarmingScalarWhereInputSchema),z.lazy(() => FarmingScalarWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => FarmingScalarWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => FarmingScalarWhereInputSchema),z.lazy(() => FarmingScalarWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  userId: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  level: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  exp: z.union([ z.lazy(() => BigIntFilterSchema),z.bigint() ]).optional(),
+  money: z.union([ z.lazy(() => BigIntFilterSchema),z.bigint() ]).optional(),
+  parkPoint: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+}).strict();
+
 export const RoleCreateWithoutUser_roleInputSchema: z.ZodType<Prisma.RoleCreateWithoutUser_roleInput> = z.object({
   id: z.string().optional(),
   created_at: z.coerce.date().optional(),
@@ -6247,7 +8397,8 @@ export const UserCreateWithoutUser_roleInputSchema: z.ZodType<Prisma.UserCreateW
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional(),
+  farming: z.lazy(() => FarmingCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateWithoutUser_roleInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutUser_roleInput> = z.object({
@@ -6266,7 +8417,8 @@ export const UserUncheckedCreateWithoutUser_roleInputSchema: z.ZodType<Prisma.Us
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  farming: z.lazy(() => FarmingUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserCreateOrConnectWithoutUser_roleInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutUser_roleInput> = z.object({
@@ -6377,7 +8529,8 @@ export const UserUpdateWithoutUser_roleInputSchema: z.ZodType<Prisma.UserUpdateW
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional(),
+  farming: z.lazy(() => FarmingUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateWithoutUser_roleInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutUser_roleInput> = z.object({
@@ -6396,7 +8549,8 @@ export const UserUncheckedUpdateWithoutUser_roleInputSchema: z.ZodType<Prisma.Us
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  farming: z.lazy(() => FarmingUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const TeamCreateWithoutTeam_parent_child_team_aInputSchema: z.ZodType<Prisma.TeamCreateWithoutTeam_parent_child_team_aInput> = z.object({
@@ -6767,7 +8921,8 @@ export const UserCreateWithoutTeam_invitesInputSchema: z.ZodType<Prisma.UserCrea
   teams: z.lazy(() => TeamCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional(),
+  farming: z.lazy(() => FarmingCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateWithoutTeam_invitesInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutTeam_invitesInput> = z.object({
@@ -6786,7 +8941,8 @@ export const UserUncheckedCreateWithoutTeam_invitesInputSchema: z.ZodType<Prisma
   teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  farming: z.lazy(() => FarmingUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserCreateOrConnectWithoutTeam_invitesInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutTeam_invitesInput> = z.object({
@@ -6862,7 +9018,8 @@ export const UserUpdateWithoutTeam_invitesInputSchema: z.ZodType<Prisma.UserUpda
   teams: z.lazy(() => TeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional(),
+  farming: z.lazy(() => FarmingUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateWithoutTeam_invitesInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutTeam_invitesInput> = z.object({
@@ -6881,7 +9038,8 @@ export const UserUncheckedUpdateWithoutTeam_invitesInputSchema: z.ZodType<Prisma
   teams: z.lazy(() => TeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  farming: z.lazy(() => FarmingUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const TeamUpsertWithoutTeam_invitesInputSchema: z.ZodType<Prisma.TeamUpsertWithoutTeam_invitesInput> = z.object({
@@ -6947,7 +9105,8 @@ export const UserCreateWithoutVisited_teamInputSchema: z.ZodType<Prisma.UserCrea
   teams: z.lazy(() => TeamCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional(),
+  farming: z.lazy(() => FarmingCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateWithoutVisited_teamInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutVisited_teamInput> = z.object({
@@ -6966,7 +9125,8 @@ export const UserUncheckedCreateWithoutVisited_teamInputSchema: z.ZodType<Prisma
   teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  farming: z.lazy(() => FarmingUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserCreateOrConnectWithoutVisited_teamInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutVisited_teamInput> = z.object({
@@ -7042,7 +9202,8 @@ export const UserUpdateWithoutVisited_teamInputSchema: z.ZodType<Prisma.UserUpda
   teams: z.lazy(() => TeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional(),
+  farming: z.lazy(() => FarmingUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateWithoutVisited_teamInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutVisited_teamInput> = z.object({
@@ -7061,7 +9222,8 @@ export const UserUncheckedUpdateWithoutVisited_teamInputSchema: z.ZodType<Prisma
   teams: z.lazy(() => TeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  farming: z.lazy(() => FarmingUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const TeamUpsertWithoutVisited_teamInputSchema: z.ZodType<Prisma.TeamUpsertWithoutVisited_teamInput> = z.object({
@@ -7169,7 +9331,8 @@ export const UserCreateWithoutTeam_activityInputSchema: z.ZodType<Prisma.UserCre
   teams: z.lazy(() => TeamCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional(),
+  farming: z.lazy(() => FarmingCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateWithoutTeam_activityInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutTeam_activityInput> = z.object({
@@ -7188,7 +9351,8 @@ export const UserUncheckedCreateWithoutTeam_activityInputSchema: z.ZodType<Prism
   teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  farming: z.lazy(() => FarmingUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserCreateOrConnectWithoutTeam_activityInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutTeam_activityInput> = z.object({
@@ -7283,7 +9447,8 @@ export const UserUpdateWithoutTeam_activityInputSchema: z.ZodType<Prisma.UserUpd
   teams: z.lazy(() => TeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional(),
+  farming: z.lazy(() => FarmingUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateWithoutTeam_activityInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutTeam_activityInput> = z.object({
@@ -7302,7 +9467,8 @@ export const UserUncheckedUpdateWithoutTeam_activityInputSchema: z.ZodType<Prism
   teams: z.lazy(() => TeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
-  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  farming: z.lazy(() => FarmingUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const TeamUpsertWithoutTeam_activityInputSchema: z.ZodType<Prisma.TeamUpsertWithoutTeam_activityInput> = z.object({
@@ -7393,7 +9559,8 @@ export const UserCreateWithoutCookie_clickerInputSchema: z.ZodType<Prisma.UserCr
   teams: z.lazy(() => TeamCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional(),
+  farming: z.lazy(() => FarmingCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserUncheckedCreateWithoutCookie_clickerInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutCookie_clickerInput> = z.object({
@@ -7412,7 +9579,8 @@ export const UserUncheckedCreateWithoutCookie_clickerInputSchema: z.ZodType<Pris
   teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  farming: z.lazy(() => FarmingUncheckedCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
 export const UserCreateOrConnectWithoutCookie_clickerInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutCookie_clickerInput> = z.object({
@@ -7447,7 +9615,8 @@ export const UserUpdateWithoutCookie_clickerInputSchema: z.ZodType<Prisma.UserUp
   teams: z.lazy(() => TeamUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional(),
+  farming: z.lazy(() => FarmingUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
 export const UserUncheckedUpdateWithoutCookie_clickerInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutCookie_clickerInput> = z.object({
@@ -7466,7 +9635,854 @@ export const UserUncheckedUpdateWithoutCookie_clickerInputSchema: z.ZodType<Pris
   teams: z.lazy(() => TeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
   visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
-  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  farming: z.lazy(() => FarmingUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+}).strict();
+
+export const UserCreateWithoutFarmingInputSchema: z.ZodType<Prisma.UserCreateWithoutFarmingInput> = z.object({
+  id: z.string().optional(),
+  created_at: z.coerce.date().optional(),
+  updated_at: z.coerce.date().optional(),
+  user_id: z.string(),
+  username: z.string().optional().nullable(),
+  first_name: z.string().optional().nullable(),
+  last_name: z.string().optional().nullable(),
+  email_address: z.string(),
+  image_url: z.string(),
+  tasks: z.lazy(() => TaskCreateNestedManyWithoutUsersInputSchema).optional(),
+  user_role: z.lazy(() => UserRoleCreateNestedManyWithoutUsersInputSchema).optional(),
+  user_team: z.lazy(() => UserTeamCreateNestedManyWithoutUsersInputSchema).optional(),
+  teams: z.lazy(() => TeamCreateNestedManyWithoutUsersInputSchema).optional(),
+  team_invites: z.lazy(() => TeamInvitesCreateNestedManyWithoutUsersInputSchema).optional(),
+  visited_team: z.lazy(() => VisitedTeamCreateNestedManyWithoutUserInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityCreateNestedManyWithoutUserInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerCreateNestedManyWithoutUserInputSchema).optional()
+}).strict();
+
+export const UserUncheckedCreateWithoutFarmingInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutFarmingInput> = z.object({
+  id: z.string().optional(),
+  created_at: z.coerce.date().optional(),
+  updated_at: z.coerce.date().optional(),
+  user_id: z.string(),
+  username: z.string().optional().nullable(),
+  first_name: z.string().optional().nullable(),
+  last_name: z.string().optional().nullable(),
+  email_address: z.string(),
+  image_url: z.string(),
+  tasks: z.lazy(() => TaskUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
+  user_role: z.lazy(() => UserRoleUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
+  user_team: z.lazy(() => UserTeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
+  teams: z.lazy(() => TeamUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
+  team_invites: z.lazy(() => TeamInvitesUncheckedCreateNestedManyWithoutUsersInputSchema).optional(),
+  visited_team: z.lazy(() => VisitedTeamUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedCreateNestedManyWithoutUserInputSchema).optional()
+}).strict();
+
+export const UserCreateOrConnectWithoutFarmingInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutFarmingInput> = z.object({
+  where: z.lazy(() => UserWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => UserCreateWithoutFarmingInputSchema),z.lazy(() => UserUncheckedCreateWithoutFarmingInputSchema) ]),
+}).strict();
+
+export const FarmingTileCreateWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingTileCreateWithoutFarmingInput> = z.object({
+  id: z.string().optional(),
+  x: z.number().int(),
+  y: z.number().int(),
+  plantedAt: z.coerce.date().optional().nullable(),
+  qualityScore: z.number().int().optional(),
+  lastWateredAt: z.coerce.date().optional().nullable(),
+  crop: z.lazy(() => CropCreateNestedOneWithoutTilesInputSchema).optional()
+}).strict();
+
+export const FarmingTileUncheckedCreateWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingTileUncheckedCreateWithoutFarmingInput> = z.object({
+  id: z.string().optional(),
+  x: z.number().int(),
+  y: z.number().int(),
+  cropId: z.string().optional().nullable(),
+  plantedAt: z.coerce.date().optional().nullable(),
+  qualityScore: z.number().int().optional(),
+  lastWateredAt: z.coerce.date().optional().nullable()
+}).strict();
+
+export const FarmingTileCreateOrConnectWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingTileCreateOrConnectWithoutFarmingInput> = z.object({
+  where: z.lazy(() => FarmingTileWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => FarmingTileCreateWithoutFarmingInputSchema),z.lazy(() => FarmingTileUncheckedCreateWithoutFarmingInputSchema) ]),
+}).strict();
+
+export const FarmingTileCreateManyFarmingInputEnvelopeSchema: z.ZodType<Prisma.FarmingTileCreateManyFarmingInputEnvelope> = z.object({
+  data: z.union([ z.lazy(() => FarmingTileCreateManyFarmingInputSchema),z.lazy(() => FarmingTileCreateManyFarmingInputSchema).array() ]),
+  skipDuplicates: z.boolean().optional()
+}).strict();
+
+export const FarmingParkCreateWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingParkCreateWithoutFarmingInput> = z.object({
+  id: z.string().optional(),
+  parkType: z.lazy(() => ParkTypeSchema),
+  level: z.number().int().optional()
+}).strict();
+
+export const FarmingParkUncheckedCreateWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingParkUncheckedCreateWithoutFarmingInput> = z.object({
+  id: z.string().optional(),
+  parkType: z.lazy(() => ParkTypeSchema),
+  level: z.number().int().optional()
+}).strict();
+
+export const FarmingParkCreateOrConnectWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingParkCreateOrConnectWithoutFarmingInput> = z.object({
+  where: z.lazy(() => FarmingParkWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => FarmingParkCreateWithoutFarmingInputSchema),z.lazy(() => FarmingParkUncheckedCreateWithoutFarmingInputSchema) ]),
+}).strict();
+
+export const FarmingParkCreateManyFarmingInputEnvelopeSchema: z.ZodType<Prisma.FarmingParkCreateManyFarmingInputEnvelope> = z.object({
+  data: z.union([ z.lazy(() => FarmingParkCreateManyFarmingInputSchema),z.lazy(() => FarmingParkCreateManyFarmingInputSchema).array() ]),
+  skipDuplicates: z.boolean().optional()
+}).strict();
+
+export const FarmingSeedCreateWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingSeedCreateWithoutFarmingInput> = z.object({
+  id: z.string().optional(),
+  count: z.number().int().optional(),
+  crop: z.lazy(() => CropCreateNestedOneWithoutSeedsInputSchema)
+}).strict();
+
+export const FarmingSeedUncheckedCreateWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingSeedUncheckedCreateWithoutFarmingInput> = z.object({
+  id: z.string().optional(),
+  cropId: z.string(),
+  count: z.number().int().optional()
+}).strict();
+
+export const FarmingSeedCreateOrConnectWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingSeedCreateOrConnectWithoutFarmingInput> = z.object({
+  where: z.lazy(() => FarmingSeedWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => FarmingSeedCreateWithoutFarmingInputSchema),z.lazy(() => FarmingSeedUncheckedCreateWithoutFarmingInputSchema) ]),
+}).strict();
+
+export const FarmingSeedCreateManyFarmingInputEnvelopeSchema: z.ZodType<Prisma.FarmingSeedCreateManyFarmingInputEnvelope> = z.object({
+  data: z.union([ z.lazy(() => FarmingSeedCreateManyFarmingInputSchema),z.lazy(() => FarmingSeedCreateManyFarmingInputSchema).array() ]),
+  skipDuplicates: z.boolean().optional()
+}).strict();
+
+export const UserUpsertWithoutFarmingInputSchema: z.ZodType<Prisma.UserUpsertWithoutFarmingInput> = z.object({
+  update: z.union([ z.lazy(() => UserUpdateWithoutFarmingInputSchema),z.lazy(() => UserUncheckedUpdateWithoutFarmingInputSchema) ]),
+  create: z.union([ z.lazy(() => UserCreateWithoutFarmingInputSchema),z.lazy(() => UserUncheckedCreateWithoutFarmingInputSchema) ]),
+  where: z.lazy(() => UserWhereInputSchema).optional()
+}).strict();
+
+export const UserUpdateToOneWithWhereWithoutFarmingInputSchema: z.ZodType<Prisma.UserUpdateToOneWithWhereWithoutFarmingInput> = z.object({
+  where: z.lazy(() => UserWhereInputSchema).optional(),
+  data: z.union([ z.lazy(() => UserUpdateWithoutFarmingInputSchema),z.lazy(() => UserUncheckedUpdateWithoutFarmingInputSchema) ]),
+}).strict();
+
+export const UserUpdateWithoutFarmingInputSchema: z.ZodType<Prisma.UserUpdateWithoutFarmingInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  user_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  username: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  first_name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  last_name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  email_address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image_url: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  tasks: z.lazy(() => TaskUpdateManyWithoutUsersNestedInputSchema).optional(),
+  user_role: z.lazy(() => UserRoleUpdateManyWithoutUsersNestedInputSchema).optional(),
+  user_team: z.lazy(() => UserTeamUpdateManyWithoutUsersNestedInputSchema).optional(),
+  teams: z.lazy(() => TeamUpdateManyWithoutUsersNestedInputSchema).optional(),
+  team_invites: z.lazy(() => TeamInvitesUpdateManyWithoutUsersNestedInputSchema).optional(),
+  visited_team: z.lazy(() => VisitedTeamUpdateManyWithoutUserNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUpdateManyWithoutUserNestedInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUpdateManyWithoutUserNestedInputSchema).optional()
+}).strict();
+
+export const UserUncheckedUpdateWithoutFarmingInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutFarmingInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updated_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  user_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  username: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  first_name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  last_name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  email_address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  image_url: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  tasks: z.lazy(() => TaskUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
+  user_role: z.lazy(() => UserRoleUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
+  user_team: z.lazy(() => UserTeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
+  teams: z.lazy(() => TeamUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
+  team_invites: z.lazy(() => TeamInvitesUncheckedUpdateManyWithoutUsersNestedInputSchema).optional(),
+  visited_team: z.lazy(() => VisitedTeamUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  team_activity: z.lazy(() => TeamActivityUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
+  cookie_clicker: z.lazy(() => CookieClickerUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+}).strict();
+
+export const FarmingTileUpsertWithWhereUniqueWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingTileUpsertWithWhereUniqueWithoutFarmingInput> = z.object({
+  where: z.lazy(() => FarmingTileWhereUniqueInputSchema),
+  update: z.union([ z.lazy(() => FarmingTileUpdateWithoutFarmingInputSchema),z.lazy(() => FarmingTileUncheckedUpdateWithoutFarmingInputSchema) ]),
+  create: z.union([ z.lazy(() => FarmingTileCreateWithoutFarmingInputSchema),z.lazy(() => FarmingTileUncheckedCreateWithoutFarmingInputSchema) ]),
+}).strict();
+
+export const FarmingTileUpdateWithWhereUniqueWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingTileUpdateWithWhereUniqueWithoutFarmingInput> = z.object({
+  where: z.lazy(() => FarmingTileWhereUniqueInputSchema),
+  data: z.union([ z.lazy(() => FarmingTileUpdateWithoutFarmingInputSchema),z.lazy(() => FarmingTileUncheckedUpdateWithoutFarmingInputSchema) ]),
+}).strict();
+
+export const FarmingTileUpdateManyWithWhereWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingTileUpdateManyWithWhereWithoutFarmingInput> = z.object({
+  where: z.lazy(() => FarmingTileScalarWhereInputSchema),
+  data: z.union([ z.lazy(() => FarmingTileUpdateManyMutationInputSchema),z.lazy(() => FarmingTileUncheckedUpdateManyWithoutFarmingInputSchema) ]),
+}).strict();
+
+export const FarmingTileScalarWhereInputSchema: z.ZodType<Prisma.FarmingTileScalarWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => FarmingTileScalarWhereInputSchema),z.lazy(() => FarmingTileScalarWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => FarmingTileScalarWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => FarmingTileScalarWhereInputSchema),z.lazy(() => FarmingTileScalarWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  farmingId: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  x: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  y: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  cropId: z.union([ z.lazy(() => UuidNullableFilterSchema),z.string() ]).optional().nullable(),
+  plantedAt: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
+  qualityScore: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  lastWateredAt: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
+}).strict();
+
+export const FarmingParkUpsertWithWhereUniqueWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingParkUpsertWithWhereUniqueWithoutFarmingInput> = z.object({
+  where: z.lazy(() => FarmingParkWhereUniqueInputSchema),
+  update: z.union([ z.lazy(() => FarmingParkUpdateWithoutFarmingInputSchema),z.lazy(() => FarmingParkUncheckedUpdateWithoutFarmingInputSchema) ]),
+  create: z.union([ z.lazy(() => FarmingParkCreateWithoutFarmingInputSchema),z.lazy(() => FarmingParkUncheckedCreateWithoutFarmingInputSchema) ]),
+}).strict();
+
+export const FarmingParkUpdateWithWhereUniqueWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingParkUpdateWithWhereUniqueWithoutFarmingInput> = z.object({
+  where: z.lazy(() => FarmingParkWhereUniqueInputSchema),
+  data: z.union([ z.lazy(() => FarmingParkUpdateWithoutFarmingInputSchema),z.lazy(() => FarmingParkUncheckedUpdateWithoutFarmingInputSchema) ]),
+}).strict();
+
+export const FarmingParkUpdateManyWithWhereWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingParkUpdateManyWithWhereWithoutFarmingInput> = z.object({
+  where: z.lazy(() => FarmingParkScalarWhereInputSchema),
+  data: z.union([ z.lazy(() => FarmingParkUpdateManyMutationInputSchema),z.lazy(() => FarmingParkUncheckedUpdateManyWithoutFarmingInputSchema) ]),
+}).strict();
+
+export const FarmingParkScalarWhereInputSchema: z.ZodType<Prisma.FarmingParkScalarWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => FarmingParkScalarWhereInputSchema),z.lazy(() => FarmingParkScalarWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => FarmingParkScalarWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => FarmingParkScalarWhereInputSchema),z.lazy(() => FarmingParkScalarWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  farmingId: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  parkType: z.union([ z.lazy(() => EnumParkTypeFilterSchema),z.lazy(() => ParkTypeSchema) ]).optional(),
+  level: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+}).strict();
+
+export const FarmingSeedUpsertWithWhereUniqueWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingSeedUpsertWithWhereUniqueWithoutFarmingInput> = z.object({
+  where: z.lazy(() => FarmingSeedWhereUniqueInputSchema),
+  update: z.union([ z.lazy(() => FarmingSeedUpdateWithoutFarmingInputSchema),z.lazy(() => FarmingSeedUncheckedUpdateWithoutFarmingInputSchema) ]),
+  create: z.union([ z.lazy(() => FarmingSeedCreateWithoutFarmingInputSchema),z.lazy(() => FarmingSeedUncheckedCreateWithoutFarmingInputSchema) ]),
+}).strict();
+
+export const FarmingSeedUpdateWithWhereUniqueWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingSeedUpdateWithWhereUniqueWithoutFarmingInput> = z.object({
+  where: z.lazy(() => FarmingSeedWhereUniqueInputSchema),
+  data: z.union([ z.lazy(() => FarmingSeedUpdateWithoutFarmingInputSchema),z.lazy(() => FarmingSeedUncheckedUpdateWithoutFarmingInputSchema) ]),
+}).strict();
+
+export const FarmingSeedUpdateManyWithWhereWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingSeedUpdateManyWithWhereWithoutFarmingInput> = z.object({
+  where: z.lazy(() => FarmingSeedScalarWhereInputSchema),
+  data: z.union([ z.lazy(() => FarmingSeedUpdateManyMutationInputSchema),z.lazy(() => FarmingSeedUncheckedUpdateManyWithoutFarmingInputSchema) ]),
+}).strict();
+
+export const FarmingSeedScalarWhereInputSchema: z.ZodType<Prisma.FarmingSeedScalarWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => FarmingSeedScalarWhereInputSchema),z.lazy(() => FarmingSeedScalarWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => FarmingSeedScalarWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => FarmingSeedScalarWhereInputSchema),z.lazy(() => FarmingSeedScalarWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  farmingId: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  cropId: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  count: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+}).strict();
+
+export const FarmingCreateWithoutTilesInputSchema: z.ZodType<Prisma.FarmingCreateWithoutTilesInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  level: z.number().int().optional(),
+  exp: z.bigint().optional(),
+  money: z.bigint().optional(),
+  parkPoint: z.number().int().optional(),
+  user: z.lazy(() => UserCreateNestedOneWithoutFarmingInputSchema),
+  parks: z.lazy(() => FarmingParkCreateNestedManyWithoutFarmingInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedCreateNestedManyWithoutFarmingInputSchema).optional()
+}).strict();
+
+export const FarmingUncheckedCreateWithoutTilesInputSchema: z.ZodType<Prisma.FarmingUncheckedCreateWithoutTilesInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  userId: z.string(),
+  level: z.number().int().optional(),
+  exp: z.bigint().optional(),
+  money: z.bigint().optional(),
+  parkPoint: z.number().int().optional(),
+  parks: z.lazy(() => FarmingParkUncheckedCreateNestedManyWithoutFarmingInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedUncheckedCreateNestedManyWithoutFarmingInputSchema).optional()
+}).strict();
+
+export const FarmingCreateOrConnectWithoutTilesInputSchema: z.ZodType<Prisma.FarmingCreateOrConnectWithoutTilesInput> = z.object({
+  where: z.lazy(() => FarmingWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => FarmingCreateWithoutTilesInputSchema),z.lazy(() => FarmingUncheckedCreateWithoutTilesInputSchema) ]),
+}).strict();
+
+export const CropCreateWithoutTilesInputSchema: z.ZodType<Prisma.CropCreateWithoutTilesInput> = z.object({
+  id: z.string().optional(),
+  name: z.string(),
+  displayName: z.string(),
+  growTime: z.number().int(),
+  seedPrice: z.number().int(),
+  bSellPrice: z.number().int(),
+  aSellPrice: z.number().int(),
+  sSellPrice: z.number().int(),
+  bHarvestExp: z.number().int(),
+  aHarvestExp: z.number().int(),
+  sHarvestExp: z.number().int(),
+  waterScore: z.number().int(),
+  rates: z.lazy(() => CropQualityCreateNestedManyWithoutCropInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedCreateNestedManyWithoutCropInputSchema).optional()
+}).strict();
+
+export const CropUncheckedCreateWithoutTilesInputSchema: z.ZodType<Prisma.CropUncheckedCreateWithoutTilesInput> = z.object({
+  id: z.string().optional(),
+  name: z.string(),
+  displayName: z.string(),
+  growTime: z.number().int(),
+  seedPrice: z.number().int(),
+  bSellPrice: z.number().int(),
+  aSellPrice: z.number().int(),
+  sSellPrice: z.number().int(),
+  bHarvestExp: z.number().int(),
+  aHarvestExp: z.number().int(),
+  sHarvestExp: z.number().int(),
+  waterScore: z.number().int(),
+  rates: z.lazy(() => CropQualityUncheckedCreateNestedManyWithoutCropInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedUncheckedCreateNestedManyWithoutCropInputSchema).optional()
+}).strict();
+
+export const CropCreateOrConnectWithoutTilesInputSchema: z.ZodType<Prisma.CropCreateOrConnectWithoutTilesInput> = z.object({
+  where: z.lazy(() => CropWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => CropCreateWithoutTilesInputSchema),z.lazy(() => CropUncheckedCreateWithoutTilesInputSchema) ]),
+}).strict();
+
+export const FarmingUpsertWithoutTilesInputSchema: z.ZodType<Prisma.FarmingUpsertWithoutTilesInput> = z.object({
+  update: z.union([ z.lazy(() => FarmingUpdateWithoutTilesInputSchema),z.lazy(() => FarmingUncheckedUpdateWithoutTilesInputSchema) ]),
+  create: z.union([ z.lazy(() => FarmingCreateWithoutTilesInputSchema),z.lazy(() => FarmingUncheckedCreateWithoutTilesInputSchema) ]),
+  where: z.lazy(() => FarmingWhereInputSchema).optional()
+}).strict();
+
+export const FarmingUpdateToOneWithWhereWithoutTilesInputSchema: z.ZodType<Prisma.FarmingUpdateToOneWithWhereWithoutTilesInput> = z.object({
+  where: z.lazy(() => FarmingWhereInputSchema).optional(),
+  data: z.union([ z.lazy(() => FarmingUpdateWithoutTilesInputSchema),z.lazy(() => FarmingUncheckedUpdateWithoutTilesInputSchema) ]),
+}).strict();
+
+export const FarmingUpdateWithoutTilesInputSchema: z.ZodType<Prisma.FarmingUpdateWithoutTilesInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  exp: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  money: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  parkPoint: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  user: z.lazy(() => UserUpdateOneRequiredWithoutFarmingNestedInputSchema).optional(),
+  parks: z.lazy(() => FarmingParkUpdateManyWithoutFarmingNestedInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedUpdateManyWithoutFarmingNestedInputSchema).optional()
+}).strict();
+
+export const FarmingUncheckedUpdateWithoutTilesInputSchema: z.ZodType<Prisma.FarmingUncheckedUpdateWithoutTilesInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  exp: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  money: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  parkPoint: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  parks: z.lazy(() => FarmingParkUncheckedUpdateManyWithoutFarmingNestedInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedUncheckedUpdateManyWithoutFarmingNestedInputSchema).optional()
+}).strict();
+
+export const CropUpsertWithoutTilesInputSchema: z.ZodType<Prisma.CropUpsertWithoutTilesInput> = z.object({
+  update: z.union([ z.lazy(() => CropUpdateWithoutTilesInputSchema),z.lazy(() => CropUncheckedUpdateWithoutTilesInputSchema) ]),
+  create: z.union([ z.lazy(() => CropCreateWithoutTilesInputSchema),z.lazy(() => CropUncheckedCreateWithoutTilesInputSchema) ]),
+  where: z.lazy(() => CropWhereInputSchema).optional()
+}).strict();
+
+export const CropUpdateToOneWithWhereWithoutTilesInputSchema: z.ZodType<Prisma.CropUpdateToOneWithWhereWithoutTilesInput> = z.object({
+  where: z.lazy(() => CropWhereInputSchema).optional(),
+  data: z.union([ z.lazy(() => CropUpdateWithoutTilesInputSchema),z.lazy(() => CropUncheckedUpdateWithoutTilesInputSchema) ]),
+}).strict();
+
+export const CropUpdateWithoutTilesInputSchema: z.ZodType<Prisma.CropUpdateWithoutTilesInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  displayName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  growTime: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  seedPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  waterScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  rates: z.lazy(() => CropQualityUpdateManyWithoutCropNestedInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedUpdateManyWithoutCropNestedInputSchema).optional()
+}).strict();
+
+export const CropUncheckedUpdateWithoutTilesInputSchema: z.ZodType<Prisma.CropUncheckedUpdateWithoutTilesInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  displayName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  growTime: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  seedPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  waterScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  rates: z.lazy(() => CropQualityUncheckedUpdateManyWithoutCropNestedInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedUncheckedUpdateManyWithoutCropNestedInputSchema).optional()
+}).strict();
+
+export const FarmingCreateWithoutParksInputSchema: z.ZodType<Prisma.FarmingCreateWithoutParksInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  level: z.number().int().optional(),
+  exp: z.bigint().optional(),
+  money: z.bigint().optional(),
+  parkPoint: z.number().int().optional(),
+  user: z.lazy(() => UserCreateNestedOneWithoutFarmingInputSchema),
+  tiles: z.lazy(() => FarmingTileCreateNestedManyWithoutFarmingInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedCreateNestedManyWithoutFarmingInputSchema).optional()
+}).strict();
+
+export const FarmingUncheckedCreateWithoutParksInputSchema: z.ZodType<Prisma.FarmingUncheckedCreateWithoutParksInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  userId: z.string(),
+  level: z.number().int().optional(),
+  exp: z.bigint().optional(),
+  money: z.bigint().optional(),
+  parkPoint: z.number().int().optional(),
+  tiles: z.lazy(() => FarmingTileUncheckedCreateNestedManyWithoutFarmingInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedUncheckedCreateNestedManyWithoutFarmingInputSchema).optional()
+}).strict();
+
+export const FarmingCreateOrConnectWithoutParksInputSchema: z.ZodType<Prisma.FarmingCreateOrConnectWithoutParksInput> = z.object({
+  where: z.lazy(() => FarmingWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => FarmingCreateWithoutParksInputSchema),z.lazy(() => FarmingUncheckedCreateWithoutParksInputSchema) ]),
+}).strict();
+
+export const FarmingUpsertWithoutParksInputSchema: z.ZodType<Prisma.FarmingUpsertWithoutParksInput> = z.object({
+  update: z.union([ z.lazy(() => FarmingUpdateWithoutParksInputSchema),z.lazy(() => FarmingUncheckedUpdateWithoutParksInputSchema) ]),
+  create: z.union([ z.lazy(() => FarmingCreateWithoutParksInputSchema),z.lazy(() => FarmingUncheckedCreateWithoutParksInputSchema) ]),
+  where: z.lazy(() => FarmingWhereInputSchema).optional()
+}).strict();
+
+export const FarmingUpdateToOneWithWhereWithoutParksInputSchema: z.ZodType<Prisma.FarmingUpdateToOneWithWhereWithoutParksInput> = z.object({
+  where: z.lazy(() => FarmingWhereInputSchema).optional(),
+  data: z.union([ z.lazy(() => FarmingUpdateWithoutParksInputSchema),z.lazy(() => FarmingUncheckedUpdateWithoutParksInputSchema) ]),
+}).strict();
+
+export const FarmingUpdateWithoutParksInputSchema: z.ZodType<Prisma.FarmingUpdateWithoutParksInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  exp: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  money: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  parkPoint: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  user: z.lazy(() => UserUpdateOneRequiredWithoutFarmingNestedInputSchema).optional(),
+  tiles: z.lazy(() => FarmingTileUpdateManyWithoutFarmingNestedInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedUpdateManyWithoutFarmingNestedInputSchema).optional()
+}).strict();
+
+export const FarmingUncheckedUpdateWithoutParksInputSchema: z.ZodType<Prisma.FarmingUncheckedUpdateWithoutParksInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  exp: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  money: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  parkPoint: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  tiles: z.lazy(() => FarmingTileUncheckedUpdateManyWithoutFarmingNestedInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedUncheckedUpdateManyWithoutFarmingNestedInputSchema).optional()
+}).strict();
+
+export const FarmingTileCreateWithoutCropInputSchema: z.ZodType<Prisma.FarmingTileCreateWithoutCropInput> = z.object({
+  id: z.string().optional(),
+  x: z.number().int(),
+  y: z.number().int(),
+  plantedAt: z.coerce.date().optional().nullable(),
+  qualityScore: z.number().int().optional(),
+  lastWateredAt: z.coerce.date().optional().nullable(),
+  farming: z.lazy(() => FarmingCreateNestedOneWithoutTilesInputSchema)
+}).strict();
+
+export const FarmingTileUncheckedCreateWithoutCropInputSchema: z.ZodType<Prisma.FarmingTileUncheckedCreateWithoutCropInput> = z.object({
+  id: z.string().optional(),
+  farmingId: z.string(),
+  x: z.number().int(),
+  y: z.number().int(),
+  plantedAt: z.coerce.date().optional().nullable(),
+  qualityScore: z.number().int().optional(),
+  lastWateredAt: z.coerce.date().optional().nullable()
+}).strict();
+
+export const FarmingTileCreateOrConnectWithoutCropInputSchema: z.ZodType<Prisma.FarmingTileCreateOrConnectWithoutCropInput> = z.object({
+  where: z.lazy(() => FarmingTileWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => FarmingTileCreateWithoutCropInputSchema),z.lazy(() => FarmingTileUncheckedCreateWithoutCropInputSchema) ]),
+}).strict();
+
+export const FarmingTileCreateManyCropInputEnvelopeSchema: z.ZodType<Prisma.FarmingTileCreateManyCropInputEnvelope> = z.object({
+  data: z.union([ z.lazy(() => FarmingTileCreateManyCropInputSchema),z.lazy(() => FarmingTileCreateManyCropInputSchema).array() ]),
+  skipDuplicates: z.boolean().optional()
+}).strict();
+
+export const CropQualityCreateWithoutCropInputSchema: z.ZodType<Prisma.CropQualityCreateWithoutCropInput> = z.object({
+  id: z.string().optional(),
+  minScore: z.number().int(),
+  bRate: z.number().int(),
+  aRate: z.number().int(),
+  sRate: z.number().int()
+}).strict();
+
+export const CropQualityUncheckedCreateWithoutCropInputSchema: z.ZodType<Prisma.CropQualityUncheckedCreateWithoutCropInput> = z.object({
+  id: z.string().optional(),
+  minScore: z.number().int(),
+  bRate: z.number().int(),
+  aRate: z.number().int(),
+  sRate: z.number().int()
+}).strict();
+
+export const CropQualityCreateOrConnectWithoutCropInputSchema: z.ZodType<Prisma.CropQualityCreateOrConnectWithoutCropInput> = z.object({
+  where: z.lazy(() => CropQualityWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => CropQualityCreateWithoutCropInputSchema),z.lazy(() => CropQualityUncheckedCreateWithoutCropInputSchema) ]),
+}).strict();
+
+export const CropQualityCreateManyCropInputEnvelopeSchema: z.ZodType<Prisma.CropQualityCreateManyCropInputEnvelope> = z.object({
+  data: z.union([ z.lazy(() => CropQualityCreateManyCropInputSchema),z.lazy(() => CropQualityCreateManyCropInputSchema).array() ]),
+  skipDuplicates: z.boolean().optional()
+}).strict();
+
+export const FarmingSeedCreateWithoutCropInputSchema: z.ZodType<Prisma.FarmingSeedCreateWithoutCropInput> = z.object({
+  id: z.string().optional(),
+  count: z.number().int().optional(),
+  farming: z.lazy(() => FarmingCreateNestedOneWithoutSeedsInputSchema)
+}).strict();
+
+export const FarmingSeedUncheckedCreateWithoutCropInputSchema: z.ZodType<Prisma.FarmingSeedUncheckedCreateWithoutCropInput> = z.object({
+  id: z.string().optional(),
+  farmingId: z.string(),
+  count: z.number().int().optional()
+}).strict();
+
+export const FarmingSeedCreateOrConnectWithoutCropInputSchema: z.ZodType<Prisma.FarmingSeedCreateOrConnectWithoutCropInput> = z.object({
+  where: z.lazy(() => FarmingSeedWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => FarmingSeedCreateWithoutCropInputSchema),z.lazy(() => FarmingSeedUncheckedCreateWithoutCropInputSchema) ]),
+}).strict();
+
+export const FarmingSeedCreateManyCropInputEnvelopeSchema: z.ZodType<Prisma.FarmingSeedCreateManyCropInputEnvelope> = z.object({
+  data: z.union([ z.lazy(() => FarmingSeedCreateManyCropInputSchema),z.lazy(() => FarmingSeedCreateManyCropInputSchema).array() ]),
+  skipDuplicates: z.boolean().optional()
+}).strict();
+
+export const FarmingTileUpsertWithWhereUniqueWithoutCropInputSchema: z.ZodType<Prisma.FarmingTileUpsertWithWhereUniqueWithoutCropInput> = z.object({
+  where: z.lazy(() => FarmingTileWhereUniqueInputSchema),
+  update: z.union([ z.lazy(() => FarmingTileUpdateWithoutCropInputSchema),z.lazy(() => FarmingTileUncheckedUpdateWithoutCropInputSchema) ]),
+  create: z.union([ z.lazy(() => FarmingTileCreateWithoutCropInputSchema),z.lazy(() => FarmingTileUncheckedCreateWithoutCropInputSchema) ]),
+}).strict();
+
+export const FarmingTileUpdateWithWhereUniqueWithoutCropInputSchema: z.ZodType<Prisma.FarmingTileUpdateWithWhereUniqueWithoutCropInput> = z.object({
+  where: z.lazy(() => FarmingTileWhereUniqueInputSchema),
+  data: z.union([ z.lazy(() => FarmingTileUpdateWithoutCropInputSchema),z.lazy(() => FarmingTileUncheckedUpdateWithoutCropInputSchema) ]),
+}).strict();
+
+export const FarmingTileUpdateManyWithWhereWithoutCropInputSchema: z.ZodType<Prisma.FarmingTileUpdateManyWithWhereWithoutCropInput> = z.object({
+  where: z.lazy(() => FarmingTileScalarWhereInputSchema),
+  data: z.union([ z.lazy(() => FarmingTileUpdateManyMutationInputSchema),z.lazy(() => FarmingTileUncheckedUpdateManyWithoutCropInputSchema) ]),
+}).strict();
+
+export const CropQualityUpsertWithWhereUniqueWithoutCropInputSchema: z.ZodType<Prisma.CropQualityUpsertWithWhereUniqueWithoutCropInput> = z.object({
+  where: z.lazy(() => CropQualityWhereUniqueInputSchema),
+  update: z.union([ z.lazy(() => CropQualityUpdateWithoutCropInputSchema),z.lazy(() => CropQualityUncheckedUpdateWithoutCropInputSchema) ]),
+  create: z.union([ z.lazy(() => CropQualityCreateWithoutCropInputSchema),z.lazy(() => CropQualityUncheckedCreateWithoutCropInputSchema) ]),
+}).strict();
+
+export const CropQualityUpdateWithWhereUniqueWithoutCropInputSchema: z.ZodType<Prisma.CropQualityUpdateWithWhereUniqueWithoutCropInput> = z.object({
+  where: z.lazy(() => CropQualityWhereUniqueInputSchema),
+  data: z.union([ z.lazy(() => CropQualityUpdateWithoutCropInputSchema),z.lazy(() => CropQualityUncheckedUpdateWithoutCropInputSchema) ]),
+}).strict();
+
+export const CropQualityUpdateManyWithWhereWithoutCropInputSchema: z.ZodType<Prisma.CropQualityUpdateManyWithWhereWithoutCropInput> = z.object({
+  where: z.lazy(() => CropQualityScalarWhereInputSchema),
+  data: z.union([ z.lazy(() => CropQualityUpdateManyMutationInputSchema),z.lazy(() => CropQualityUncheckedUpdateManyWithoutCropInputSchema) ]),
+}).strict();
+
+export const CropQualityScalarWhereInputSchema: z.ZodType<Prisma.CropQualityScalarWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => CropQualityScalarWhereInputSchema),z.lazy(() => CropQualityScalarWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => CropQualityScalarWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => CropQualityScalarWhereInputSchema),z.lazy(() => CropQualityScalarWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  cropId: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  minScore: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  bRate: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  aRate: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  sRate: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+}).strict();
+
+export const FarmingSeedUpsertWithWhereUniqueWithoutCropInputSchema: z.ZodType<Prisma.FarmingSeedUpsertWithWhereUniqueWithoutCropInput> = z.object({
+  where: z.lazy(() => FarmingSeedWhereUniqueInputSchema),
+  update: z.union([ z.lazy(() => FarmingSeedUpdateWithoutCropInputSchema),z.lazy(() => FarmingSeedUncheckedUpdateWithoutCropInputSchema) ]),
+  create: z.union([ z.lazy(() => FarmingSeedCreateWithoutCropInputSchema),z.lazy(() => FarmingSeedUncheckedCreateWithoutCropInputSchema) ]),
+}).strict();
+
+export const FarmingSeedUpdateWithWhereUniqueWithoutCropInputSchema: z.ZodType<Prisma.FarmingSeedUpdateWithWhereUniqueWithoutCropInput> = z.object({
+  where: z.lazy(() => FarmingSeedWhereUniqueInputSchema),
+  data: z.union([ z.lazy(() => FarmingSeedUpdateWithoutCropInputSchema),z.lazy(() => FarmingSeedUncheckedUpdateWithoutCropInputSchema) ]),
+}).strict();
+
+export const FarmingSeedUpdateManyWithWhereWithoutCropInputSchema: z.ZodType<Prisma.FarmingSeedUpdateManyWithWhereWithoutCropInput> = z.object({
+  where: z.lazy(() => FarmingSeedScalarWhereInputSchema),
+  data: z.union([ z.lazy(() => FarmingSeedUpdateManyMutationInputSchema),z.lazy(() => FarmingSeedUncheckedUpdateManyWithoutCropInputSchema) ]),
+}).strict();
+
+export const CropCreateWithoutRatesInputSchema: z.ZodType<Prisma.CropCreateWithoutRatesInput> = z.object({
+  id: z.string().optional(),
+  name: z.string(),
+  displayName: z.string(),
+  growTime: z.number().int(),
+  seedPrice: z.number().int(),
+  bSellPrice: z.number().int(),
+  aSellPrice: z.number().int(),
+  sSellPrice: z.number().int(),
+  bHarvestExp: z.number().int(),
+  aHarvestExp: z.number().int(),
+  sHarvestExp: z.number().int(),
+  waterScore: z.number().int(),
+  tiles: z.lazy(() => FarmingTileCreateNestedManyWithoutCropInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedCreateNestedManyWithoutCropInputSchema).optional()
+}).strict();
+
+export const CropUncheckedCreateWithoutRatesInputSchema: z.ZodType<Prisma.CropUncheckedCreateWithoutRatesInput> = z.object({
+  id: z.string().optional(),
+  name: z.string(),
+  displayName: z.string(),
+  growTime: z.number().int(),
+  seedPrice: z.number().int(),
+  bSellPrice: z.number().int(),
+  aSellPrice: z.number().int(),
+  sSellPrice: z.number().int(),
+  bHarvestExp: z.number().int(),
+  aHarvestExp: z.number().int(),
+  sHarvestExp: z.number().int(),
+  waterScore: z.number().int(),
+  tiles: z.lazy(() => FarmingTileUncheckedCreateNestedManyWithoutCropInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedUncheckedCreateNestedManyWithoutCropInputSchema).optional()
+}).strict();
+
+export const CropCreateOrConnectWithoutRatesInputSchema: z.ZodType<Prisma.CropCreateOrConnectWithoutRatesInput> = z.object({
+  where: z.lazy(() => CropWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => CropCreateWithoutRatesInputSchema),z.lazy(() => CropUncheckedCreateWithoutRatesInputSchema) ]),
+}).strict();
+
+export const CropUpsertWithoutRatesInputSchema: z.ZodType<Prisma.CropUpsertWithoutRatesInput> = z.object({
+  update: z.union([ z.lazy(() => CropUpdateWithoutRatesInputSchema),z.lazy(() => CropUncheckedUpdateWithoutRatesInputSchema) ]),
+  create: z.union([ z.lazy(() => CropCreateWithoutRatesInputSchema),z.lazy(() => CropUncheckedCreateWithoutRatesInputSchema) ]),
+  where: z.lazy(() => CropWhereInputSchema).optional()
+}).strict();
+
+export const CropUpdateToOneWithWhereWithoutRatesInputSchema: z.ZodType<Prisma.CropUpdateToOneWithWhereWithoutRatesInput> = z.object({
+  where: z.lazy(() => CropWhereInputSchema).optional(),
+  data: z.union([ z.lazy(() => CropUpdateWithoutRatesInputSchema),z.lazy(() => CropUncheckedUpdateWithoutRatesInputSchema) ]),
+}).strict();
+
+export const CropUpdateWithoutRatesInputSchema: z.ZodType<Prisma.CropUpdateWithoutRatesInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  displayName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  growTime: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  seedPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  waterScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  tiles: z.lazy(() => FarmingTileUpdateManyWithoutCropNestedInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedUpdateManyWithoutCropNestedInputSchema).optional()
+}).strict();
+
+export const CropUncheckedUpdateWithoutRatesInputSchema: z.ZodType<Prisma.CropUncheckedUpdateWithoutRatesInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  displayName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  growTime: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  seedPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  waterScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  tiles: z.lazy(() => FarmingTileUncheckedUpdateManyWithoutCropNestedInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedUncheckedUpdateManyWithoutCropNestedInputSchema).optional()
+}).strict();
+
+export const FarmingCreateWithoutSeedsInputSchema: z.ZodType<Prisma.FarmingCreateWithoutSeedsInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  level: z.number().int().optional(),
+  exp: z.bigint().optional(),
+  money: z.bigint().optional(),
+  parkPoint: z.number().int().optional(),
+  user: z.lazy(() => UserCreateNestedOneWithoutFarmingInputSchema),
+  tiles: z.lazy(() => FarmingTileCreateNestedManyWithoutFarmingInputSchema).optional(),
+  parks: z.lazy(() => FarmingParkCreateNestedManyWithoutFarmingInputSchema).optional()
+}).strict();
+
+export const FarmingUncheckedCreateWithoutSeedsInputSchema: z.ZodType<Prisma.FarmingUncheckedCreateWithoutSeedsInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  userId: z.string(),
+  level: z.number().int().optional(),
+  exp: z.bigint().optional(),
+  money: z.bigint().optional(),
+  parkPoint: z.number().int().optional(),
+  tiles: z.lazy(() => FarmingTileUncheckedCreateNestedManyWithoutFarmingInputSchema).optional(),
+  parks: z.lazy(() => FarmingParkUncheckedCreateNestedManyWithoutFarmingInputSchema).optional()
+}).strict();
+
+export const FarmingCreateOrConnectWithoutSeedsInputSchema: z.ZodType<Prisma.FarmingCreateOrConnectWithoutSeedsInput> = z.object({
+  where: z.lazy(() => FarmingWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => FarmingCreateWithoutSeedsInputSchema),z.lazy(() => FarmingUncheckedCreateWithoutSeedsInputSchema) ]),
+}).strict();
+
+export const CropCreateWithoutSeedsInputSchema: z.ZodType<Prisma.CropCreateWithoutSeedsInput> = z.object({
+  id: z.string().optional(),
+  name: z.string(),
+  displayName: z.string(),
+  growTime: z.number().int(),
+  seedPrice: z.number().int(),
+  bSellPrice: z.number().int(),
+  aSellPrice: z.number().int(),
+  sSellPrice: z.number().int(),
+  bHarvestExp: z.number().int(),
+  aHarvestExp: z.number().int(),
+  sHarvestExp: z.number().int(),
+  waterScore: z.number().int(),
+  tiles: z.lazy(() => FarmingTileCreateNestedManyWithoutCropInputSchema).optional(),
+  rates: z.lazy(() => CropQualityCreateNestedManyWithoutCropInputSchema).optional()
+}).strict();
+
+export const CropUncheckedCreateWithoutSeedsInputSchema: z.ZodType<Prisma.CropUncheckedCreateWithoutSeedsInput> = z.object({
+  id: z.string().optional(),
+  name: z.string(),
+  displayName: z.string(),
+  growTime: z.number().int(),
+  seedPrice: z.number().int(),
+  bSellPrice: z.number().int(),
+  aSellPrice: z.number().int(),
+  sSellPrice: z.number().int(),
+  bHarvestExp: z.number().int(),
+  aHarvestExp: z.number().int(),
+  sHarvestExp: z.number().int(),
+  waterScore: z.number().int(),
+  tiles: z.lazy(() => FarmingTileUncheckedCreateNestedManyWithoutCropInputSchema).optional(),
+  rates: z.lazy(() => CropQualityUncheckedCreateNestedManyWithoutCropInputSchema).optional()
+}).strict();
+
+export const CropCreateOrConnectWithoutSeedsInputSchema: z.ZodType<Prisma.CropCreateOrConnectWithoutSeedsInput> = z.object({
+  where: z.lazy(() => CropWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => CropCreateWithoutSeedsInputSchema),z.lazy(() => CropUncheckedCreateWithoutSeedsInputSchema) ]),
+}).strict();
+
+export const FarmingUpsertWithoutSeedsInputSchema: z.ZodType<Prisma.FarmingUpsertWithoutSeedsInput> = z.object({
+  update: z.union([ z.lazy(() => FarmingUpdateWithoutSeedsInputSchema),z.lazy(() => FarmingUncheckedUpdateWithoutSeedsInputSchema) ]),
+  create: z.union([ z.lazy(() => FarmingCreateWithoutSeedsInputSchema),z.lazy(() => FarmingUncheckedCreateWithoutSeedsInputSchema) ]),
+  where: z.lazy(() => FarmingWhereInputSchema).optional()
+}).strict();
+
+export const FarmingUpdateToOneWithWhereWithoutSeedsInputSchema: z.ZodType<Prisma.FarmingUpdateToOneWithWhereWithoutSeedsInput> = z.object({
+  where: z.lazy(() => FarmingWhereInputSchema).optional(),
+  data: z.union([ z.lazy(() => FarmingUpdateWithoutSeedsInputSchema),z.lazy(() => FarmingUncheckedUpdateWithoutSeedsInputSchema) ]),
+}).strict();
+
+export const FarmingUpdateWithoutSeedsInputSchema: z.ZodType<Prisma.FarmingUpdateWithoutSeedsInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  exp: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  money: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  parkPoint: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  user: z.lazy(() => UserUpdateOneRequiredWithoutFarmingNestedInputSchema).optional(),
+  tiles: z.lazy(() => FarmingTileUpdateManyWithoutFarmingNestedInputSchema).optional(),
+  parks: z.lazy(() => FarmingParkUpdateManyWithoutFarmingNestedInputSchema).optional()
+}).strict();
+
+export const FarmingUncheckedUpdateWithoutSeedsInputSchema: z.ZodType<Prisma.FarmingUncheckedUpdateWithoutSeedsInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  exp: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  money: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  parkPoint: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  tiles: z.lazy(() => FarmingTileUncheckedUpdateManyWithoutFarmingNestedInputSchema).optional(),
+  parks: z.lazy(() => FarmingParkUncheckedUpdateManyWithoutFarmingNestedInputSchema).optional()
+}).strict();
+
+export const CropUpsertWithoutSeedsInputSchema: z.ZodType<Prisma.CropUpsertWithoutSeedsInput> = z.object({
+  update: z.union([ z.lazy(() => CropUpdateWithoutSeedsInputSchema),z.lazy(() => CropUncheckedUpdateWithoutSeedsInputSchema) ]),
+  create: z.union([ z.lazy(() => CropCreateWithoutSeedsInputSchema),z.lazy(() => CropUncheckedCreateWithoutSeedsInputSchema) ]),
+  where: z.lazy(() => CropWhereInputSchema).optional()
+}).strict();
+
+export const CropUpdateToOneWithWhereWithoutSeedsInputSchema: z.ZodType<Prisma.CropUpdateToOneWithWhereWithoutSeedsInput> = z.object({
+  where: z.lazy(() => CropWhereInputSchema).optional(),
+  data: z.union([ z.lazy(() => CropUpdateWithoutSeedsInputSchema),z.lazy(() => CropUncheckedUpdateWithoutSeedsInputSchema) ]),
+}).strict();
+
+export const CropUpdateWithoutSeedsInputSchema: z.ZodType<Prisma.CropUpdateWithoutSeedsInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  displayName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  growTime: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  seedPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  waterScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  tiles: z.lazy(() => FarmingTileUpdateManyWithoutCropNestedInputSchema).optional(),
+  rates: z.lazy(() => CropQualityUpdateManyWithoutCropNestedInputSchema).optional()
+}).strict();
+
+export const CropUncheckedUpdateWithoutSeedsInputSchema: z.ZodType<Prisma.CropUncheckedUpdateWithoutSeedsInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  displayName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  growTime: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  seedPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sSellPrice: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sHarvestExp: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  waterScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  tiles: z.lazy(() => FarmingTileUncheckedUpdateManyWithoutCropNestedInputSchema).optional(),
+  rates: z.lazy(() => CropQualityUncheckedUpdateManyWithoutCropNestedInputSchema).optional()
 }).strict();
 
 export const UserRoleCreateManyRolesInputSchema: z.ZodType<Prisma.UserRoleCreateManyRolesInput> = z.object({
@@ -7934,6 +10950,16 @@ export const CookieClickerCreateManyUserInputSchema: z.ZodType<Prisma.CookieClic
   employee_level_6: z.number().int().optional()
 }).strict();
 
+export const FarmingCreateManyUserInputSchema: z.ZodType<Prisma.FarmingCreateManyUserInput> = z.object({
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  level: z.number().int().optional(),
+  exp: z.bigint().optional(),
+  money: z.bigint().optional(),
+  parkPoint: z.number().int().optional()
+}).strict();
+
 export const TaskUpdateWithoutUsersInputSchema: z.ZodType<Prisma.TaskUpdateWithoutUsersInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   created_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -8157,6 +11183,42 @@ export const CookieClickerUncheckedUpdateManyWithoutUserInputSchema: z.ZodType<P
   employee_level_6: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
+export const FarmingUpdateWithoutUserInputSchema: z.ZodType<Prisma.FarmingUpdateWithoutUserInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  exp: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  money: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  parkPoint: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  tiles: z.lazy(() => FarmingTileUpdateManyWithoutFarmingNestedInputSchema).optional(),
+  parks: z.lazy(() => FarmingParkUpdateManyWithoutFarmingNestedInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedUpdateManyWithoutFarmingNestedInputSchema).optional()
+}).strict();
+
+export const FarmingUncheckedUpdateWithoutUserInputSchema: z.ZodType<Prisma.FarmingUncheckedUpdateWithoutUserInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  exp: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  money: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  parkPoint: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  tiles: z.lazy(() => FarmingTileUncheckedUpdateManyWithoutFarmingNestedInputSchema).optional(),
+  parks: z.lazy(() => FarmingParkUncheckedUpdateManyWithoutFarmingNestedInputSchema).optional(),
+  seeds: z.lazy(() => FarmingSeedUncheckedUpdateManyWithoutFarmingNestedInputSchema).optional()
+}).strict();
+
+export const FarmingUncheckedUpdateManyWithoutUserInputSchema: z.ZodType<Prisma.FarmingUncheckedUpdateManyWithoutUserInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  exp: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  money: z.union([ z.bigint(),z.lazy(() => BigIntFieldUpdateOperationsInputSchema) ]).optional(),
+  parkPoint: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
 export const TeamActivityCreateManyTeam_activity_typeInputSchema: z.ZodType<Prisma.TeamActivityCreateManyTeam_activity_typeInput> = z.object({
   id: z.string().optional(),
   createdAt: z.coerce.date().optional(),
@@ -8187,6 +11249,190 @@ export const TeamActivityUncheckedUpdateManyWithoutTeam_activity_typeInputSchema
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   user_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   team_id: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const FarmingTileCreateManyFarmingInputSchema: z.ZodType<Prisma.FarmingTileCreateManyFarmingInput> = z.object({
+  id: z.string().optional(),
+  x: z.number().int(),
+  y: z.number().int(),
+  cropId: z.string().optional().nullable(),
+  plantedAt: z.coerce.date().optional().nullable(),
+  qualityScore: z.number().int().optional(),
+  lastWateredAt: z.coerce.date().optional().nullable()
+}).strict();
+
+export const FarmingParkCreateManyFarmingInputSchema: z.ZodType<Prisma.FarmingParkCreateManyFarmingInput> = z.object({
+  id: z.string().optional(),
+  parkType: z.lazy(() => ParkTypeSchema),
+  level: z.number().int().optional()
+}).strict();
+
+export const FarmingSeedCreateManyFarmingInputSchema: z.ZodType<Prisma.FarmingSeedCreateManyFarmingInput> = z.object({
+  id: z.string().optional(),
+  cropId: z.string(),
+  count: z.number().int().optional()
+}).strict();
+
+export const FarmingTileUpdateWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingTileUpdateWithoutFarmingInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  x: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  y: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  plantedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  qualityScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  lastWateredAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  crop: z.lazy(() => CropUpdateOneWithoutTilesNestedInputSchema).optional()
+}).strict();
+
+export const FarmingTileUncheckedUpdateWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingTileUncheckedUpdateWithoutFarmingInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  x: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  y: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  cropId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  plantedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  qualityScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  lastWateredAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const FarmingTileUncheckedUpdateManyWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingTileUncheckedUpdateManyWithoutFarmingInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  x: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  y: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  cropId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  plantedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  qualityScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  lastWateredAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const FarmingParkUpdateWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingParkUpdateWithoutFarmingInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  parkType: z.union([ z.lazy(() => ParkTypeSchema),z.lazy(() => EnumParkTypeFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const FarmingParkUncheckedUpdateWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingParkUncheckedUpdateWithoutFarmingInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  parkType: z.union([ z.lazy(() => ParkTypeSchema),z.lazy(() => EnumParkTypeFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const FarmingParkUncheckedUpdateManyWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingParkUncheckedUpdateManyWithoutFarmingInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  parkType: z.union([ z.lazy(() => ParkTypeSchema),z.lazy(() => EnumParkTypeFieldUpdateOperationsInputSchema) ]).optional(),
+  level: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const FarmingSeedUpdateWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingSeedUpdateWithoutFarmingInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  count: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  crop: z.lazy(() => CropUpdateOneRequiredWithoutSeedsNestedInputSchema).optional()
+}).strict();
+
+export const FarmingSeedUncheckedUpdateWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingSeedUncheckedUpdateWithoutFarmingInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  cropId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  count: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const FarmingSeedUncheckedUpdateManyWithoutFarmingInputSchema: z.ZodType<Prisma.FarmingSeedUncheckedUpdateManyWithoutFarmingInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  cropId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  count: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const FarmingTileCreateManyCropInputSchema: z.ZodType<Prisma.FarmingTileCreateManyCropInput> = z.object({
+  id: z.string().optional(),
+  farmingId: z.string(),
+  x: z.number().int(),
+  y: z.number().int(),
+  plantedAt: z.coerce.date().optional().nullable(),
+  qualityScore: z.number().int().optional(),
+  lastWateredAt: z.coerce.date().optional().nullable()
+}).strict();
+
+export const CropQualityCreateManyCropInputSchema: z.ZodType<Prisma.CropQualityCreateManyCropInput> = z.object({
+  id: z.string().optional(),
+  minScore: z.number().int(),
+  bRate: z.number().int(),
+  aRate: z.number().int(),
+  sRate: z.number().int()
+}).strict();
+
+export const FarmingSeedCreateManyCropInputSchema: z.ZodType<Prisma.FarmingSeedCreateManyCropInput> = z.object({
+  id: z.string().optional(),
+  farmingId: z.string(),
+  count: z.number().int().optional()
+}).strict();
+
+export const FarmingTileUpdateWithoutCropInputSchema: z.ZodType<Prisma.FarmingTileUpdateWithoutCropInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  x: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  y: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  plantedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  qualityScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  lastWateredAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  farming: z.lazy(() => FarmingUpdateOneRequiredWithoutTilesNestedInputSchema).optional()
+}).strict();
+
+export const FarmingTileUncheckedUpdateWithoutCropInputSchema: z.ZodType<Prisma.FarmingTileUncheckedUpdateWithoutCropInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  farmingId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  x: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  y: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  plantedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  qualityScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  lastWateredAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const FarmingTileUncheckedUpdateManyWithoutCropInputSchema: z.ZodType<Prisma.FarmingTileUncheckedUpdateManyWithoutCropInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  farmingId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  x: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  y: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  plantedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  qualityScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  lastWateredAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const CropQualityUpdateWithoutCropInputSchema: z.ZodType<Prisma.CropQualityUpdateWithoutCropInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  minScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bRate: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aRate: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sRate: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const CropQualityUncheckedUpdateWithoutCropInputSchema: z.ZodType<Prisma.CropQualityUncheckedUpdateWithoutCropInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  minScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bRate: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aRate: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sRate: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const CropQualityUncheckedUpdateManyWithoutCropInputSchema: z.ZodType<Prisma.CropQualityUncheckedUpdateManyWithoutCropInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  minScore: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  bRate: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  aRate: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  sRate: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const FarmingSeedUpdateWithoutCropInputSchema: z.ZodType<Prisma.FarmingSeedUpdateWithoutCropInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  count: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  farming: z.lazy(() => FarmingUpdateOneRequiredWithoutSeedsNestedInputSchema).optional()
+}).strict();
+
+export const FarmingSeedUncheckedUpdateWithoutCropInputSchema: z.ZodType<Prisma.FarmingSeedUncheckedUpdateWithoutCropInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  farmingId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  count: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const FarmingSeedUncheckedUpdateManyWithoutCropInputSchema: z.ZodType<Prisma.FarmingSeedUncheckedUpdateManyWithoutCropInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  farmingId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  count: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 /////////////////////////////////////////
@@ -8937,6 +12183,378 @@ export const CookieClickerFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.CookieCl
   where: CookieClickerWhereUniqueInputSchema,
 }).strict() ;
 
+export const FarmingFindFirstArgsSchema: z.ZodType<Prisma.FarmingFindFirstArgs> = z.object({
+  select: FarmingSelectSchema.optional(),
+  include: FarmingIncludeSchema.optional(),
+  where: FarmingWhereInputSchema.optional(),
+  orderBy: z.union([ FarmingOrderByWithRelationInputSchema.array(),FarmingOrderByWithRelationInputSchema ]).optional(),
+  cursor: FarmingWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ FarmingScalarFieldEnumSchema,FarmingScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const FarmingFindFirstOrThrowArgsSchema: z.ZodType<Prisma.FarmingFindFirstOrThrowArgs> = z.object({
+  select: FarmingSelectSchema.optional(),
+  include: FarmingIncludeSchema.optional(),
+  where: FarmingWhereInputSchema.optional(),
+  orderBy: z.union([ FarmingOrderByWithRelationInputSchema.array(),FarmingOrderByWithRelationInputSchema ]).optional(),
+  cursor: FarmingWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ FarmingScalarFieldEnumSchema,FarmingScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const FarmingFindManyArgsSchema: z.ZodType<Prisma.FarmingFindManyArgs> = z.object({
+  select: FarmingSelectSchema.optional(),
+  include: FarmingIncludeSchema.optional(),
+  where: FarmingWhereInputSchema.optional(),
+  orderBy: z.union([ FarmingOrderByWithRelationInputSchema.array(),FarmingOrderByWithRelationInputSchema ]).optional(),
+  cursor: FarmingWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ FarmingScalarFieldEnumSchema,FarmingScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const FarmingAggregateArgsSchema: z.ZodType<Prisma.FarmingAggregateArgs> = z.object({
+  where: FarmingWhereInputSchema.optional(),
+  orderBy: z.union([ FarmingOrderByWithRelationInputSchema.array(),FarmingOrderByWithRelationInputSchema ]).optional(),
+  cursor: FarmingWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const FarmingGroupByArgsSchema: z.ZodType<Prisma.FarmingGroupByArgs> = z.object({
+  where: FarmingWhereInputSchema.optional(),
+  orderBy: z.union([ FarmingOrderByWithAggregationInputSchema.array(),FarmingOrderByWithAggregationInputSchema ]).optional(),
+  by: FarmingScalarFieldEnumSchema.array(),
+  having: FarmingScalarWhereWithAggregatesInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const FarmingFindUniqueArgsSchema: z.ZodType<Prisma.FarmingFindUniqueArgs> = z.object({
+  select: FarmingSelectSchema.optional(),
+  include: FarmingIncludeSchema.optional(),
+  where: FarmingWhereUniqueInputSchema,
+}).strict() ;
+
+export const FarmingFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.FarmingFindUniqueOrThrowArgs> = z.object({
+  select: FarmingSelectSchema.optional(),
+  include: FarmingIncludeSchema.optional(),
+  where: FarmingWhereUniqueInputSchema,
+}).strict() ;
+
+export const FarmingTileFindFirstArgsSchema: z.ZodType<Prisma.FarmingTileFindFirstArgs> = z.object({
+  select: FarmingTileSelectSchema.optional(),
+  include: FarmingTileIncludeSchema.optional(),
+  where: FarmingTileWhereInputSchema.optional(),
+  orderBy: z.union([ FarmingTileOrderByWithRelationInputSchema.array(),FarmingTileOrderByWithRelationInputSchema ]).optional(),
+  cursor: FarmingTileWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ FarmingTileScalarFieldEnumSchema,FarmingTileScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const FarmingTileFindFirstOrThrowArgsSchema: z.ZodType<Prisma.FarmingTileFindFirstOrThrowArgs> = z.object({
+  select: FarmingTileSelectSchema.optional(),
+  include: FarmingTileIncludeSchema.optional(),
+  where: FarmingTileWhereInputSchema.optional(),
+  orderBy: z.union([ FarmingTileOrderByWithRelationInputSchema.array(),FarmingTileOrderByWithRelationInputSchema ]).optional(),
+  cursor: FarmingTileWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ FarmingTileScalarFieldEnumSchema,FarmingTileScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const FarmingTileFindManyArgsSchema: z.ZodType<Prisma.FarmingTileFindManyArgs> = z.object({
+  select: FarmingTileSelectSchema.optional(),
+  include: FarmingTileIncludeSchema.optional(),
+  where: FarmingTileWhereInputSchema.optional(),
+  orderBy: z.union([ FarmingTileOrderByWithRelationInputSchema.array(),FarmingTileOrderByWithRelationInputSchema ]).optional(),
+  cursor: FarmingTileWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ FarmingTileScalarFieldEnumSchema,FarmingTileScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const FarmingTileAggregateArgsSchema: z.ZodType<Prisma.FarmingTileAggregateArgs> = z.object({
+  where: FarmingTileWhereInputSchema.optional(),
+  orderBy: z.union([ FarmingTileOrderByWithRelationInputSchema.array(),FarmingTileOrderByWithRelationInputSchema ]).optional(),
+  cursor: FarmingTileWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const FarmingTileGroupByArgsSchema: z.ZodType<Prisma.FarmingTileGroupByArgs> = z.object({
+  where: FarmingTileWhereInputSchema.optional(),
+  orderBy: z.union([ FarmingTileOrderByWithAggregationInputSchema.array(),FarmingTileOrderByWithAggregationInputSchema ]).optional(),
+  by: FarmingTileScalarFieldEnumSchema.array(),
+  having: FarmingTileScalarWhereWithAggregatesInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const FarmingTileFindUniqueArgsSchema: z.ZodType<Prisma.FarmingTileFindUniqueArgs> = z.object({
+  select: FarmingTileSelectSchema.optional(),
+  include: FarmingTileIncludeSchema.optional(),
+  where: FarmingTileWhereUniqueInputSchema,
+}).strict() ;
+
+export const FarmingTileFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.FarmingTileFindUniqueOrThrowArgs> = z.object({
+  select: FarmingTileSelectSchema.optional(),
+  include: FarmingTileIncludeSchema.optional(),
+  where: FarmingTileWhereUniqueInputSchema,
+}).strict() ;
+
+export const FarmingParkFindFirstArgsSchema: z.ZodType<Prisma.FarmingParkFindFirstArgs> = z.object({
+  select: FarmingParkSelectSchema.optional(),
+  include: FarmingParkIncludeSchema.optional(),
+  where: FarmingParkWhereInputSchema.optional(),
+  orderBy: z.union([ FarmingParkOrderByWithRelationInputSchema.array(),FarmingParkOrderByWithRelationInputSchema ]).optional(),
+  cursor: FarmingParkWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ FarmingParkScalarFieldEnumSchema,FarmingParkScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const FarmingParkFindFirstOrThrowArgsSchema: z.ZodType<Prisma.FarmingParkFindFirstOrThrowArgs> = z.object({
+  select: FarmingParkSelectSchema.optional(),
+  include: FarmingParkIncludeSchema.optional(),
+  where: FarmingParkWhereInputSchema.optional(),
+  orderBy: z.union([ FarmingParkOrderByWithRelationInputSchema.array(),FarmingParkOrderByWithRelationInputSchema ]).optional(),
+  cursor: FarmingParkWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ FarmingParkScalarFieldEnumSchema,FarmingParkScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const FarmingParkFindManyArgsSchema: z.ZodType<Prisma.FarmingParkFindManyArgs> = z.object({
+  select: FarmingParkSelectSchema.optional(),
+  include: FarmingParkIncludeSchema.optional(),
+  where: FarmingParkWhereInputSchema.optional(),
+  orderBy: z.union([ FarmingParkOrderByWithRelationInputSchema.array(),FarmingParkOrderByWithRelationInputSchema ]).optional(),
+  cursor: FarmingParkWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ FarmingParkScalarFieldEnumSchema,FarmingParkScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const FarmingParkAggregateArgsSchema: z.ZodType<Prisma.FarmingParkAggregateArgs> = z.object({
+  where: FarmingParkWhereInputSchema.optional(),
+  orderBy: z.union([ FarmingParkOrderByWithRelationInputSchema.array(),FarmingParkOrderByWithRelationInputSchema ]).optional(),
+  cursor: FarmingParkWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const FarmingParkGroupByArgsSchema: z.ZodType<Prisma.FarmingParkGroupByArgs> = z.object({
+  where: FarmingParkWhereInputSchema.optional(),
+  orderBy: z.union([ FarmingParkOrderByWithAggregationInputSchema.array(),FarmingParkOrderByWithAggregationInputSchema ]).optional(),
+  by: FarmingParkScalarFieldEnumSchema.array(),
+  having: FarmingParkScalarWhereWithAggregatesInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const FarmingParkFindUniqueArgsSchema: z.ZodType<Prisma.FarmingParkFindUniqueArgs> = z.object({
+  select: FarmingParkSelectSchema.optional(),
+  include: FarmingParkIncludeSchema.optional(),
+  where: FarmingParkWhereUniqueInputSchema,
+}).strict() ;
+
+export const FarmingParkFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.FarmingParkFindUniqueOrThrowArgs> = z.object({
+  select: FarmingParkSelectSchema.optional(),
+  include: FarmingParkIncludeSchema.optional(),
+  where: FarmingParkWhereUniqueInputSchema,
+}).strict() ;
+
+export const CropFindFirstArgsSchema: z.ZodType<Prisma.CropFindFirstArgs> = z.object({
+  select: CropSelectSchema.optional(),
+  include: CropIncludeSchema.optional(),
+  where: CropWhereInputSchema.optional(),
+  orderBy: z.union([ CropOrderByWithRelationInputSchema.array(),CropOrderByWithRelationInputSchema ]).optional(),
+  cursor: CropWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ CropScalarFieldEnumSchema,CropScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const CropFindFirstOrThrowArgsSchema: z.ZodType<Prisma.CropFindFirstOrThrowArgs> = z.object({
+  select: CropSelectSchema.optional(),
+  include: CropIncludeSchema.optional(),
+  where: CropWhereInputSchema.optional(),
+  orderBy: z.union([ CropOrderByWithRelationInputSchema.array(),CropOrderByWithRelationInputSchema ]).optional(),
+  cursor: CropWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ CropScalarFieldEnumSchema,CropScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const CropFindManyArgsSchema: z.ZodType<Prisma.CropFindManyArgs> = z.object({
+  select: CropSelectSchema.optional(),
+  include: CropIncludeSchema.optional(),
+  where: CropWhereInputSchema.optional(),
+  orderBy: z.union([ CropOrderByWithRelationInputSchema.array(),CropOrderByWithRelationInputSchema ]).optional(),
+  cursor: CropWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ CropScalarFieldEnumSchema,CropScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const CropAggregateArgsSchema: z.ZodType<Prisma.CropAggregateArgs> = z.object({
+  where: CropWhereInputSchema.optional(),
+  orderBy: z.union([ CropOrderByWithRelationInputSchema.array(),CropOrderByWithRelationInputSchema ]).optional(),
+  cursor: CropWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const CropGroupByArgsSchema: z.ZodType<Prisma.CropGroupByArgs> = z.object({
+  where: CropWhereInputSchema.optional(),
+  orderBy: z.union([ CropOrderByWithAggregationInputSchema.array(),CropOrderByWithAggregationInputSchema ]).optional(),
+  by: CropScalarFieldEnumSchema.array(),
+  having: CropScalarWhereWithAggregatesInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const CropFindUniqueArgsSchema: z.ZodType<Prisma.CropFindUniqueArgs> = z.object({
+  select: CropSelectSchema.optional(),
+  include: CropIncludeSchema.optional(),
+  where: CropWhereUniqueInputSchema,
+}).strict() ;
+
+export const CropFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.CropFindUniqueOrThrowArgs> = z.object({
+  select: CropSelectSchema.optional(),
+  include: CropIncludeSchema.optional(),
+  where: CropWhereUniqueInputSchema,
+}).strict() ;
+
+export const CropQualityFindFirstArgsSchema: z.ZodType<Prisma.CropQualityFindFirstArgs> = z.object({
+  select: CropQualitySelectSchema.optional(),
+  include: CropQualityIncludeSchema.optional(),
+  where: CropQualityWhereInputSchema.optional(),
+  orderBy: z.union([ CropQualityOrderByWithRelationInputSchema.array(),CropQualityOrderByWithRelationInputSchema ]).optional(),
+  cursor: CropQualityWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ CropQualityScalarFieldEnumSchema,CropQualityScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const CropQualityFindFirstOrThrowArgsSchema: z.ZodType<Prisma.CropQualityFindFirstOrThrowArgs> = z.object({
+  select: CropQualitySelectSchema.optional(),
+  include: CropQualityIncludeSchema.optional(),
+  where: CropQualityWhereInputSchema.optional(),
+  orderBy: z.union([ CropQualityOrderByWithRelationInputSchema.array(),CropQualityOrderByWithRelationInputSchema ]).optional(),
+  cursor: CropQualityWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ CropQualityScalarFieldEnumSchema,CropQualityScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const CropQualityFindManyArgsSchema: z.ZodType<Prisma.CropQualityFindManyArgs> = z.object({
+  select: CropQualitySelectSchema.optional(),
+  include: CropQualityIncludeSchema.optional(),
+  where: CropQualityWhereInputSchema.optional(),
+  orderBy: z.union([ CropQualityOrderByWithRelationInputSchema.array(),CropQualityOrderByWithRelationInputSchema ]).optional(),
+  cursor: CropQualityWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ CropQualityScalarFieldEnumSchema,CropQualityScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const CropQualityAggregateArgsSchema: z.ZodType<Prisma.CropQualityAggregateArgs> = z.object({
+  where: CropQualityWhereInputSchema.optional(),
+  orderBy: z.union([ CropQualityOrderByWithRelationInputSchema.array(),CropQualityOrderByWithRelationInputSchema ]).optional(),
+  cursor: CropQualityWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const CropQualityGroupByArgsSchema: z.ZodType<Prisma.CropQualityGroupByArgs> = z.object({
+  where: CropQualityWhereInputSchema.optional(),
+  orderBy: z.union([ CropQualityOrderByWithAggregationInputSchema.array(),CropQualityOrderByWithAggregationInputSchema ]).optional(),
+  by: CropQualityScalarFieldEnumSchema.array(),
+  having: CropQualityScalarWhereWithAggregatesInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const CropQualityFindUniqueArgsSchema: z.ZodType<Prisma.CropQualityFindUniqueArgs> = z.object({
+  select: CropQualitySelectSchema.optional(),
+  include: CropQualityIncludeSchema.optional(),
+  where: CropQualityWhereUniqueInputSchema,
+}).strict() ;
+
+export const CropQualityFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.CropQualityFindUniqueOrThrowArgs> = z.object({
+  select: CropQualitySelectSchema.optional(),
+  include: CropQualityIncludeSchema.optional(),
+  where: CropQualityWhereUniqueInputSchema,
+}).strict() ;
+
+export const FarmingSeedFindFirstArgsSchema: z.ZodType<Prisma.FarmingSeedFindFirstArgs> = z.object({
+  select: FarmingSeedSelectSchema.optional(),
+  include: FarmingSeedIncludeSchema.optional(),
+  where: FarmingSeedWhereInputSchema.optional(),
+  orderBy: z.union([ FarmingSeedOrderByWithRelationInputSchema.array(),FarmingSeedOrderByWithRelationInputSchema ]).optional(),
+  cursor: FarmingSeedWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ FarmingSeedScalarFieldEnumSchema,FarmingSeedScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const FarmingSeedFindFirstOrThrowArgsSchema: z.ZodType<Prisma.FarmingSeedFindFirstOrThrowArgs> = z.object({
+  select: FarmingSeedSelectSchema.optional(),
+  include: FarmingSeedIncludeSchema.optional(),
+  where: FarmingSeedWhereInputSchema.optional(),
+  orderBy: z.union([ FarmingSeedOrderByWithRelationInputSchema.array(),FarmingSeedOrderByWithRelationInputSchema ]).optional(),
+  cursor: FarmingSeedWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ FarmingSeedScalarFieldEnumSchema,FarmingSeedScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const FarmingSeedFindManyArgsSchema: z.ZodType<Prisma.FarmingSeedFindManyArgs> = z.object({
+  select: FarmingSeedSelectSchema.optional(),
+  include: FarmingSeedIncludeSchema.optional(),
+  where: FarmingSeedWhereInputSchema.optional(),
+  orderBy: z.union([ FarmingSeedOrderByWithRelationInputSchema.array(),FarmingSeedOrderByWithRelationInputSchema ]).optional(),
+  cursor: FarmingSeedWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ FarmingSeedScalarFieldEnumSchema,FarmingSeedScalarFieldEnumSchema.array() ]).optional(),
+}).strict() ;
+
+export const FarmingSeedAggregateArgsSchema: z.ZodType<Prisma.FarmingSeedAggregateArgs> = z.object({
+  where: FarmingSeedWhereInputSchema.optional(),
+  orderBy: z.union([ FarmingSeedOrderByWithRelationInputSchema.array(),FarmingSeedOrderByWithRelationInputSchema ]).optional(),
+  cursor: FarmingSeedWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const FarmingSeedGroupByArgsSchema: z.ZodType<Prisma.FarmingSeedGroupByArgs> = z.object({
+  where: FarmingSeedWhereInputSchema.optional(),
+  orderBy: z.union([ FarmingSeedOrderByWithAggregationInputSchema.array(),FarmingSeedOrderByWithAggregationInputSchema ]).optional(),
+  by: FarmingSeedScalarFieldEnumSchema.array(),
+  having: FarmingSeedScalarWhereWithAggregatesInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict() ;
+
+export const FarmingSeedFindUniqueArgsSchema: z.ZodType<Prisma.FarmingSeedFindUniqueArgs> = z.object({
+  select: FarmingSeedSelectSchema.optional(),
+  include: FarmingSeedIncludeSchema.optional(),
+  where: FarmingSeedWhereUniqueInputSchema,
+}).strict() ;
+
+export const FarmingSeedFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.FarmingSeedFindUniqueOrThrowArgs> = z.object({
+  select: FarmingSeedSelectSchema.optional(),
+  include: FarmingSeedIncludeSchema.optional(),
+  where: FarmingSeedWhereUniqueInputSchema,
+}).strict() ;
+
 export const RoleCreateArgsSchema: z.ZodType<Prisma.RoleCreateArgs> = z.object({
   select: RoleSelectSchema.optional(),
   include: RoleIncludeSchema.optional(),
@@ -9487,4 +13105,280 @@ export const CookieClickerUpdateManyArgsSchema: z.ZodType<Prisma.CookieClickerUp
 
 export const CookieClickerDeleteManyArgsSchema: z.ZodType<Prisma.CookieClickerDeleteManyArgs> = z.object({
   where: CookieClickerWhereInputSchema.optional(),
+}).strict() ;
+
+export const FarmingCreateArgsSchema: z.ZodType<Prisma.FarmingCreateArgs> = z.object({
+  select: FarmingSelectSchema.optional(),
+  include: FarmingIncludeSchema.optional(),
+  data: z.union([ FarmingCreateInputSchema,FarmingUncheckedCreateInputSchema ]),
+}).strict() ;
+
+export const FarmingUpsertArgsSchema: z.ZodType<Prisma.FarmingUpsertArgs> = z.object({
+  select: FarmingSelectSchema.optional(),
+  include: FarmingIncludeSchema.optional(),
+  where: FarmingWhereUniqueInputSchema,
+  create: z.union([ FarmingCreateInputSchema,FarmingUncheckedCreateInputSchema ]),
+  update: z.union([ FarmingUpdateInputSchema,FarmingUncheckedUpdateInputSchema ]),
+}).strict() ;
+
+export const FarmingCreateManyArgsSchema: z.ZodType<Prisma.FarmingCreateManyArgs> = z.object({
+  data: z.union([ FarmingCreateManyInputSchema,FarmingCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const FarmingCreateManyAndReturnArgsSchema: z.ZodType<Prisma.FarmingCreateManyAndReturnArgs> = z.object({
+  data: z.union([ FarmingCreateManyInputSchema,FarmingCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const FarmingDeleteArgsSchema: z.ZodType<Prisma.FarmingDeleteArgs> = z.object({
+  select: FarmingSelectSchema.optional(),
+  include: FarmingIncludeSchema.optional(),
+  where: FarmingWhereUniqueInputSchema,
+}).strict() ;
+
+export const FarmingUpdateArgsSchema: z.ZodType<Prisma.FarmingUpdateArgs> = z.object({
+  select: FarmingSelectSchema.optional(),
+  include: FarmingIncludeSchema.optional(),
+  data: z.union([ FarmingUpdateInputSchema,FarmingUncheckedUpdateInputSchema ]),
+  where: FarmingWhereUniqueInputSchema,
+}).strict() ;
+
+export const FarmingUpdateManyArgsSchema: z.ZodType<Prisma.FarmingUpdateManyArgs> = z.object({
+  data: z.union([ FarmingUpdateManyMutationInputSchema,FarmingUncheckedUpdateManyInputSchema ]),
+  where: FarmingWhereInputSchema.optional(),
+}).strict() ;
+
+export const FarmingDeleteManyArgsSchema: z.ZodType<Prisma.FarmingDeleteManyArgs> = z.object({
+  where: FarmingWhereInputSchema.optional(),
+}).strict() ;
+
+export const FarmingTileCreateArgsSchema: z.ZodType<Prisma.FarmingTileCreateArgs> = z.object({
+  select: FarmingTileSelectSchema.optional(),
+  include: FarmingTileIncludeSchema.optional(),
+  data: z.union([ FarmingTileCreateInputSchema,FarmingTileUncheckedCreateInputSchema ]),
+}).strict() ;
+
+export const FarmingTileUpsertArgsSchema: z.ZodType<Prisma.FarmingTileUpsertArgs> = z.object({
+  select: FarmingTileSelectSchema.optional(),
+  include: FarmingTileIncludeSchema.optional(),
+  where: FarmingTileWhereUniqueInputSchema,
+  create: z.union([ FarmingTileCreateInputSchema,FarmingTileUncheckedCreateInputSchema ]),
+  update: z.union([ FarmingTileUpdateInputSchema,FarmingTileUncheckedUpdateInputSchema ]),
+}).strict() ;
+
+export const FarmingTileCreateManyArgsSchema: z.ZodType<Prisma.FarmingTileCreateManyArgs> = z.object({
+  data: z.union([ FarmingTileCreateManyInputSchema,FarmingTileCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const FarmingTileCreateManyAndReturnArgsSchema: z.ZodType<Prisma.FarmingTileCreateManyAndReturnArgs> = z.object({
+  data: z.union([ FarmingTileCreateManyInputSchema,FarmingTileCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const FarmingTileDeleteArgsSchema: z.ZodType<Prisma.FarmingTileDeleteArgs> = z.object({
+  select: FarmingTileSelectSchema.optional(),
+  include: FarmingTileIncludeSchema.optional(),
+  where: FarmingTileWhereUniqueInputSchema,
+}).strict() ;
+
+export const FarmingTileUpdateArgsSchema: z.ZodType<Prisma.FarmingTileUpdateArgs> = z.object({
+  select: FarmingTileSelectSchema.optional(),
+  include: FarmingTileIncludeSchema.optional(),
+  data: z.union([ FarmingTileUpdateInputSchema,FarmingTileUncheckedUpdateInputSchema ]),
+  where: FarmingTileWhereUniqueInputSchema,
+}).strict() ;
+
+export const FarmingTileUpdateManyArgsSchema: z.ZodType<Prisma.FarmingTileUpdateManyArgs> = z.object({
+  data: z.union([ FarmingTileUpdateManyMutationInputSchema,FarmingTileUncheckedUpdateManyInputSchema ]),
+  where: FarmingTileWhereInputSchema.optional(),
+}).strict() ;
+
+export const FarmingTileDeleteManyArgsSchema: z.ZodType<Prisma.FarmingTileDeleteManyArgs> = z.object({
+  where: FarmingTileWhereInputSchema.optional(),
+}).strict() ;
+
+export const FarmingParkCreateArgsSchema: z.ZodType<Prisma.FarmingParkCreateArgs> = z.object({
+  select: FarmingParkSelectSchema.optional(),
+  include: FarmingParkIncludeSchema.optional(),
+  data: z.union([ FarmingParkCreateInputSchema,FarmingParkUncheckedCreateInputSchema ]),
+}).strict() ;
+
+export const FarmingParkUpsertArgsSchema: z.ZodType<Prisma.FarmingParkUpsertArgs> = z.object({
+  select: FarmingParkSelectSchema.optional(),
+  include: FarmingParkIncludeSchema.optional(),
+  where: FarmingParkWhereUniqueInputSchema,
+  create: z.union([ FarmingParkCreateInputSchema,FarmingParkUncheckedCreateInputSchema ]),
+  update: z.union([ FarmingParkUpdateInputSchema,FarmingParkUncheckedUpdateInputSchema ]),
+}).strict() ;
+
+export const FarmingParkCreateManyArgsSchema: z.ZodType<Prisma.FarmingParkCreateManyArgs> = z.object({
+  data: z.union([ FarmingParkCreateManyInputSchema,FarmingParkCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const FarmingParkCreateManyAndReturnArgsSchema: z.ZodType<Prisma.FarmingParkCreateManyAndReturnArgs> = z.object({
+  data: z.union([ FarmingParkCreateManyInputSchema,FarmingParkCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const FarmingParkDeleteArgsSchema: z.ZodType<Prisma.FarmingParkDeleteArgs> = z.object({
+  select: FarmingParkSelectSchema.optional(),
+  include: FarmingParkIncludeSchema.optional(),
+  where: FarmingParkWhereUniqueInputSchema,
+}).strict() ;
+
+export const FarmingParkUpdateArgsSchema: z.ZodType<Prisma.FarmingParkUpdateArgs> = z.object({
+  select: FarmingParkSelectSchema.optional(),
+  include: FarmingParkIncludeSchema.optional(),
+  data: z.union([ FarmingParkUpdateInputSchema,FarmingParkUncheckedUpdateInputSchema ]),
+  where: FarmingParkWhereUniqueInputSchema,
+}).strict() ;
+
+export const FarmingParkUpdateManyArgsSchema: z.ZodType<Prisma.FarmingParkUpdateManyArgs> = z.object({
+  data: z.union([ FarmingParkUpdateManyMutationInputSchema,FarmingParkUncheckedUpdateManyInputSchema ]),
+  where: FarmingParkWhereInputSchema.optional(),
+}).strict() ;
+
+export const FarmingParkDeleteManyArgsSchema: z.ZodType<Prisma.FarmingParkDeleteManyArgs> = z.object({
+  where: FarmingParkWhereInputSchema.optional(),
+}).strict() ;
+
+export const CropCreateArgsSchema: z.ZodType<Prisma.CropCreateArgs> = z.object({
+  select: CropSelectSchema.optional(),
+  include: CropIncludeSchema.optional(),
+  data: z.union([ CropCreateInputSchema,CropUncheckedCreateInputSchema ]),
+}).strict() ;
+
+export const CropUpsertArgsSchema: z.ZodType<Prisma.CropUpsertArgs> = z.object({
+  select: CropSelectSchema.optional(),
+  include: CropIncludeSchema.optional(),
+  where: CropWhereUniqueInputSchema,
+  create: z.union([ CropCreateInputSchema,CropUncheckedCreateInputSchema ]),
+  update: z.union([ CropUpdateInputSchema,CropUncheckedUpdateInputSchema ]),
+}).strict() ;
+
+export const CropCreateManyArgsSchema: z.ZodType<Prisma.CropCreateManyArgs> = z.object({
+  data: z.union([ CropCreateManyInputSchema,CropCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const CropCreateManyAndReturnArgsSchema: z.ZodType<Prisma.CropCreateManyAndReturnArgs> = z.object({
+  data: z.union([ CropCreateManyInputSchema,CropCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const CropDeleteArgsSchema: z.ZodType<Prisma.CropDeleteArgs> = z.object({
+  select: CropSelectSchema.optional(),
+  include: CropIncludeSchema.optional(),
+  where: CropWhereUniqueInputSchema,
+}).strict() ;
+
+export const CropUpdateArgsSchema: z.ZodType<Prisma.CropUpdateArgs> = z.object({
+  select: CropSelectSchema.optional(),
+  include: CropIncludeSchema.optional(),
+  data: z.union([ CropUpdateInputSchema,CropUncheckedUpdateInputSchema ]),
+  where: CropWhereUniqueInputSchema,
+}).strict() ;
+
+export const CropUpdateManyArgsSchema: z.ZodType<Prisma.CropUpdateManyArgs> = z.object({
+  data: z.union([ CropUpdateManyMutationInputSchema,CropUncheckedUpdateManyInputSchema ]),
+  where: CropWhereInputSchema.optional(),
+}).strict() ;
+
+export const CropDeleteManyArgsSchema: z.ZodType<Prisma.CropDeleteManyArgs> = z.object({
+  where: CropWhereInputSchema.optional(),
+}).strict() ;
+
+export const CropQualityCreateArgsSchema: z.ZodType<Prisma.CropQualityCreateArgs> = z.object({
+  select: CropQualitySelectSchema.optional(),
+  include: CropQualityIncludeSchema.optional(),
+  data: z.union([ CropQualityCreateInputSchema,CropQualityUncheckedCreateInputSchema ]),
+}).strict() ;
+
+export const CropQualityUpsertArgsSchema: z.ZodType<Prisma.CropQualityUpsertArgs> = z.object({
+  select: CropQualitySelectSchema.optional(),
+  include: CropQualityIncludeSchema.optional(),
+  where: CropQualityWhereUniqueInputSchema,
+  create: z.union([ CropQualityCreateInputSchema,CropQualityUncheckedCreateInputSchema ]),
+  update: z.union([ CropQualityUpdateInputSchema,CropQualityUncheckedUpdateInputSchema ]),
+}).strict() ;
+
+export const CropQualityCreateManyArgsSchema: z.ZodType<Prisma.CropQualityCreateManyArgs> = z.object({
+  data: z.union([ CropQualityCreateManyInputSchema,CropQualityCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const CropQualityCreateManyAndReturnArgsSchema: z.ZodType<Prisma.CropQualityCreateManyAndReturnArgs> = z.object({
+  data: z.union([ CropQualityCreateManyInputSchema,CropQualityCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const CropQualityDeleteArgsSchema: z.ZodType<Prisma.CropQualityDeleteArgs> = z.object({
+  select: CropQualitySelectSchema.optional(),
+  include: CropQualityIncludeSchema.optional(),
+  where: CropQualityWhereUniqueInputSchema,
+}).strict() ;
+
+export const CropQualityUpdateArgsSchema: z.ZodType<Prisma.CropQualityUpdateArgs> = z.object({
+  select: CropQualitySelectSchema.optional(),
+  include: CropQualityIncludeSchema.optional(),
+  data: z.union([ CropQualityUpdateInputSchema,CropQualityUncheckedUpdateInputSchema ]),
+  where: CropQualityWhereUniqueInputSchema,
+}).strict() ;
+
+export const CropQualityUpdateManyArgsSchema: z.ZodType<Prisma.CropQualityUpdateManyArgs> = z.object({
+  data: z.union([ CropQualityUpdateManyMutationInputSchema,CropQualityUncheckedUpdateManyInputSchema ]),
+  where: CropQualityWhereInputSchema.optional(),
+}).strict() ;
+
+export const CropQualityDeleteManyArgsSchema: z.ZodType<Prisma.CropQualityDeleteManyArgs> = z.object({
+  where: CropQualityWhereInputSchema.optional(),
+}).strict() ;
+
+export const FarmingSeedCreateArgsSchema: z.ZodType<Prisma.FarmingSeedCreateArgs> = z.object({
+  select: FarmingSeedSelectSchema.optional(),
+  include: FarmingSeedIncludeSchema.optional(),
+  data: z.union([ FarmingSeedCreateInputSchema,FarmingSeedUncheckedCreateInputSchema ]),
+}).strict() ;
+
+export const FarmingSeedUpsertArgsSchema: z.ZodType<Prisma.FarmingSeedUpsertArgs> = z.object({
+  select: FarmingSeedSelectSchema.optional(),
+  include: FarmingSeedIncludeSchema.optional(),
+  where: FarmingSeedWhereUniqueInputSchema,
+  create: z.union([ FarmingSeedCreateInputSchema,FarmingSeedUncheckedCreateInputSchema ]),
+  update: z.union([ FarmingSeedUpdateInputSchema,FarmingSeedUncheckedUpdateInputSchema ]),
+}).strict() ;
+
+export const FarmingSeedCreateManyArgsSchema: z.ZodType<Prisma.FarmingSeedCreateManyArgs> = z.object({
+  data: z.union([ FarmingSeedCreateManyInputSchema,FarmingSeedCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const FarmingSeedCreateManyAndReturnArgsSchema: z.ZodType<Prisma.FarmingSeedCreateManyAndReturnArgs> = z.object({
+  data: z.union([ FarmingSeedCreateManyInputSchema,FarmingSeedCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict() ;
+
+export const FarmingSeedDeleteArgsSchema: z.ZodType<Prisma.FarmingSeedDeleteArgs> = z.object({
+  select: FarmingSeedSelectSchema.optional(),
+  include: FarmingSeedIncludeSchema.optional(),
+  where: FarmingSeedWhereUniqueInputSchema,
+}).strict() ;
+
+export const FarmingSeedUpdateArgsSchema: z.ZodType<Prisma.FarmingSeedUpdateArgs> = z.object({
+  select: FarmingSeedSelectSchema.optional(),
+  include: FarmingSeedIncludeSchema.optional(),
+  data: z.union([ FarmingSeedUpdateInputSchema,FarmingSeedUncheckedUpdateInputSchema ]),
+  where: FarmingSeedWhereUniqueInputSchema,
+}).strict() ;
+
+export const FarmingSeedUpdateManyArgsSchema: z.ZodType<Prisma.FarmingSeedUpdateManyArgs> = z.object({
+  data: z.union([ FarmingSeedUpdateManyMutationInputSchema,FarmingSeedUncheckedUpdateManyInputSchema ]),
+  where: FarmingSeedWhereInputSchema.optional(),
+}).strict() ;
+
+export const FarmingSeedDeleteManyArgsSchema: z.ZodType<Prisma.FarmingSeedDeleteManyArgs> = z.object({
+  where: FarmingSeedWhereInputSchema.optional(),
 }).strict() ;

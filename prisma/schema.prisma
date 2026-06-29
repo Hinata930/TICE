@@ -129,6 +129,7 @@ model User {
   visited_team  VisitedTeam[]
   team_activity TeamActivity[]
   cookie_clicker CookieClicker[]
+  farming Farming[]
 
   @@map("users")
 }
@@ -250,4 +251,139 @@ model CookieClicker {
 
   user               User?             @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   @@map("cookie_clicker")
+}
+
+
+
+// farmingのレベルとパークとタイルを保存するモデル
+model Farming {
+  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt      DateTime      @default(dbgenerated("clock_timestamp()")) @db.Timestamptz(6)
+  updatedAt      DateTime      @updatedAt @db.Timestamptz(6) // おっふ
+
+  userId         String        @unique @db.Uuid
+  
+  level          Int           @default(0) // レベル
+  exp            BigInt        @default(0) // 経験値
+  money          BigInt        @default(0) // カネ!!!!!!!!!!
+
+  parkPoint      Int           @default(0) // パーク強化用ポイント
+
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  
+  tiles          FarmingTile[]
+  parks          FarmingPark[]
+  seeds          FarmingSeed[]
+
+  @@map("farming")
+}
+
+
+
+// farmingのタイルの情報を保存する!
+model FarmingTile {
+  id            String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+  farmingId     String @db.Uuid
+  x             Int
+  y             Int
+
+  cropId        String? @db.Uuid
+
+  plantedAt     DateTime?
+
+  qualityScore  Int @default(0) // 品質スコア 水やったりすると上がる
+  lastWateredAt DateTime?
+
+
+  farming Farming @relation(fields: [farmingId], references: [id], onDelete: Cascade)
+  crop Crop? @relation(fields: [cropId], references: [id])
+
+  @@unique([farmingId, x, y])
+  @@map("farming_tile")
+}
+
+// farmingのパークの情報
+enum ParkType {
+  HARVEST
+  QUALITY
+}
+model FarmingPark {
+  id            String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  
+  farmingId     String @db.Uuid
+  
+  parkType      ParkType
+  level         Int    @default(0)
+
+
+  farming Farming @relation(fields: [farmingId], references: [id], onDelete: Cascade)
+
+  @@unique([farmingId, parkType])
+
+  @@map("farming_park")
+}
+
+// 作物の情報
+model Crop {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+  name          String @unique // tomato
+  displayName   String         // トマト
+
+  growTime      Int // 何秒で育つか
+
+  seedPrice     Int // 種はただじゃネエ...
+
+  bSellPrice    Int // Bランクのときの売値
+  aSellPrice    Int // A...
+  sSellPrice    Int // S...
+
+  bHarvestExp   Int // Bランクのときの収穫時の経験値獲得量
+  aHarvestExp   Int // a
+  sHarvestExp   Int //
+
+  waterScore    Int // 水やり一回ごとの増加スコア 作物毎に変えるつもりだが?あと今は水のみ
+
+  tiles FarmingTile[]
+  rates CropQuality[]
+  seeds FarmingSeed[]
+
+  @@map("crop")
+}
+
+// 品質判定(スコア毎に確率を変える)
+model CropQuality {
+  id       String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+  cropId   String @db.Uuid
+
+  minScore Int // スコア0以上のとき(0の場合)
+
+  bRate    Int // 100
+  aRate    Int // 0
+  sRate    Int // 0とか,0~9までをこれにしたければ、minScore10のやつをつくる。
+
+  crop Crop @relation(fields: [cropId], references: [id], onDelete: Cascade)
+
+  @@unique([cropId, minScore])
+  @@map("crop_quality")
+}
+
+// 持ってるたね!!!
+model FarmingSeed {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+  farmingId   String @db.Uuid
+  cropId      String @db.Uuid
+
+  count       Int @default(0)
+
+
+  farming Farming @relation(fields: [farmingId], references: [id], onDelete: Cascade)
+  crop Crop @relation(fields: [cropId], references: [id], onDelete: Cascade)
+
+  @@unique([farmingId, cropId])
+
+  @@map("farming_seed")
 }

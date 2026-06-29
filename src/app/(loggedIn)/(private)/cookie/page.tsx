@@ -8,11 +8,10 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient()
 
 export default async function Page() {
-  const userFromClerk = await currentUser();
-  if (!userFromClerk) {
-    throw new Error('Failed to fetch current user');
-  }
-  const user = await fetchCurrentUser(userFromClerk.id);
+  const clerkUser = await currentUser();
+  if (!clerkUser) { throw new Error('Failed to fetch current user'); }
+
+  const user = await fetchCurrentUser(clerkUser.id);
 
   const cookie = await fetchCookieClickerByUserId(user.id);
   if (!cookie) return (<></>);
