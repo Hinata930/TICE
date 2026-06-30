@@ -134,8 +134,6 @@ export async function DeleteTeam(id: string) {
       where: { id },
     });
   } catch(error) {
-    return {
-      message: 'Database Error: Failed to delete team.',
-    }
+    throw new Error('Database Error: Failed to delete team.');
   }
 }
